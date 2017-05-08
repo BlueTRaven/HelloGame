@@ -1,0 +1,76 @@
+syntax = "proto3";
+package HelloGame;
+
+message SerVector2 {
+	float x = 1;
+	float y = 2;
+}
+
+message SerRectangle {
+	int32 x = 1;
+	int32 y = 2;
+	int32 width = 3;
+	int32 height = 4;
+}
+
+message SerColor {
+	uint32 R = 1;
+	uint32 G = 2;
+	uint32 B = 3;
+	uint32 A = 4;
+}
+
+message SerTexInfo {
+	string name = 1;
+	SerVector2 scale = 2;
+	SerColor tint = 3;
+}
+
+message SerEntitySpawner {
+	SerRectangle position = 1;
+	int32 type = 2;
+
+	bool spawnRandomPosition = 3;
+
+	string info1 = 4;
+	string info2 = 5;
+}
+
+message SerBrush {
+	int32 drawType = 1;
+
+	SerRectangle bounds = 2;
+
+	SerTexInfo textureInfo = 3;
+
+	bool drawAhead = 4;
+}
+
+message SerWall {
+	SerRectangle bounds = 1;
+}
+
+message SerProp {
+	SerVector2 position = 1;
+	SerTexInfo texInfo = 2;
+	float shadowScale = 3;
+}
+
+message SerTrigger {
+	SerRectangle bounds = 1;
+	string command = 2;
+	string info = 3;
+	bool permTrigger = 4;
+	bool triggered = 5;
+}
+
+message SerWorld {
+	repeated SerBrush brushes = 1;
+	repeated SerWall walls = 2;
+	repeated SerProp props = 3;
+	repeated SerEntitySpawner entitySpawners = 4;
+	repeated SerTrigger triggers = 5;
+
+	string displayName = 6;
+	SerColor backgroundColor = 7;
+}
