@@ -1,5 +1,6 @@
 /bin
 /obj
+/content
 
 app.manifest
 google.protobuff.dll
