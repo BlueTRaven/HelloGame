@@ -273,5 +273,122 @@ namespace HelloGame.Entities
             move.counter4 = counter4;
             moveQueue.Enqueue(move);
         }
+
+        #region move presets
+        protected Move MoveSingleSlashPokeOrSlam(int weaponIndex, int weaponMoveIndex, int postDelay, float weightDistance, int weight, 
+            int velocityDecaysTime = 0, float lungeScale = 0)
+        {
+            return new Move(this, new Func<World, Enemy, Move, bool>((world, enemy, move) =>
+            {
+                if (move.counter2 > 0)
+                {
+                    move.counter2--;
+                }
+                else
+                {
+                    if (move.counter1 == 0)
+                    {
+                        move.counter1 = 1;
+                        float angle = VectorHelper.GetAngleBetweenPoints(position, target.position);
+                        AttackWithWeapon(world, weaponIndex, weaponMoveIndex, angle);
+                        move.counter2 = weapons[0].attack.runTime + postDelay;
+
+                        velocity = VectorHelper.GetAngleNormVector(angle) * lungeScale;
+                        velocityDecaysTimer = velocityDecaysTime;
+                    }
+                    else if (move.counter1 == 1)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }), new Func<World, Enemy, Move, int>((world, enemy, move) =>
+            {
+                return distanceFromPlayer <= weightDistance ? weight : 0;
+            }));
+        }
+
+        protected Move MoveSlamJumpback(int weaponIndex, int weaponMoveIndex, int jumpbackDelay, float jumpbackScale, int postJumpDelay, 
+            int velocityDecaysTime, float weightDistance, int weight)
+        {
+            return new Move(this, new Func<World, Enemy, Move, bool>((world, enemy, move) =>
+            {
+                if (move.counter2 > 0)
+                {
+                    move.counter2--;
+                }
+                else
+                {
+                    if (move.counter1 == 0)
+                    {
+                        move.counter1 = 1;
+                        move.counter3 = VectorHelper.GetAngleBetweenPoints(position, target.position);
+                        AttackWithWeapon(world, 0, 2, move.counter3);
+                        move.counter2 = weapons[0].attack.runTime - jumpbackDelay;
+                    }
+                    else if (move.counter1 == 1)
+                    {
+                        move.counter1 = 2;
+                        move.counter2 = postJumpDelay;
+                        velocity = VectorHelper.GetAngleNormVector(move.counter3) * -jumpbackScale;
+                        velocityDecaysTimer = velocityDecaysTime;
+                    }
+                    else if (move.counter1 == 2)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }), new Func<World, Enemy, Move, int>((world, enemy, move) =>
+            {
+                return distanceFromPlayer <= weightDistance ? weight : 0;
+            }));
+        }
+
+        protected Move MoveDoubleSlash(int weaponIndex, int weaponMoveIndexBack, int weaponMoveIndexForth, int preDelay, 
+            float lungeScale, int velocityDecaysTime, int forthDelay, int postDelay, float weightDistance, int weight)
+        {
+            return new Move(this, new Func<World, Enemy, Move, bool>((world, enemy, move) =>
+            {
+                attacking = true;
+                if (move.counter2 > 0)
+                    move.counter2--;
+                else
+                {
+                    if (move.counter1 == 0)
+                    {   //pre attack delay
+                        move.counter1 = 1;
+                        move.counter2 = preDelay;
+                        move.counter3 = VectorHelper.GetAngleBetweenPoints(position, target.position);
+                    }
+                    else if (move.counter1 == 1)
+                    {   //attack one, no delay
+                        move.counter1 = 2;
+                        AttackWithWeapon(world, weaponIndex, weaponMoveIndexBack, move.counter3);
+                        move.counter2 = weapons[0].attack.runTime + forthDelay;
+                        velocityDecaysTimer = velocityDecaysTime;
+                        velocity = VectorHelper.GetAngleNormVector(move.counter3) * lungeScale;
+                    }
+                    else if (move.counter1 == 2)
+                    {   //attack two, no delay
+                        move.counter1 = 3;
+                        move.counter2 = weapons[0].attack.runTime + postDelay;
+                        AttackWithWeapon(world, weaponIndex, weaponMoveIndexForth, move.counter3);
+                        velocityDecaysTimer = velocityDecaysTime;
+                        velocity = VectorHelper.GetAngleNormVector(move.counter3) * lungeScale;
+                    }
+                    else if (move.counter1 == 3)
+                    {   //return
+                        attacking = false;
+                        return true;
+                    }
+                }
+                return false;
+            }), new Func<World, Enemy, Move, int>((world, enemy, move) =>
+            {
+                return distanceFromPlayer <= weightDistance ? weight : 0;
+            }));
+        }
+        #endregion
     }
 }

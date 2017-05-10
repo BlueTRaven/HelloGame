@@ -132,8 +132,7 @@ namespace HelloGame.GhostWeapons
 
         public virtual void Draw(SpriteBatch batch)
         {
-            //if (vertDrawScale > 0)
-                batch.Draw(Main.assets.GetTexture("shadow"), currentPosition, null, new Color(0, 0, 0, 127), MathHelper.ToRadians(currentRotation), new Vector2(texture.Width / 2, texture.Height / 2), vertDrawScale, SpriteEffects.None, Main.GetDepth(currentPosition));
+            batch.Draw(Main.assets.GetTexture("shadow"), currentPosition, null, new Color(0, 0, 0, 127), 0, new Vector2(texture.Width / 2, texture.Height / 2), vertDrawScale, SpriteEffects.None, Main.GetDepth(currentPosition));
             batch.Draw(texture, currentPosition, null, new Color(0, 0, 0, 127), MathHelper.ToRadians(currentRotation), new Vector2(texture.Width / 2, texture.Height / 2), scale, SpriteEffects.None, Main.GetDepth(currentPosition));
             batch.Draw(texture, currentPosition + (Main.camera.up * height), null, Color.White, MathHelper.ToRadians(currentRotation), new Vector2(texture.Width / 2, texture.Height / 2), scaleReturn, SpriteEffects.None, Main.GetDepth(currentPosition));
         }   

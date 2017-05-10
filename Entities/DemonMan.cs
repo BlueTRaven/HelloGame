@@ -18,7 +18,7 @@ namespace HelloGame.Entities
 {
     public class DemonMan : Enemy
     {
-        public DemonMan(World world) : base(world.collisionWorld.Create(0, 0, 32, 32), 250)
+        public DemonMan(World world) : base(world.collisionWorld.Create(0, 0, 32, 32), 25)
         {
             texInfo = new TextureInfo(new TextureContainer("entity"), new Vector2(2), Color.White);
             chaseDistance = 128;
@@ -153,113 +153,13 @@ namespace HelloGame.Entities
             })));
 
             //Poke
-            moveset.Add(new Move(this, new Func<World, Enemy, Move, bool>((world, enemy, move) =>
-            {
-                if (move.counter2 > 0)
-                {
-                    move.counter2--;
-                }
-                else
-                {
-                    if (move.counter1 == 0)
-                    {
-                        move.counter1 = 1;
-                        AttackWithWeapon(world, 0, 3, VectorHelper.GetAngleBetweenPoints(position, target.position));
-                        move.counter2 = weapons[0].attack.runTime + 45; //60 delay + 45 runtime + 60 postdelay 
-                    }
-                    else if (move.counter1 == 1)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }), new Func<World, Enemy, Move, int>((world, enemy, move) => 
-            {
-                return distanceFromPlayer <= 256 ? 2 : 0;
-            })));
+            moveset.Add(MoveSingleSlashPokeOrSlam(0, 3, 45, 256, 2));
 
             //Slam Jumpback
-            moveset.Add(new Move(this, new Func<World, Enemy, Move, bool>((world, enemy, move) =>
-            {
-                if (move.counter2 > 0)
-                {
-                    move.counter2--;
-                }
-                else
-                {
-                    if (move.counter1 == 0)
-                    {
-                        move.counter1 = 1;
-                        move.counter3 = VectorHelper.GetAngleBetweenPoints(position, target.position);
-                        AttackWithWeapon(world, 0, 2, move.counter3);
-                        move.counter2 = weapons[0].attack.runTime - 15;
-                    }
-                    else if (move.counter1 == 1)
-                    {
-                        move.counter1 = 2;
-                        move.counter2 = 60;
-                        velocity = VectorHelper.GetAngleNormVector(move.counter3) * -8;
-                        velocityDecaysTimer = 20;
-                    }
-                    else if (move.counter1 == 2)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }), new Func<World, Enemy, Move, int>((world, enemy, move) =>
-            {
-                if (bossPhase == 0)
-                {
-                    int val = 0;
-                    damageSustained.TryPeek(out val);
-
-                    return distanceFromPlayer <= 256 && val > 100 ? 2 : 0;
-                }
-                return distanceFromPlayer <= 256 ? 2 : 0;
-            })));
+            moveset.Add(MoveSlamJumpback(0, 2, -15, 8, 60, 20, 256, 1));
 
             //Back and Forth Slash
-            moveset.Add(new Move(this, new Func<World, Enemy, Move, bool>((world, enemy, move) =>
-            {   
-                attacking = true;
-                if (move.counter2 > 0)
-                    move.counter2--;
-                else
-                {
-                    if (move.counter1 == 0)
-                    {   //pre attack delay
-                        move.counter1 = 1;
-                        move.counter2 = 5;
-                        move.counter3 = VectorHelper.GetAngleBetweenPoints(position, target.position);
-                    }
-                    else if (move.counter1 == 1)
-                    {   //attack one, no delay
-                        move.counter1 = 2;
-                        AttackWithWeapon(world, 0, 0, move.counter3);
-                        move.counter2 = weapons[0].attack.runTime;
-                        velocityDecaysTimer = 5;
-                        velocity = VectorHelper.GetAngleNormVector(move.counter3) * 2;
-                    }
-                    else if (move.counter1 == 2)
-                    {   //attack two, no delay
-                        move.counter1 = 3;
-                        move.counter2 = weapons[0].attack.runTime + 60;
-                        AttackWithWeapon(world, 0, 1, move.counter3);
-                        velocityDecaysTimer = 5;
-                        velocity = VectorHelper.GetAngleNormVector(move.counter3) * 2;
-                    }
-                    else if (move.counter1 == 3)
-                    {   //return
-                        attacking = false;
-                        return true;
-                    }
-                }
-                return false;
-            }), new Func<World, Enemy, Move, int>((world, enemy, move) =>
-            {
-                return distanceFromPlayer <= 256 ? 2 : 0;
-            })));
+            moveset.Add(MoveDoubleSlash(0, 0, 1, 5, 2, 5, 0, 60, 256, 2));
 
             //Phase Transition
             moveset.Add(new Move(this, new Func<World, Enemy, Move, bool>((world, enemy, move) =>
@@ -321,8 +221,9 @@ namespace HelloGame.Entities
 
             for (int i = 0; i < Main.rand.Next(64, 128); i++)
             {
-                Particle p = world.AddEntity(new ParticleDust(Main.rand.Next(30, 75), position, Main.rand.Next(5, 10), 16, Main.rand.NextFloat(0, 360), Color.Black)
-                    .SetGravity(-.1f, .1f, 5, new Action<Entity>(particle => particle.Die(world))));
+                Particle p = world.AddEntity(new ParticleDust(1000, position, Main.rand.Next(5, 10), 16, Main.rand.NextFloat(0, 360), Color.Black)
+                    .SetGravity(-.1f, .1f, 5, new Action<Entity>(particle => particle.Die(world)))
+                    .SetHomes(world.player, 970, 0, 1.2f, true));
                 if (p != null)
                     p.velocity = Main.rand.NextAngle() * Main.rand.NextFloat(0, 25);
             }

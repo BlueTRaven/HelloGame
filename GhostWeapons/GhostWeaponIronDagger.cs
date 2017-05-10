@@ -42,7 +42,11 @@ namespace HelloGame.GhostWeapons
             {
                 return new GhostWeaponAttack(new HitArc(Vector2.Zero, 72, -45, 45, 6, 8, 5, Entities.StaggerType.Short, parent).SetAnimated(8, false).Delay(5), 6, 30, AnimationSwing);
             }
-            else if (combo == 2)
+            else if (combo == 2)    //poke
+            {   //non player accesable
+                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 72, -15, 15, 30, 8, 5, Entities.StaggerType.Short, parent).Delay(5), 45, 30, AnimationPoke);
+            }
+            else if (combo == 3)    //charge
             {   //non player accesable
                 return new GhostWeaponAttack(new HitArc(Vector2.Zero, 72, -45, 45, 30, 8, 5, Entities.StaggerType.Short, parent).Delay(5), 45, 30, AnimationPoke);
             }

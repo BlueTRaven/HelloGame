@@ -37,6 +37,12 @@ namespace HelloGame.Entities.Particles
         private int wanderIntervalMax;
         protected float wanderScale;
 
+        protected bool homes, homeAlways, diesAfterReaching;
+        protected int startHomeTime, endHomeTime;
+        protected float homeScale;
+        protected Entity homeTarget;
+        protected Vector2 homeTargetPos;
+
         public int timeleft { get; protected set; }
 
         public Particle(int timeleft)
@@ -54,9 +60,38 @@ namespace HelloGame.Entities.Particles
                 timeleft--;
             else Die(world);
 
+            if (homes)
+            {
+                if (homeAlways || (timeleft <= startHomeTime && timeleft > endHomeTime))
+                {
+                    if (height > 16)
+                    {
+                        gravity = 0;
+                        zVel -= .12f;
+                    }
+                    else if (height < 16)
+                    {
+                        height = 16;
+                    }
+
+                    if (homeTarget != null)
+                    {
+                        if (diesAfterReaching && Math.Abs((homeTarget.position - position).Length()) < 8)
+                            Die(world);
+                        velocity += Vector2.Normalize(homeTarget.position - position) * homeScale;
+                    }
+                    else
+                    {
+                        if (diesAfterReaching && Math.Abs((homeTargetPos - position).Length()) < 8)
+                            Die(world);
+                        velocity += Vector2.Normalize(homeTargetPos - position) * homeScale;
+                    }
+                }
+            }
+
             if (rotates)
             {
-                if (timeleft <= startRotateTime && timeleft > endRotateTime || rotateAlways)
+                if (rotateAlways || (timeleft <= startRotateTime && timeleft > endRotateTime))
                 {
                     rotation += rotateAmt;
                 }
@@ -64,7 +99,7 @@ namespace HelloGame.Entities.Particles
 
             if (fades)
             {
-                if (timeleft <= startFadeTime && timeleft > endFadeTime || fadeAlways)
+                if (fadeAlways || (timeleft <= startFadeTime && timeleft > endFadeTime))
                 {
                     fadeTime--;
                     color = Color.Lerp(endColor, startColor, (float)fadeTime / (float)fadeTimeMax);
@@ -88,12 +123,33 @@ namespace HelloGame.Entities.Particles
             }
         }
 
+        #region Set
+        public Particle SetHomes(Vector2 homePos, int startHomeTime, int endHomeTime, float homeScale, bool diesAfterReaching)
+        {
+            homes = true;
+            this.homeScale = homeScale;
+            this.homeTargetPos = homePos;
+            this.diesAfterReaching = diesAfterReaching;
+
+            FixStartEndTimes(ref this.startHomeTime, ref this.endHomeTime, startHomeTime, endHomeTime, ref homeAlways);
+            return this;
+        }
+
+        public Particle SetHomes(Entity homeTarget, int startHomeTime, int endHomeTime, float homeScale, bool diesAfterReaching)
+        {
+            homes = true;
+            this.homeScale = homeScale;
+            this.homeTarget = homeTarget;
+            this.diesAfterReaching = diesAfterReaching;
+
+            FixStartEndTimes(ref this.startHomeTime, ref this.endHomeTime, startHomeTime, endHomeTime, ref homeAlways);
+            return this;
+        }
+
         public Particle SetWanders(int startWanderTime, int endWanderTime, float wanderScale, int wanderInterval)
         {
             wanders = true;
-
-            this.startWanderTime = startWanderTime;
-            this.endWanderTime = endWanderTime;
+            
             FixStartEndTimes(ref this.startWanderTime, ref this.endWanderTime, startWanderTime, endWanderTime, ref wanderAlways);
 
             this.wanderScale = wanderScale;
@@ -134,6 +190,7 @@ namespace HelloGame.Entities.Particles
             this.fadeTimeMax = fadeTime;
             return this;
         }
+        #endregion
 
         private void FixStartEndTimes(ref int localStart, ref int localEnd, int start, int end, ref bool always)
         {
