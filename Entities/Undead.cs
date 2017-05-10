@@ -19,7 +19,7 @@ namespace HelloGame.Entities
 {
     public class Undead : Enemy
     {
-        public Undead(World world) : base(world.collisionWorld.Create(0, 0, 32, 32), 20)
+        public Undead(World world) : base(world.collisionWorld.Create(0, 0, 32, 32), 15)
         {
             texInfo = new TextureInfo(new TextureContainer("entity"), new Vector2(2), Color.White);
 
@@ -28,8 +28,6 @@ namespace HelloGame.Entities
             chaseMaxSpeed = 1;
             circleSpeed = .1f;
             circleMaxSpeed = .5f;
-
-            SetMaxHealth(100);
 
             AddGhostWeapon(new GhostWeaponIronDagger());
         }
@@ -54,7 +52,7 @@ namespace HelloGame.Entities
                 attacking = true;
                 if (move.counter1 == 0)
                 {
-                    move.counter2 = 60;
+                    move.counter2 = 45;
                     move.counter3 = VectorHelper.GetAngleBetweenPoints(position, target.position);
                     move.counter1 = 1;
 
@@ -82,6 +80,51 @@ namespace HelloGame.Entities
 
                 return false;
             }), new Func<World, Enemy, Move, int>((world, enemy, move) => 
+            {
+                return enemy.distanceFromPlayer < 256 ? 1 : 0;
+            })));
+
+            moveset.Add(new Move(this, new Func<World, Enemy, Move, bool>((world, enemy, move) =>
+            {
+                attacking = true;
+                if (move.counter1 == 0)
+                {
+                    move.counter2 = 15;
+                    move.counter3 = VectorHelper.GetAngleBetweenPoints(position, target.position);
+                    move.counter1 = 1;
+
+                    velocity = Vector2.Zero;
+                }
+
+                if (move.counter2 > 0)  //delay
+                    move.counter2--;
+                else
+                {
+                    if (move.counter1 == 1)
+                    {
+                        velocity = VectorHelper.GetAngleNormVector(move.counter3) * 5;
+                        AttackWithWeapon(world, 0, 0, move.counter3);
+                        move.counter1 = 2;
+                    }
+
+                    if (weapons[0].animationDone)
+                    {
+                        if (move.counter1 == 2)
+                        {
+                            move.counter1 = 3;
+                            velocity = VectorHelper.GetAngleNormVector(move.counter3) * 5;
+                            AttackWithWeapon(world, 0, 1, move.counter3);
+                        }
+                        else if (move.counter1 == 3)
+                        {
+                            attacking = false;
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }), new Func<World, Enemy, Move, int>((world, enemy, move) =>
             {
                 return enemy.distanceFromPlayer < 128 ? 1 : 0;
             })));

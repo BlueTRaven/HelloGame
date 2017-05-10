@@ -13,6 +13,7 @@ using HelloGame.Guis;
 using HelloGame.Guis.Widgets;
 using HelloGame.Hits;
 using HelloGame.Entities;
+using HelloGame.Entities.Particles;
 
 namespace HelloGame.GhostWeapons
 {
@@ -23,11 +24,11 @@ namespace HelloGame.GhostWeapons
 
         protected int combo, comboMax;
 
-        private GhostWeaponAttack attack;
+        public GhostWeaponAttack attack { get; protected set; }
 
         private Texture2D texture;
 
-        private int returnTime;
+        public int returnTime { get; protected set; }
 
         public float height;
         protected float restingHeight;
@@ -69,7 +70,7 @@ namespace HelloGame.GhostWeapons
 
         protected abstract GhostWeaponAttack GetNextAttack(int combo, IDamageDealer parent);
 
-        public virtual void Update(Vector2 parentCenter, Vector2 restingPosition, float restingRotation)
+        public virtual void Update(World world, Vector2 parentCenter, Vector2 restingPosition, float restingRotation)
         {
             if (verticalDraw)
             {
@@ -106,6 +107,7 @@ namespace HelloGame.GhostWeapons
                 {
                     animationDone = false;
                     attack.hit.center = parentCenter;
+                    world.AddEntity(SpawnAnimationParticles(parentCenter));
                     attack.animation?.Invoke(parentCenter);
                 }
             }
@@ -140,14 +142,19 @@ namespace HelloGame.GhostWeapons
         {
             if (!attack.hasHit)
             {
-                HitArc hit = (HitArc)attack.hit;
-                hit.max += rotation;
-                hit.min += rotation;
-                attack.hasHit = true;
+                if (attack.hit is HitArc)
+                {
+                    HitArc hit = (HitArc)attack.hit;
+                    hit.max += rotation;
+                    hit.min += rotation;
+                }
+                    attack.hasHit = true;
             }
 
             return attack.hit;
         }
+
+        protected abstract Particle SpawnAnimationParticles(Vector2 parentCenter);
 
         #region animations
         public void AnimationSwing(Vector2 parentCenter)
@@ -168,7 +175,7 @@ namespace HelloGame.GhostWeapons
                 verticalDraw = true;
                 currentRotation = 90;
                 currentPosition = Vector2.Lerp(currentPosition, parentCenter + (VectorHelper.GetAngleNormVector(angle) * 16), .12f);
-                height = MathHelper.Lerp(height, 64, .12f);
+                height = MathHelper.Lerp(height, 64, height / 64);
             }
             else
             {
@@ -176,6 +183,20 @@ namespace HelloGame.GhostWeapons
                 currentPosition = Vector2.Lerp(currentPosition, parentCenter + (VectorHelper.GetAngleNormVector(angle) * (hit.radius - texture.Width)), .3f);
                 height = MathHelper.Lerp(height, 0, .12f);
             }
+        }
+
+        /// <summary>
+        /// Very simple animation. Merely raises the ghostweapon above the enemy's head.
+        /// Supports: HitCircle
+        /// </summary>
+        public void AnimationRaise(Vector2 parentCenter)
+        {   
+            HitCircle hit = (HitCircle)attack.hit;
+            verticalDraw = true;
+
+            currentRotation = 90;
+
+            height = MathHelper.Lerp(height, 64, height / 64);
         }
 
         public void AnimationPoke(Vector2 parentCenter)

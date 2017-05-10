@@ -40,6 +40,7 @@ namespace HelloGame.Entities
         private int healthDelay;
 
         protected bool boss;
+        protected int bossPhase;
 
         protected bool drawHealthBar = true;
 
@@ -48,6 +49,8 @@ namespace HelloGame.Entities
         protected float[] gwRestRot;
 
         protected bool attacking;
+
+        protected Vector2 directionFacing;
         public Enemy(IBox hitbox, int health) : base(hitbox)
         {
             moveset = new List<Move>();
@@ -62,6 +65,9 @@ namespace HelloGame.Entities
             preHitHealth = maxHealth;
 
             weapons = new List<GhostWeapon>();
+
+            gravity = .25f;
+            maxZVel = 4;
         }
 
         protected void SetMaxHealth(int health)
@@ -96,7 +102,7 @@ namespace HelloGame.Entities
 
             for (int i = 0; i < weapons.Count; i++)
             {
-                weapons[i].Update(position, gwRestPos[i], gwRestRot[i]);
+                weapons[i].Update(world, position, gwRestPos[i], gwRestRot[i]);
             }
 
             base.Update(world);
@@ -218,8 +224,8 @@ namespace HelloGame.Entities
                 return true;
             }), new Func<World, Enemy, Move, int>((world, enemy, move) =>
             {
-                return enemy.distanceFromPlayer > 128 ? 1 : 0;
-            }), true));
+                return enemy.distanceFromPlayer > 96 ? 1 : 0;
+            }), false));
         }
 
         protected Move SelectMove(World world)

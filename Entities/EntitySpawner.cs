@@ -80,6 +80,10 @@ namespace HelloGame.Entities
                     bool left = info1 != null && (info1.ToLower() == "true" || info1.ToLower() == "left");
                     entities.Add(new EnemyDoor(world, 128, 256, left));
                 }
+                else if (type == 3)
+                {
+                    entities.Add(new DemonMan(world));
+                }
 
                 if (entities.Count > 0)
                 {

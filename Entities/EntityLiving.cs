@@ -44,14 +44,26 @@ namespace HelloGame.Entities
         public bool staggered;
         protected int staggerTime;
 
+        private FixedSizedQueue<int> prevHealth;
+        protected FixedSizedQueue<int> damageSustained;
+
         public EntityLiving(IBox hitbox) : base()
         {
             this.collideBox = hitbox;
+
+            prevHealth = new FixedSizedQueue<int>(4);
+            damageSustained = new FixedSizedQueue<int>(4);   //record the last 4 seconds of damage sustained
         }
 
         public override void PreUpdate(World world)
         {
             base.PreUpdate(world);
+
+            if (alive % 60 == 0)
+            {
+                prevHealth.Enqueue(health);
+                damageSustained.Enqueue(prevHealth.Peek() - health);
+            }
 
             if (invulnerableTime > 0)
             {
@@ -70,6 +82,13 @@ namespace HelloGame.Entities
 
         public override void Update(World world)
         {
+            base.Update(world);
+        }
+
+        public override void Move()
+        {
+            velocity = Vector2.Clamp(velocity, new Vector2(-maxSpeed), new Vector2(maxSpeed));
+
             if (canMove)
             {
                 lastMovement = collideBox.Move((position.X - (collideBox.Width / 2)) + velocity.X, (position.Y - (collideBox.Height / 2)) + velocity.Y, (collision) => noclip ? CollisionResponses.None : CollisionResponses.Slide);
@@ -122,7 +141,7 @@ namespace HelloGame.Entities
             return 0;
         }
 
-        protected override void Die(World world)
+        public override void Die(World world)
         {
             base.Die(world);
 
@@ -137,7 +156,7 @@ namespace HelloGame.Entities
             {
                 if (shadowScale > 0)
                     batch.Draw(Main.assets.GetTexture("shadow"), position, null, new Color(0, 0, 0, 63), 0, new Vector2(32, 16), shadowScale, SpriteEffects.None, Main.GetDepth(position));
-                batch.Draw(texInfo.texture.texture, position, texInfo.sourceRect, Color.White, 0, texInfo.sourceRect.HasValue ? new Vector2(texInfo.sourceRect.Value.Width / 2, texInfo.sourceRect.Value.Height) : new Vector2(texInfo.texture.texture.Width / 2, texInfo.texture.texture.Height), texInfo.scale, SpriteEffects.None, Main.GetDepth(position));
+                batch.Draw(texInfo.texture.texture, position + Main.camera.up * height, texInfo.sourceRect, Color.White, 0, texInfo.sourceRect.HasValue ? new Vector2(texInfo.sourceRect.Value.Width / 2, texInfo.sourceRect.Value.Height) : new Vector2(texInfo.texture.texture.Width / 2, texInfo.texture.texture.Height), texInfo.scale, SpriteEffects.None, Main.GetDepth(position));
             }
 
             if (Main.DEBUG)

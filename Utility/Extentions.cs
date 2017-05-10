@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -231,6 +232,11 @@ namespace HelloGame.Utility
         }
 
         #region random
+        public static Vector2 NextAngle(this Random rand)
+        {
+            return Vector2.Transform(new Vector2(-1, 0), Matrix.CreateRotationZ(MathHelper.ToRadians(rand.NextFloat(0, 360))));
+        }
+
         public static Vector2 NextPointInside(this Random rand, Rectangle rectangle)
         {
             float x = rand.NextFloat(rectangle.X, rectangle.X + rectangle.Width);
@@ -259,5 +265,37 @@ namespace HelloGame.Utility
             return rand.Next(2) == 0;
         }
         #endregion
+    }
+
+    public class FixedSizedQueue<T> : ConcurrentQueue<T>
+    {
+        private readonly object syncObject = new object();
+
+        public int Size { get; private set; }
+
+        public FixedSizedQueue(int size)
+        {
+            Size = size;
+        }
+
+        public new void Enqueue(T obj)
+        {
+            base.Enqueue(obj);
+            lock (syncObject)
+            {
+                while (base.Count > Size)
+                {
+                    T outObj;
+                    base.TryDequeue(out outObj);
+                }
+            }
+        }
+
+        public T Peek()
+        {
+            T outobj;
+            base.TryPeek(out outobj);
+            return outobj;
+        }
     }
 }

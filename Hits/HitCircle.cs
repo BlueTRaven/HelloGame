@@ -23,13 +23,17 @@ namespace HelloGame.Hits
 
         protected override bool Collision(IDamageTaker check)
         {
-            Vector2 v = new Vector2(MathHelper.Clamp(center.X, check.hitbox.Left, check.hitbox.Right),
-                            MathHelper.Clamp(center.Y, check.hitbox.Top, check.hitbox.Bottom));
+            if (delay <= 0)
+            {
+                Vector2 v = new Vector2(MathHelper.Clamp(center.X, check.hitbox.Left, check.hitbox.Right),
+                                MathHelper.Clamp(center.Y, check.hitbox.Top, check.hitbox.Bottom));
 
-            Vector2 direction = center - v;
-            float distanceSquared = direction.LengthSquared();
+                Vector2 direction = center - v;
+                float distanceSquared = direction.LengthSquared();
 
-            return ((distanceSquared > 0) && (distanceSquared < radius * radius));
+                return ((distanceSquared > 0) && (distanceSquared < radius * radius));
+            }
+            return false;
         }
 
         public override Vector2 GetHitDirection(IDamageTaker taker)
@@ -39,7 +43,8 @@ namespace HelloGame.Hits
 
         public override void Draw_DEBUG(SpriteBatch batch)
         {
-            batch.DrawHollowCircle(center, radius, Color.Red, 2, 32);
+            if (delay <= 0)
+                batch.DrawHollowCircle(center, radius, Color.Red, 2, 32);
         }
     }
 }

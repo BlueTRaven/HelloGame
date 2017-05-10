@@ -581,7 +581,7 @@ namespace HelloGame
                         }
                     }
 
-                    if (amt >= 5)
+                    if (amt >= 2)
                     {
                         doors.ForEach(x => x.opening = true);   
                     }
@@ -984,7 +984,7 @@ namespace HelloGame
             T entity = null;
             for (int i = 0; i < brushes.Length; i++)
             {
-                if (entities[i] == null)
+                if (entities[i] == null || entities[i].dead)
                 {
                     entity = e;
                     entities[i] = entity;
@@ -1000,7 +1000,7 @@ namespace HelloGame
             T entity = null;
             for (int i = 0; i < brushes.Length; i++)
             {
-                if (entities[i] == null)
+                if (entities[i] == null || entities[i].dead)
                 {
                     entity = e;
                     entities[i] = entity;

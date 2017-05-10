@@ -13,6 +13,7 @@ using HelloGame.Guis;
 using HelloGame.Guis.Widgets;
 using HelloGame.Hits;
 using HelloGame.GhostWeapons;
+using HelloGame.Entities.Particles;
 
 using Humper;
 using Humper.Responses;
@@ -76,6 +77,7 @@ namespace HelloGame.Entities
             noclip = false;
             if (Main.DEBUG)
             {
+                invulnerableTime = 60;
                 movespeed = 4;
                 maxSpeed = 20;
                 noclip = true;
@@ -84,10 +86,10 @@ namespace HelloGame.Entities
 
         public override void PreUpdate(World world)
         {
-            if (staggerTime > 0)
-                inputTimer = staggerTime;
-
             ResetStats();
+
+            if (staggerTime > 0)
+                movespeed = 0;
 
             if (stamina < staminaMax)
             {
@@ -132,8 +134,9 @@ namespace HelloGame.Entities
                     if (!Main.keyboard.KeyHeld(Keys.Space) && willRoll)
                     {
                         willRoll = false;
-                        inputTimer = 20;
-                        invulnerableTime = 20;
+                        inputTimer = 8;
+                        invulnerableTime = 8;
+                        velocityDecaysTimer = 8;
                         rolling = true;
 
                         maxSpeed = 12;
@@ -184,6 +187,12 @@ namespace HelloGame.Entities
                     inputTimer = 0;
                 }
 
+                if (Main.keyboard.KeyHeld(Keys.R))
+                {
+                    health++;
+                    ((GuiHud)Main.guis["hud"]).SetHealth(health, maxHealth, maxHealth * 2, health);
+                }
+
                 if (Main.mouse.LeftButtonPressed())
                 {
                     float ang = VectorHelper.GetAngleBetweenPoints(position, Main.mouse.GetWorldPosition());
@@ -191,6 +200,8 @@ namespace HelloGame.Entities
                     world.AddHitbox(new HitArc(position, 128, a[0], a[1], 10, 50, 30, StaggerType.Short, this).SetAnimated(15, false));*/
                     weapon.Attack(this);
                     world.AddHitbox(weapon.ModifyHitForEntity(ang));
+
+                    staggerTime = weapon.attack.resetTime;
                 }
             }
 
@@ -201,7 +212,7 @@ namespace HelloGame.Entities
         {
             base.Update(world);
 
-            weapon.Update(position, velocity != Vector2.Zero ? Vector2.Normalize(velocity) * 16 : Vector2.Zero, VectorHelper.GetVectorAngle(velocity).RoundDown(90));
+            weapon.Update(world, position, velocity != Vector2.Zero ? Vector2.Normalize(velocity) * 16 : Vector2.Zero, VectorHelper.GetVectorAngle(velocity).RoundDown(90));
         }
 
         public override void Draw(SpriteBatch batch)
@@ -216,6 +227,7 @@ namespace HelloGame.Entities
             if (!invulnerable)
             {
                 velocity = direction;
+                velocityDecaysTimer = (int)Math.Abs(direction.Length());    //this is a dumb idea tbh
                 this.staggerTime = GetStaggerTime(type);
                 ((GuiHud)Main.guis["hud"]).SetHealth(health - amt, maxHealth, maxHealth * 2, health);
                 health -= amt;
