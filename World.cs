@@ -18,6 +18,7 @@ using HelloGame.Utility;
 using HelloGame.Hits;
 
 using Humper;
+using HelloGame.Entities.Particles;
 
 namespace HelloGame
 {
@@ -206,7 +207,10 @@ namespace HelloGame
                             }
                             else
                             {
-                                editorPoints[1] = mouseWorldPos;
+                                if (Main.keyboard.KeyHeld(Keys.LeftControl))
+                                    editorPoints[0] = mouseWorldPos;
+                                else
+                                    editorPoints[1] = mouseWorldPos;
                             }
                         }
                         else
@@ -232,7 +236,7 @@ namespace HelloGame
                                 {   //brush mode
                                     WidgetWindowTextureSelector wwts = wweo.GetWindow<WidgetWindowTextureSelector>("brush_textureselector");
                                     Rectangle rect = new Rectangle(editorPoints[0].ToPoint(), (editorPoints[1] - editorPoints[0]).ToPoint());
-                                    AddBrush(rect, new TextureInfo(new TextureContainer(wwts.GetTexture()), wwts.GetScale(), wwts.GetColor()), wweo.GetBrushDrawType());
+                                    AddBrush(rect, new TextureInfo(new TextureContainer(wwts.GetTexture()), wwts.GetScale(), wwts.GetColor()), wweo.GetBrushDrawType(), wweo.GetWidget<WidgetCheckbox>("brush_drawahead").isChecked);
                                 }
                                 else if (mode == mode_walls)
                                 {   //wall mode
@@ -241,10 +245,14 @@ namespace HelloGame
                                 }
                                 else if (mode == mode_spawners)
                                 {   //entity mode
-                                    int type = int.Parse(wweo.GetWidget<WidgetTextBox>("entity_type").text.ToString());
+                                    int type = int.Parse(wweo.GetWidget<WidgetTextBox>("entity_type").GetStringSafely("0"));
                                     bool randompos = wweo.GetWidget<WidgetCheckbox>("entity_spawnrandom").isChecked;
+                                    float rotation = float.Parse(wweo.GetWidget<WidgetTextBox>("entity_spawnrotation").GetStringSafely("0"));
+                                    EnemyNoticeState state = (EnemyNoticeState)wweo.GetWidget<WidgetDropdown>("entity_spawnstate").GetIndex();
                                     Rectangle rect = new Rectangle(editorPoints[0].ToPoint(), (editorPoints[1] - editorPoints[0]).ToPoint());
-                                    AddSpawner(new EntitySpawner(rect, type, randompos));
+                                    AddSpawner(new EntitySpawner(rect, type, rotation, randompos, state,
+                                        wweo.GetWidget<WidgetTextBox>("entity_info1").GetStringSafely(""), 
+                                        wweo.GetWidget<WidgetTextBox>("entity_info2").GetStringSafely("")));
                                 }
                                 else if (mode == mode_trigger)
                                 {
@@ -553,9 +561,9 @@ namespace HelloGame
         }
         #endregion
 
-        public void MapFunc(int index)
+        public void MapFunc(int index, Trigger trigger)
         {
-            if (name == "citadel1")
+            if (name == "citadel1" || name == "citadel1_1")
             {
                 if (index == 0)
                 {
@@ -566,8 +574,6 @@ namespace HelloGame
                     {
                         if (spawner != null)
                         {
-                            //spawner.GetEntitiesToSpawn(this);
-
                             spawner.attachedEntities.ForEach(x => 
                             {
                                 if (x is Undead)
@@ -584,6 +590,31 @@ namespace HelloGame
                     if (amt >= 2)
                     {
                         doors.ForEach(x => x.opening = true);   
+                    }
+                }
+                else if (index == 1)
+                {
+                    if (trigger.triggerTime >= 60)
+                    {
+                        if (trigger.triggerTime == 60 || trigger.triggerTime == 120)
+                        {
+                            AddHitbox(new HitBox(new Rectangle(trigger.bounds.X, trigger.bounds.Y + trigger.bounds.Height, trigger.bounds.Width, trigger.bounds.Height), 60, 30, 20, StaggerType.KnockdownGetup, null));
+                        }
+                        if (trigger.triggerTime < 180)
+                        {
+                            Particle p = AddEntity(new ParticleDust(Main.rand.Next(30, 90),
+                                new Vector2(trigger.bounds.X + trigger.bounds.Width, trigger.bounds.Y + trigger.bounds.Height + Main.rand.Next(0, trigger.bounds.Height)),
+                                Main.rand.Next(0, 6) == 1 ? Main.rand.Next(12, 24) : Main.rand.Next(3, 8), Main.rand.Next(4, 32),   //1 in 5 chance of spawning a big "rock"
+                                Main.rand.Next(0, 360), Color.Brown));
+                            if (p != null)
+                            {
+                                p.maxSpeed = 30;
+                                p.velocity.X = -Main.rand.Next(20, 30);
+                                p.velocity.Y = Main.rand.NextFloat(-.5f, .5f);
+                                p.velocityDecaysTimer = 5;
+                            }
+                        }
+                        else trigger.constant = false;  //stop triggering.
                     }
                 }
             }
@@ -729,6 +760,26 @@ namespace HelloGame
                 this.name = name;
                 name += ".hgmf";
             }
+            //this would just overwrite crap before.
+            if (File.Exists("maps/" + name))
+            {   //map files are so small we can get away with saving 15 backups worth.
+                int tries = 15;
+                while (tries >= 1)
+                {
+                    if (File.Exists("maps/" + this.name + "_bkp_" + tries + ".hgmf"))
+                    {
+                        if (tries != 15)
+                        {
+                            File.Copy("maps/" + name, "maps/" + this.name + "_bkp_" + (tries + 1) + ".hgmf", true);
+                        }
+                    }
+
+                    if (tries == 1)
+                        File.Copy("maps/" + name, "maps/" + this.name + "_bkp_" + tries + ".hgmf", true);
+
+                    tries--;
+                }
+            }
 
             SerWorld world = new SerWorld();
 
@@ -791,6 +842,7 @@ namespace HelloGame
             props = new Prop[128];
             triggers = new Trigger[128];
             entities = new Entity[128];
+            damageTakers.Clear();
 
             SerWorld world;
 

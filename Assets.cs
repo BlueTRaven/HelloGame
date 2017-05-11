@@ -63,6 +63,8 @@ namespace HelloGame
             textures.Add("animationtest", content.Load<Texture2D>("Textures/Entity/animationtest"));
             textures.Add("ghostSword", content.Load<Texture2D>("Textures/Entity/GhostSword"));
             textures.Add("ghostDagger", content.Load<Texture2D>("Textures/Entity/GhostDagger"));
+            textures.Add("ghostAxe", content.Load<Texture2D>("Textures/Entity/GhostAxe"));
+            textures.Add("ghostHalberd", content.Load<Texture2D>("Textures/Entity/GhostHalberd"));
             textures.Add("ghostHolyBlade", content.Load<Texture2D>("Textures/Entity/GhostHolyBlade"));
 
             //brush

@@ -18,9 +18,9 @@ namespace HelloGame.GhostWeapons
 {
     public class GhostWeaponIronSword : GhostWeapon
     {
-        public GhostWeaponIronSword() : base(Main.assets.GetTexture("ghostSword"))
+        public GhostWeaponIronSword() : base(new TextureInfo(new TextureContainer("ghostSword"), Vector2.Zero, Color.White))
         {
-            comboMax = 3;
+            comboMax = 2;
             height = 16;
             restingHeight = 16;
         }
@@ -42,9 +42,13 @@ namespace HelloGame.GhostWeapons
             {
                 return new GhostWeaponAttack(new HitArc(Vector2.Zero, 96, -45, 45, 10, 10, 10, Entities.StaggerType.Short, parent).SetAnimated(15, false).Delay(5), 15, 30, AnimationSwing);
             }
-            else if (combo == 2)
-            {
-                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 128, -15, 15, 10, 15, 0, Entities.StaggerType.Medium, parent).Delay(25), 45, 30, AnimationSlam);
+            else if (combo == 2)    //poke
+            {   //non player accessable
+                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 72, -15, 15, 30, 8, 5, Entities.StaggerType.Short, parent).Delay(5), 45, 30, AnimationPoke);
+            }
+            else if (combo == 3)    //charge
+            {   //non player accessable
+                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 72, -45, 45, 30, 8, 5, Entities.StaggerType.Short, parent).Delay(5), 45, 30, AnimationPoke);
             }
 
             return null;

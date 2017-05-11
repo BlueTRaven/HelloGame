@@ -59,6 +59,8 @@
     <Compile Include="GameMouse.cs" />
     <Compile Include="GhostWeapons\GhostWeapon.cs" />
     <Compile Include="GhostWeapons\GhostWeaponAttack.cs" />
+    <Compile Include="GhostWeapons\GhostWeaponAxe.cs" />
+    <Compile Include="GhostWeapons\GhostWeaponHalberd.cs" />
     <Compile Include="GhostWeapons\GhostWeaponHolyBlade.cs" />
     <Compile Include="GhostWeapons\GhostWeaponIronDagger.cs" />
     <Compile Include="GhostWeapons\GhostWeaponIronSword.cs" />
@@ -70,6 +72,7 @@
     <Compile Include="Guis\Widgets\Widget.cs" />
     <Compile Include="Guis\Widgets\WidgetButton.cs" />
     <Compile Include="Guis\Widgets\WidgetCheckbox.cs" />
+    <Compile Include="Guis\Widgets\WidgetDropdown.cs" />
     <Compile Include="Guis\Widgets\WidgetTextBox.cs" />
     <Compile Include="Guis\Widgets\WidgetWindow.cs" />
     <Compile Include="Guis\Widgets\WidgetWindowEditorOptions.cs" />

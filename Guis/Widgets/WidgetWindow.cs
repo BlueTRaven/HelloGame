@@ -24,11 +24,16 @@ namespace HelloGame.Guis.Widgets
         public bool active = true;
 
         public Vector2 createdPosition;
+        public Vector2 anchor;
 
         public WidgetWindow(Rectangle bounds, bool draggable, Dictionary<string, Widget> widgets)
         {
             this.widgets = new Dictionary<string, Widget>();
+            foreach (Widget widget in this.widgets.Values)
+                widget.anchor = bounds.Location.ToVector2();
             this.windows = new Dictionary<string, WidgetWindow>();
+            foreach (WidgetWindow window in this.windows.Values)
+                window.anchor = bounds.Location.ToVector2();
 
             this.bounds = bounds;
             this.draggable = draggable;
@@ -43,15 +48,28 @@ namespace HelloGame.Guis.Widgets
         {
             if (active)
             {
+                if (anchor != null && anchor != Vector2.Zero)
+                {
+                    bounds = new Rectangle((int)(createdPosition.X + anchor.X), (int)(createdPosition.Y + anchor.Y), bounds.Width, bounds.Height);
+                }
+
                 foreach (Widget widget in widgets.Values)
                 {
-                    widget.bounds = new Rectangle((int)widget.createdPosition.X + bounds.Location.X, (int)widget.createdPosition.Y + bounds.Location.Y, widget.bounds.Width, widget.bounds.Height);
+                    if (anchor != null && anchor != Vector2.Zero)
+                        widget.anchor = anchor;
+                    else
+                        widget.anchor = bounds.Location.ToVector2();
+
                     widget.PreUpdate();
                 }
 
                 foreach (WidgetWindow window in windows.Values)
                 {
-                    window.bounds = new Rectangle((int)window.createdPosition.X + bounds.Location.X, (int)window.createdPosition.Y + bounds.Location.Y, window.bounds.Width, window.bounds.Height);
+                    if (anchor != null && anchor != Vector2.Zero)
+                        window.anchor = anchor;
+                    else
+                        window.anchor = bounds.Location.ToVector2();
+
                     window.PreUpdate();
                 }
             }
@@ -116,6 +134,7 @@ namespace HelloGame.Guis.Widgets
 
         public T AddWindow<T>(string key, T window) where T : WidgetWindow
         {
+            window.anchor = bounds.Location.ToVector2();
             windows.Add(key, window);
 
             return window;

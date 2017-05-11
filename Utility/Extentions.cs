@@ -29,7 +29,7 @@ namespace HelloGame.Utility
 
         public static EntitySpawner Load(this SerEntitySpawner spawner)
         {
-            return new EntitySpawner(spawner.Position.Load(), spawner.Type, spawner.SpawnRandomPosition, spawner.Info1, spawner.Info2);
+            return new EntitySpawner(spawner.Position.Load(), spawner.Type, spawner.StartRotation, spawner.SpawnRandomPosition, (EnemyNoticeState)spawner.StartNoticeState, spawner.Info1, spawner.Info2);
         }
 
         public static Wall Load(this SerWall wall, World world)

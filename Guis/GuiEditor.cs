@@ -67,7 +67,7 @@ namespace HelloGame.Guis
             window = AddWindow("grid", new WidgetWindowHolder(new Rectangle(0, Main.HEIGHT - 16, 128, 16), false, windowWidgets));
             window.backgroundColor = Color.Black;
 
-            AddWindow("modeoptions", new WidgetWindowEditorOptions(new Rectangle(208, Main.HEIGHT - 64, 152, 64), false, GetWidgetWindow<WidgetWindowModeSelector>("modeselector")));
+            AddWindow("modeoptions", new WidgetWindowEditorOptions(new Rectangle(208, Main.HEIGHT - 192, 256, 192), false, GetWidgetWindow<WidgetWindowModeSelector>("modeselector")));
 
             window = AddWindow("modifyproperties", new WidgetWindowEditProperties(new Rectangle(Main.WIDTH - 256, 0, 256, 256)));
             window.backgroundColor = Color.Black;

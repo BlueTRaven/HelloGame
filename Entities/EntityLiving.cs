@@ -20,6 +20,7 @@ namespace HelloGame.Entities
 {
     public enum StaggerType
     {
+        None,
         Short,
         Medium,
         Long,

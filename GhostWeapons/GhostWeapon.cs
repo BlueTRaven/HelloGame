@@ -27,22 +27,29 @@ namespace HelloGame.GhostWeapons
         public GhostWeaponAttack attack { get; protected set; }
 
         private Texture2D texture;
+        private TextureInfo texInfo;
 
         public int returnTime { get; protected set; }
 
         public float height;
         protected float restingHeight;
 
-        public float scale = 2;
-        private float scaleReturn = 2;
+        public float scale = 1.5f;
+        private float scaleReturn = 1.5f;
 
         private bool verticalDraw;
         private float vertDrawScale;
 
         public bool animationDone { get; private set; }
-        public GhostWeapon(Texture2D texture)
+
+        protected bool flipsOnCC, flipped;
+
+        protected bool[] usesAnimation;
+        public GhostWeapon(TextureInfo texInfo)
         {
-            this.texture = texture;
+            this.texInfo = texInfo;
+            usesAnimation = new bool[8];
+            //this.texture = texture;
         }
 
         public virtual void Attack(IDamageDealer parent, int force = -1)
@@ -105,6 +112,7 @@ namespace HelloGame.GhostWeapons
                 }
                 else
                 {
+                    flipped = false;
                     animationDone = false;
                     attack.hit.center = parentCenter;
                     world.AddEntity(SpawnAnimationParticles(parentCenter));
@@ -132,9 +140,12 @@ namespace HelloGame.GhostWeapons
 
         public virtual void Draw(SpriteBatch batch)
         {
-            batch.Draw(Main.assets.GetTexture("shadow"), currentPosition, null, new Color(0, 0, 0, 127), 0, new Vector2(texture.Width / 2, texture.Height / 2), vertDrawScale, SpriteEffects.None, Main.GetDepth(currentPosition));
-            batch.Draw(texture, currentPosition, null, new Color(0, 0, 0, 127), MathHelper.ToRadians(currentRotation), new Vector2(texture.Width / 2, texture.Height / 2), scale, SpriteEffects.None, Main.GetDepth(currentPosition));
-            batch.Draw(texture, currentPosition + (Main.camera.up * height), null, Color.White, MathHelper.ToRadians(currentRotation), new Vector2(texture.Width / 2, texture.Height / 2), scaleReturn, SpriteEffects.None, Main.GetDepth(currentPosition));
+            batch.Draw(Main.assets.GetTexture("shadow"), currentPosition, null, new Color(0, 0, 0, 127), 0, new Vector2(32, 16), vertDrawScale, SpriteEffects.None, Main.GetDepth(currentPosition));
+            //batch.Draw(texture, currentPosition, null, new Color(0, 0, 0, 127), MathHelper.ToRadians(currentRotation), new Vector2(texture.Width / 2, texture.Height / 2), scale, SpriteEffects.None, Main.GetDepth(currentPosition));
+            //batch.Draw(texture, currentPosition + (Main.camera.up * height), null, Color.White, MathHelper.ToRadians(currentRotation), new Vector2(texture.Width / 2, texture.Height / 2), scaleReturn, SpriteEffects.None, Main.GetDepth(currentPosition));
+
+            batch.Draw(texInfo.texture.texture, currentPosition, texInfo.sourceRect, new Color(0, 0, 0, 127), MathHelper.ToRadians(currentRotation), texInfo.sourceRect.HasValue ? new Vector2(texInfo.sourceRect.Value.Width, texInfo.sourceRect.Value.Height) : new Vector2(texInfo.texture.texture.Width / 2, texInfo.texture.texture.Height / 2), scale, flipped ? SpriteEffects.FlipVertically : SpriteEffects.None, Main.GetDepth(currentPosition));
+            batch.Draw(texInfo.texture.texture, currentPosition + (Main.camera.up * height), texInfo.sourceRect, texInfo.tint, MathHelper.ToRadians(currentRotation), texInfo.sourceRect.HasValue ? new Vector2(texInfo.sourceRect.Value.Width, texInfo.sourceRect.Value.Height) : new Vector2(texInfo.texture.texture.Width / 2, texInfo.texture.texture.Height / 2), scaleReturn, flipped ? SpriteEffects.FlipVertically : SpriteEffects.None, Main.GetDepth(currentPosition));
         }   
 
         public virtual Hit ModifyHitForEntity(float rotation)
@@ -160,7 +171,10 @@ namespace HelloGame.GhostWeapons
         {
             HitArc hit = (HitArc)attack.hit;
             currentRotation = hit.max;
-            currentPosition = Vector2.Lerp(currentPosition, parentCenter + (VectorHelper.GetAngleNormVector(hit.max) * (hit.radius - texture.Width)), .3f);
+            currentPosition = Vector2.Lerp(currentPosition, parentCenter + (VectorHelper.GetAngleNormVector(hit.max) * (hit.radius - texInfo.texture.texture.Width)), .3f);
+            if (flipsOnCC && !hit.clockwise)
+                flipped = true;
+            else flipped = false;
         }
 
         public void AnimationSlam(Vector2 parentCenter)
@@ -168,7 +182,10 @@ namespace HelloGame.GhostWeapons
             HitArc hit = (HitArc)attack.hit;
             float angle = (Math.Abs(hit.max - hit.min) / 2) + hit.min;//halfway through the slice
             currentRotation = angle;
-            
+
+            if ((angle > 0 && angle < 90) || (angle < 360 && angle > 360 - 90))
+                flipped = true;
+            else flipped = false;
             if (hit.delay > 0)
             {
                 verticalDraw = true;
@@ -179,8 +196,11 @@ namespace HelloGame.GhostWeapons
             else
             {
                 verticalDraw = false;
-                currentPosition = Vector2.Lerp(currentPosition, parentCenter + (VectorHelper.GetAngleNormVector(angle) * (hit.radius - texture.Width)), .3f);
+                currentPosition = Vector2.Lerp(currentPosition, parentCenter + (VectorHelper.GetAngleNormVector(angle) * (hit.radius - texInfo.texture.texture.Width)), .3f);
                 height = MathHelper.Lerp(height, 0, .12f);
+
+                if (usesAnimation[0])
+                    texInfo.AddAnimationToQueue(1, true);
             }
         }
 
@@ -209,7 +229,7 @@ namespace HelloGame.GhostWeapons
             }
             else
             {
-                currentPosition = Vector2.Lerp(currentPosition, parentCenter + (VectorHelper.GetAngleNormVector(angle) * (hit.radius - texture.Width)), .3f);
+                currentPosition = Vector2.Lerp(currentPosition, parentCenter + (VectorHelper.GetAngleNormVector(angle) * (hit.radius - texInfo.texture.texture.Width)), .3f);
             }
         }
         #endregion

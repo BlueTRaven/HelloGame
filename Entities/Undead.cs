@@ -19,39 +19,49 @@ namespace HelloGame.Entities
 {
     public class Undead : Enemy
     {
-        public Undead(World world) : base(world.collisionWorld.Create(0, 0, 32, 32), 15)
+        int type;
+
+        public Undead(World world, EnemyNoticeState state, float facingRotation, int type) : base(world.collisionWorld.Create(0, 0, 32, 32), 15, facingRotation, state, 256, -1, type)
         {
+            this.type = type;
             texInfo = new TextureInfo(new TextureContainer("entity"), new Vector2(2), Color.White);
 
-            chaseDistance = 112;
+            chaseRadius = 112;
             chaseSpeed = .5f;
             chaseMaxSpeed = 1;
             circleSpeed = .1f;
             circleMaxSpeed = .5f;
 
-            AddGhostWeapon(new GhostWeaponIronDagger());
+            if (type == 0)
+                AddGhostWeapon(new GhostWeaponIronDagger());
+            else if (type == 1)
+                AddGhostWeapon(new GhostWeaponIronSword());
+            else if (type == 2)
+                AddGhostWeapon(new GhostWeaponHalberd());
         }
 
         public override void Update(World world)
-        {
-            if (!attacking)
-            {
-                gwRestPos[0] = Vector2.Normalize(target.position - position) * 32;
-                gwRestRot[0] = VectorHelper.GetAngleBetweenPoints(position, target.position);
-            }
-
+        { 
             base.Update(world);
         }
 
-        protected override void AddMoveset()
+        protected override void AddMoveset(int type)
         {
-            base.AddMoveset();
+            base.AddMoveset(type);
 
-            moveset.Add(MoveSingleSlashPokeOrSlam(0, 0, 100, 160, 3, 5, 1.2f));     //single slash; common
-            moveset.Add(MoveSingleSlashPokeOrSlam(0, 2, 100, 160, 3, 5, 1.2f));     //poke; common
-            moveset.Add(MoveDoubleSlash(0, 0, 1, 15, 1.2f, 5, 15, 65, 160, 2));     //double slash; uncommon
+            if (type == 0 || type == 1)
+            {
+                moveset.Add(MoveSingleSlashPokeOrSlam(0, 0, 100, 160, 3, 5, 1.2f));     //single slash; common
+                moveset.Add(MoveSingleSlashPokeOrSlam(0, 2, 100, 160, 3, 5, 1.2f));     //poke; common
+                moveset.Add(MoveDoubleSlash(0, 0, 1, 15, 1.2f, 5, 15, 65, 160, 2));     //double slash; uncommon
 
-            moveset.Add(MoveSingleSlashPokeOrSlam(0, 3, 100, 160, 1, 35, 3.5f));    //charge; rare
+                moveset.Add(MoveSingleSlashPokeOrSlam(0, 3, 100, 160, 1, 35, 3.5f));    //charge; rare
+            }
+            else if (type == 2)
+            {   //halberd undead is just a longer range sword/dagger undead, with less moves.
+                moveset.Add(MoveSingleSlashPokeOrSlam(0, 0, 100, 160, 4, 5, 1.2f));     //single slash; common
+                moveset.Add(MoveDoubleSlash(0, 0, 1, 15, 1.2f, 5, 15, 65, 160, 2));     //double slash; uncommon
+            }
         }
 
     }

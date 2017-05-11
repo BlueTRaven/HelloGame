@@ -18,10 +18,10 @@ namespace HelloGame.Entities
 {
     public class DemonMan : Enemy
     {
-        public DemonMan(World world) : base(world.collisionWorld.Create(0, 0, 32, 32), 25)
+        public DemonMan(World world) : base(world.collisionWorld.Create(0, 0, 32, 32), 25, -90, EnemyNoticeState.HighAlert, 256)
         {
             texInfo = new TextureInfo(new TextureContainer("entity"), new Vector2(2), Color.White);
-            chaseDistance = 128;
+            chaseRadius = 128;
             chaseSpeed = 1;
             chaseMaxSpeed = 2;
             circleSpeed = .5f;
@@ -45,9 +45,9 @@ namespace HelloGame.Entities
             }
         }
 
-        protected override void AddMoveset()
+        protected override void AddMoveset(int type)
         {
-            base.AddMoveset();
+            base.AddMoveset(type);
 
             //Sword Beam Slam
             moveset.Add(new Move(this, new Func<World, Enemy, Move, bool>((world, enemy, move) =>

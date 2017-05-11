@@ -105,8 +105,9 @@ namespace HelloGame
             WidgetWindowTextureSelector tex = window.GetWindow<WidgetWindowTextureSelector>("brush_texture");
             tex.Set(texInfo);
 
-            WidgetTextBox text = window.GetWidget<WidgetTextBox>("brush_type");
-            text.SetString(((int)drawType).ToString());
+            window.GetWidget<WidgetDropdown>("brush_type").SetIndex((int)drawType);
+            //WidgetTextBox text = window.GetWidget<WidgetTextBox>("brush_type");
+            //text.SetString(((int)drawType).ToString());
             WidgetCheckbox ahead = window.GetWidget<WidgetCheckbox>("brush_drawahead");
             ahead.isChecked = drawAhead;
         }
@@ -115,8 +116,9 @@ namespace HelloGame
         {
             bounds = window.GetWindow<WidgetWindowRectangle>("brush_bounds").GetRectangle();
             texInfo = window.GetWindow<WidgetWindowTextureSelector>("brush_texture").GetTextureInfo();
-            string text = window.GetWidget<WidgetTextBox>("brush_type").GetStringSafely();
-            drawType = (BrushDrawType)int.Parse(text);
+            //string text = window.GetWidget<WidgetTextBox>("brush_type").GetStringSafely();
+            //drawType = (BrushDrawType)int.Parse(text);
+            drawType = (BrushDrawType)window.GetWidget<WidgetDropdown>("brush_type").GetIndex();
             drawAhead = window.GetWidget<WidgetCheckbox>("brush_drawahead").isChecked;
         }
 

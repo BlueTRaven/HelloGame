@@ -23,7 +23,8 @@ namespace HelloGame.Guis.Widgets
             //brush
             AddWindow("brush_bounds", new WidgetWindowRectangle(Vector2.Zero));
             AddWindow("brush_texture", new WidgetWindowTextureSelector(new Vector2(0, 26)));
-            AddWidget("brush_type", new WidgetTextBox(new Rectangle(128, 34, 56, 24), Main.assets.GetFont("bfMunro12"), "type", 4, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            //AddWidget("brush_type", new WidgetTextBox(new Rectangle(128, 34, 56, 24), Main.assets.GetFont("bfMunro12"), "type", 4, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("brush_type", new WidgetDropdown(new Rectangle(128, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "type", Color.White, TextAlignment.Left, 4, Enum.GetNames(typeof(BrushDrawType))));
             AddWidget("brush_drawahead", new WidgetCheckbox(new Rectangle(128, 64, 24, 24), Color.White));
 
             //wall
@@ -34,15 +35,18 @@ namespace HelloGame.Guis.Widgets
             AddWidget("entity_info1", new WidgetTextBox(new Rectangle(8, 64, 56, 24), Main.assets.GetFont("bfMunro12"), "info 1", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
             AddWidget("entity_info2", new WidgetTextBox(new Rectangle(72, 64, 56, 24), Main.assets.GetFont("bfMunro12"), "info 2", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
             AddWidget("entity_spawnrandom", new WidgetCheckbox(new Rectangle(104, 32, 24, 24), Color.White));
+            AddWidget("entity_spawnrotation", new WidgetTextBox(new Rectangle(138, 64, 56, 24), Main.assets.GetFont("bfMunro12"), "rotation", 3, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("entity_spawnstate", new WidgetDropdown(new Rectangle(8, 120, 56, 24), Main.assets.GetFont("bfMunro12"), "mode", Color.White, TextAlignment.Left, 5, Enum.GetNames(typeof(EnemyNoticeState))));
+
             //prop
             AddWindow("prop_position", new WidgetWindowVector2(Vector2.Zero));
             AddWindow("prop_texture", new WidgetWindowTextureSelector(new Vector2(0, 26)));
             AddWidget("prop_shadowscale", new WidgetTextBox(new Rectangle(80, 34, 40, 18), Main.assets.GetFont("bfMunro12"), "scale", 4, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
             //trigger
             AddWindow("trigger_bounds", new WidgetWindowRectangle(Vector2.Zero));
-            AddWidget("trigger_command", new WidgetTextBox(new Rectangle(80, 34, 40, 18), Main.assets.GetFont("bfMunro12"), "command", 4, TextAlignment.Left, TextBoxFilter.Alphabetical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("trigger_info", new WidgetTextBox(new Rectangle(80, 34, 40, 18), Main.assets.GetFont("bfMunro12"), "info", 4, TextAlignment.Left, TextBoxFilter.Alphabetical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("trigger_perm", new WidgetCheckbox(new Rectangle(128, 34, 16, 16), Color.White));
+            AddWidget("trigger_command", new WidgetTextBox(new Rectangle(8, 32, 56, 24), Main.assets.GetFont("bfMunro12"), "command", 4, TextAlignment.Left, TextBoxFilter.Alphabetical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("trigger_info", new WidgetTextBox(new Rectangle(8, 64, 56, 24), Main.assets.GetFont("bfMunro12"), "info", 4, TextAlignment.Left, TextBoxFilter.Alphabetical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("trigger_perm", new WidgetCheckbox(new Rectangle(104, 32, 24, 24), Color.White));
         }
 
         public override void Update()
@@ -108,7 +112,7 @@ namespace HelloGame.Guis.Widgets
             }
             else if (mode == World.mode_spawners)
             {
-                return new string[] { "entity_type", "entity_info1", "entity_info2", "entity_spawnrandom" };
+                return new string[] { "entity_type", "entity_info1", "entity_info2", "entity_spawnrandom", "entity_spawnrotation", "entity_spawnstate" };
             }
             else if (mode == World.mode_props)
             {

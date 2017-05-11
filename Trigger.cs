@@ -29,8 +29,11 @@ namespace HelloGame
 
         public bool permTrigger;
         private bool triggered;
+        private bool contTrigger;
 
         public Rectangle bounds;
+
+        public int triggerTime { get; private set; }
 
         public Trigger(Rectangle bounds, string command, string info, bool permTrigger, bool triggered = false)
         {
@@ -51,15 +54,12 @@ namespace HelloGame
 
         public bool PlayerEntered(World world)
         {
-            if (bounds.Contains(world.player.hitbox) || bounds.Intersects(world.player.hitbox) || world.player.hitbox.Contains(bounds))
+            if (bounds.Contains(world.player.hitbox) || bounds.Intersects(world.player.hitbox) || world.player.hitbox.Contains(bounds) || (contTrigger && triggered))
             {
-                if (!triggered && !constant)
-                {
-                    triggered = true;
-                    return true;
-                }
+                triggered = true;
+                if (!triggered && !constant) return true;
                 else if (triggered && !constant) return false;
-                else if (constant) return true;
+                else if (constant) { triggerTime++; return true; }
             }
             return false;
         }
@@ -72,7 +72,7 @@ namespace HelloGame
                 Command = commandName,
                 Info = info,
                 PermTrigger = permTrigger,
-                Triggered = permTrigger ? triggered : false //if it's a permanant trigger, save the triggered value. Otherwise, just save false.
+                Triggered = false //if it's a permanant trigger, save the triggered value. Otherwise, just save false.
             };
         }
 
@@ -80,6 +80,8 @@ namespace HelloGame
         {
             if (commands == null)
                 commands = new Dictionary<string, Action<World, Trigger, string>>();
+
+            commands.Add("default", new Action<World, Trigger, string>((world, trigger, info) => { }));
 
             commands.Add("loadmap", new Action<World, Trigger, string>((world, trigger, info) => 
             {
@@ -93,15 +95,15 @@ namespace HelloGame
 
             commands.Add("mapfunc", new Action<World, Trigger, string>((world, trigger, info) =>
             {
+                trigger.contTrigger = true;
                 trigger.constant = true;
-                trigger.permTrigger = true;
 
                 if (trigger.PlayerEntered(world))
                 {
                     int parsed = 0;
                     int.TryParse(info, out parsed);
 
-                    world.MapFunc(parsed);
+                    world.MapFunc(parsed, trigger);
                 }
             }));
         }
@@ -149,7 +151,11 @@ namespace HelloGame
         public void UpdateSelectableProperties(WidgetWindowEditProperties window)
         {
             bounds = window.GetWindow<WidgetWindowRectangle>("trigger_bounds").GetRectangle();
-            command = commands[window.GetWidget<WidgetTextBox>("trigger_command").GetStringSafely()];
+            string comname = window.GetWidget<WidgetTextBox>("trigger_command").GetStringSafely("default");
+            if (!commands.ContainsKey(comname))
+                comname = "default";
+            command = commands[comname];
+
             info = window.GetWidget<WidgetTextBox>("trigger_info").GetStringSafely();
             permTrigger = window.GetWidget<WidgetCheckbox>("trigger_perm").isChecked;
         }

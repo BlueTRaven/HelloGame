@@ -9,6 +9,28 @@ using HelloGame.Guis;
 
 namespace HelloGame
 {
+    /*
+     * Todo:
+     * Better World system, i.e. use separate classes for each map so I don't have to code a ton of stuff in the one class. 
+     * 
+     * Attack interruption system for ghostweapons, like stagger or parry.
+     * 
+     * Maybe critical hits?
+     * 
+     * Add player save file. Saves the current map name, the player's hp, the last world "entrance point" 
+     * they used, as well as an array of bools(?) of all the enemies/bosses they've killed.
+     * 
+     * Water?
+     * 
+     * Different damage types, such as poison, fire, or just physical
+     * 
+     * Options Menu
+     * More Options
+     * 
+     * Fix HitArc collision detection, it doesn't always work well
+     * 
+     * Add some form of distort effect behind weapon attacks?
+     */
     public class Main : Game
     {
         public static bool DEBUG = true;

@@ -14,10 +14,10 @@ namespace HelloGame.Guis.Widgets
 {
     public class WidgetButton : Widget
     {
-        private bool hasText;
-        private SpriteFont font;
-        private string text;
-        private TextAlignment alignment;
+        protected bool hasText;
+        protected SpriteFont font;
+        protected string text;
+        protected TextAlignment alignment;
         public Color textColor;
 
         private bool hasBackgroundColor;

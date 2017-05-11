@@ -20,6 +20,9 @@ namespace HelloGame.Entities
 
         public bool spawnRandomPosition;
 
+        public float startRotation;
+        public EnemyNoticeState startNoticeState;
+
         public int spawnDistance = 1024;
 
         public List<Entity> attachedEntities;
@@ -29,10 +32,12 @@ namespace HelloGame.Entities
 
         public string info1, info2;
 
-        public EntitySpawner(Rectangle bounds, int type, bool spawnRandomPosition = false, string info1 = "", string info2 = "")
+        public EntitySpawner(Rectangle bounds, int type, float startRotation, bool spawnRandomPosition = false, EnemyNoticeState noticeState = EnemyNoticeState.Alert, string info1 = "", string info2 = "")
         {
             this.bounds = bounds;
             this.type = type;
+            this.startRotation = startRotation;
+            this.startNoticeState = noticeState;
             this.spawnRandomPosition = spawnRandomPosition;
 
             this.info1 = info1;
@@ -73,7 +78,10 @@ namespace HelloGame.Entities
                 }
                 else if (type == 1)
                 {
-                    entities.Add(new Undead(world));
+                    int type = 0;
+                    int.TryParse(info1, out type);
+
+                    entities.Add(new Undead(world, startNoticeState, startRotation, type));
                 }
                 else if (type == 2)
                 {
@@ -112,6 +120,8 @@ namespace HelloGame.Entities
         {
             batch.DrawHollowRectangle(bounds, 2, Color.Red);
             batch.DrawHollowCircle(bounds.Center.ToVector2(), 8, spawned ? Color.Orange : Color.Red, 2, 32);
+            Vector2 rotVec = VectorHelper.GetAngleNormVector(startRotation);
+            batch.DrawLine(bounds.Center.ToVector2() + rotVec * 8, bounds.Center.ToVector2() + rotVec * 16, Color.Red, 2);
             batch.DrawString(Main.assets.GetFont("bfMunro12"), type.ToString(), bounds.Location.ToVector2(), Color.White);
         }
 
@@ -138,7 +148,9 @@ namespace HelloGame.Entities
                 SpawnRandomPosition = spawnRandomPosition,
 
                 Info1 = info1,
-                Info2 = info2
+                Info2 = info2,
+                StartRotation = startRotation,
+                StartNoticeState = (int)startNoticeState
             };
         }
 
@@ -170,6 +182,11 @@ namespace HelloGame.Entities
 
             WidgetCheckbox check = window.GetWidget<WidgetCheckbox>("entity_spawnrandom");
             check.isChecked = spawnRandomPosition;
+
+            text = window.GetWidget<WidgetTextBox>("entity_spawnrotation");
+            text.SetString(startRotation.ToString());
+
+            window.GetWidget<WidgetDropdown>("entity_spawnstate").SetIndex((int)startNoticeState);
         }
 
         public void UpdateSelectableProperties(WidgetWindowEditProperties window)
@@ -181,6 +198,12 @@ namespace HelloGame.Entities
             info2 = window.GetWidget<WidgetTextBox>("entity_info2").GetStringSafely();
 
             spawnRandomPosition = window.GetWidget<WidgetCheckbox>("entity_spawnrandom").isChecked;
+
+            float temp = startRotation;
+            startRotation = 0;
+            float.TryParse(window.GetWidget<WidgetTextBox>("entity_spawnrotation").GetStringSafely(temp.ToString()), out startRotation);
+
+            startNoticeState = (EnemyNoticeState)window.GetWidget<WidgetDropdown>("entity_spawnstate").GetIndex();
         }
 
         public void Move(Vector2 amt)

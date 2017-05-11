@@ -23,7 +23,7 @@ namespace HelloGame.Entities
 
         public bool opening;
 
-        public EnemyDoor(World world, float doorHeight, float obscureHeight, bool left = true) : base(world.collisionWorld.Create(0, 0, 64, 32), 1)
+        public EnemyDoor(World world, float doorHeight, float obscureHeight, bool left = true) : base(world.collisionWorld.Create(0, 0, 64, 32), 1, 0, EnemyNoticeState.Sleeping, 0)
         {
             this.doorHeight = doorHeight;
             this.obscureHeight = obscureHeight;

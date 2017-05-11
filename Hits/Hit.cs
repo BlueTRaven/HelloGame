@@ -69,8 +69,8 @@ namespace HelloGame.Hits
             if (delay > 0)
                 return false;
 
-            if (check is Player && parent is Enemy)
-            {   //if we're hitting the player as an enemy, go on...
+            if ((check is Player && parent is Enemy) || parent == null)
+            {   //if we're hitting the player as an enemy or null, go on...
                 if (!hit.Contains(check) && (parent == null || check != parent))
                 {
                     if (Collision(check))
@@ -81,7 +81,7 @@ namespace HelloGame.Hits
                 }
             }
             else if (parent is Player && check is Enemy)
-            {   //otherwise, we're the player hitting an enemy. Always hit.
+            {   //else, we're the player hitting an enemy. Always hit.
                 if (!hit.Contains(check) && (parent == null || check != parent))
                 {
                     if (Collision(check))
@@ -92,7 +92,7 @@ namespace HelloGame.Hits
                 }
             }
             else if (hittables != null && hittables.Contains(check))
-            {   //otherwise, we're an enemy hitting another enemy. In which case, we only want to hit the enemy if it's in the hittables list.
+            {   //finally, we're an enemy hitting another enemy. In which case, we only want to hit the enemy if it's in the hittables list.
                 if (!hit.Contains(check) && (parent == null || check != parent))
                 {
                     if (Collision(check))

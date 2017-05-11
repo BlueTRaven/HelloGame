@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using HelloGame.Utility;
+using HelloGame.Entities;
 
 namespace HelloGame.Guis.Widgets
 {
@@ -24,16 +25,20 @@ namespace HelloGame.Guis.Widgets
             this.modeSelector = modeSelector;
             this.backgroundColor = Color.Black;
             //brush mode widgets
-            AddWindow("brush_textureselector", new WidgetWindowTextureSelector(new Vector2(0, -64)));
+            AddWindow("brush_textureselector", new WidgetWindowTextureSelector(new Vector2(0, 0)));
             GetWindow<WidgetWindowTextureSelector>("brush_textureselector").backgroundColor = Color.Black;
 
-            AddWidget("brush_mode", new WidgetTextBox(new Rectangle(112, 40, 48, 24), Main.assets.GetFont("bfMunro12"), "mode", 1, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("brush_type", new WidgetDropdown(new Rectangle(112, 40, 64, 24), Main.assets.GetFont("bfMunro12"), "type", Color.White, TextAlignment.Left, 4, Enum.GetNames(typeof(BrushDrawType))));
+            //AddWidget("brush_mode", new WidgetTextBox(new Rectangle(112, 40, 64, 24), Main.assets.GetFont("bfMunro12"), "mode", 1, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("brush_drawahead", new WidgetCheckbox(new Rectangle(112, 8, 24, 24), Color.White));
 
             //entity mode widgets
             AddWidget("entity_type", new WidgetTextBox(new Rectangle(8, 8, 56, 24), Main.assets.GetFont("bfMunro12"), "type", 4, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
             AddWidget("entity_info1", new WidgetTextBox(new Rectangle(8, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "info 1", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
             AddWidget("entity_info2", new WidgetTextBox(new Rectangle(72, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "info 2", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
             AddWidget("entity_spawnrandom", new WidgetCheckbox(new Rectangle(104, 8, 24, 24), Color.White));
+            AddWidget("entity_spawnrotation", new WidgetTextBox(new Rectangle(136, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "rotation", 3, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("entity_spawnstate", new WidgetDropdown(new Rectangle(8, 72, 56, 24), Main.assets.GetFont("bfMunro12"), "mode", Color.White, TextAlignment.Left, 5, Enum.GetNames(typeof(EnemyNoticeState))));
 
             //prop mode widgets
             AddWindow("prop_textureselector", new WidgetWindowTextureSelector(new Vector2(0, -64)));
@@ -98,11 +103,11 @@ namespace HelloGame.Guis.Widgets
         {
             if (mode == 0)
             {   //brush mode
-                return new string[] { "brush_mode" };
+                return new string[] { "brush_type", "brush_drawahead" };
             }
             if (mode == 2)
             {   //entity mode
-                return new string[] { "entity_type", "entity_info1", "entity_info2", "entity_spawnrandom" };
+                return new string[] { "entity_type", "entity_info1", "entity_info2", "entity_spawnrandom", "entity_spawnrotation", "entity_spawnstate" };
             }
             if (mode == 3)
             {   //prop mode
@@ -180,7 +185,7 @@ namespace HelloGame.Guis.Widgets
 
         public BrushDrawType GetBrushDrawType()
         {
-            int val = int.Parse(GetWidget<WidgetTextBox>("brush_mode").GetStringSafely());
+            int val = GetWidget<WidgetDropdown>("brush_type").GetIndex();
             return (BrushDrawType)val;
         }
     }

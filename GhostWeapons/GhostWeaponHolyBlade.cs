@@ -18,7 +18,7 @@ namespace HelloGame.GhostWeapons
 {
     public class GhostWeaponHolyBlade : GhostWeapon
     {
-        public GhostWeaponHolyBlade() : base(Main.assets.GetTexture("ghostHolyBlade"))
+        public GhostWeaponHolyBlade() : base(new TextureInfo(new TextureContainer("ghostHolyBlade"), Vector2.Zero, Color.White))
         {
             comboMax = 3;
             height = 16;

@@ -1,0 +1,11 @@
+syntax = "proto3";
+package HelloGame;
+
+message SerPlayer {
+	int32 health = 1;
+	int32 entrancePoint = 2;
+	
+	string mapName = 3;
+
+	repeated bool kills = 4;
+}

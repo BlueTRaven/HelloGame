@@ -15,6 +15,7 @@ namespace HelloGame.Guis.Widgets
         protected const int state_hovered = 1, state_clicked = 2, state_held = 3, state_released = 4, state_default = 0;
 
         public Vector2 createdPosition;
+        public Vector2 anchor;
         public Rectangle bounds;
 
         public int state { get; protected set; }
@@ -39,6 +40,11 @@ namespace HelloGame.Guis.Widgets
 
         public virtual void PreUpdate()
         {
+            if (anchor != null && anchor != Vector2.Zero)
+            {
+                bounds = new Rectangle((int)(createdPosition.X + anchor.X), (int)(createdPosition.Y + anchor.Y), bounds.Width, bounds.Height);
+            }
+
             if (active)
                 UpdateState();
         }

@@ -19,6 +19,15 @@ using Humper.Responses;
 
 namespace HelloGame.Entities
 {
+    public enum EnemyNoticeState
+    {
+        Alert,      //player must be in line of sight.
+        HighAlert,  //player can be anywhere in its aggro range.
+        Sleeping,   //will not aggro unless hit, in which case it transfers into alert state.
+        Aggrod,
+        Returning   //returning to its initial position, after the player has moved out of its chase radius.
+    }
+
     public abstract class Enemy : EntityLiving
     {
         protected List<Move> moveset;
@@ -32,7 +41,7 @@ namespace HelloGame.Entities
         public List<Hits.Hit> hits;
 
         protected float chaseSpeed, chaseMaxSpeed;
-        protected float chaseDistance;
+        protected float chaseRadius;
         protected float circleSpeed, circleMaxSpeed;
 
         private float healthMaxWidth;
@@ -51,18 +60,38 @@ namespace HelloGame.Entities
         protected bool attacking;
 
         protected Vector2 directionFacing;
-        public Enemy(IBox hitbox, int health) : base(hitbox)
+
+        public EnemyNoticeState initialNoticeState;
+        public EnemyNoticeState noticeState;
+        public float aggroRadius;
+        public float leashRadius;
+        public float facingRotation;
+        /// <summary>
+        /// Creates A new Enemy.
+        /// </summary>
+        /// <param name="hitbox">The hitbox of the enemy. Can be 0, 0 relative; is moved manually by EntitySpawner.</param>
+        /// <param name="health">The starting HP of the enemy.</param>
+        /// <param name="state">The starting Notice State of the enemy. When in doubt, use Alert.</param>
+        /// <param name="aggroRadius">How close the player has to be to the enemy to get noticed. Only applicable in HighAlert notice state.</param>
+        /// <param name="leashRadius">How far away from its spawn point an enemy will chase the player. Set to -1 for infinte chase range.</param>
+        public Enemy(IBox hitbox, int health, float facingRotation, EnemyNoticeState state, float aggroRadius, float leashRadius = -1, int type = 0) : base(hitbox)
         {
             moveset = new List<Move>();
             hits = new List<Hits.Hit>();
             moveQueue = new Queue<Move>();
-            AddMoveset();
+            AddMoveset(type);
 
             this.health = health;
             maxHealth = health;
 
             healthMaxWidth = 128;
             preHitHealth = maxHealth;
+
+            this.facingRotation = facingRotation;
+            this.initialNoticeState = state;
+            this.noticeState = state;
+            this.aggroRadius = aggroRadius;
+            this.leashRadius = leashRadius;
 
             weapons = new List<GhostWeapon>();
 
@@ -87,6 +116,8 @@ namespace HelloGame.Entities
 
         public override void Update(World world)
         {
+            UpdateGhostWeaponPositions();
+
             if (healthDelay > 0)
                 healthDelay--;
             if (preHitHealth > health && healthDelay == 0)
@@ -95,9 +126,52 @@ namespace HelloGame.Entities
             if (currentMove != null)
                 currentMove.Update(world);
 
-            if (currentMove == null || currentMove.done || currentMove.interruptable)
+            if (noticeState == EnemyNoticeState.Aggrod)
             {
-                SelectMove(world);
+                if (currentMove == null || currentMove.done || currentMove.interruptable)
+                {
+                    SelectMove(world);
+                }
+
+                float distFromInit = Math.Abs((initialPosition - position).Length());
+                if (leashRadius != -1 && distFromInit > leashRadius)
+                {
+                    noticeState = EnemyNoticeState.Returning;
+                }
+
+            }
+            else if (noticeState == EnemyNoticeState.Returning)
+            {
+                velocity += Vector2.Normalize(initialPosition - position) * 1.2f;
+
+                if (Math.Abs((initialPosition - position).Length()) < 8)
+                    noticeState = initialNoticeState;
+            }
+            else if (noticeState == EnemyNoticeState.Alert)
+            {   //spawn a hitarc with a radius of the aggroradius, dealing 0 damage with 0 knockback for only one frame.
+                HitArc a = (HitArc)world.AddHitbox(new HitArc(position, aggroRadius, -45, 45, 1, 0, 0, StaggerType.None, this));
+                a.min += facingRotation;
+                a.max += facingRotation;
+
+                if (a.Collided(target))
+                {
+                    noticeState = EnemyNoticeState.Aggrod;
+                    a.done = true;  //so we don't even have to update it. Literally only used for collision.
+                }
+            }
+            else if (noticeState == EnemyNoticeState.HighAlert)
+            {
+                if (Math.Abs((target.position - position).Length()) < aggroRadius)
+                {
+                    noticeState = EnemyNoticeState.Aggrod;
+                }
+            }
+            else if (noticeState == EnemyNoticeState.Sleeping)
+            {
+                if (health < maxHealth) //if any damage is sustained, swap to alert mode.
+                {
+                    noticeState = EnemyNoticeState.Alert;
+                }
             }
 
             for (int i = 0; i < weapons.Count; i++)
@@ -128,6 +202,7 @@ namespace HelloGame.Entities
             if (!invulnerable)
             {
                 velocity = direction / 2;
+                facingRotation = VectorHelper.GetVectorAngle(-direction);
                 this.staggerTime = GetStaggerTime(type);
 
                 preHitHealth = health;
@@ -140,6 +215,22 @@ namespace HelloGame.Entities
                 }
             }
             return false;
+        }
+
+        protected virtual void UpdateGhostWeaponPositions()
+        {
+            if (!attacking)
+            {
+                for (int i = 0; i < weapons.Count; i++)
+                {
+                    if (weapons[i] != null)
+                    {
+                        gwRestPos[i] = noticeState == EnemyNoticeState.Aggrod ? Vector2.Normalize(target.position - position) * 32 : VectorHelper.GetAngleNormVector(facingRotation) * 32;
+
+                        gwRestRot[i] = noticeState == EnemyNoticeState.Aggrod ? VectorHelper.GetAngleBetweenPoints(position, target.position) : facingRotation;
+                    }
+                }
+            }
         }
 
         public override void Draw(SpriteBatch batch)
@@ -178,21 +269,24 @@ namespace HelloGame.Entities
                 }
                 else
                 {
-                    int width = Main.WIDTH - 96;
-                    var pos = Camera.ToWorldCoords(new Vector2(48, Main.HEIGHT - 64));
+                    if (noticeState == EnemyNoticeState.Aggrod)
+                    {
+                        int width = Main.WIDTH - 96;
+                        var pos = Camera.ToWorldCoords(new Vector2(48, Main.HEIGHT - 64));
 
-                    batch.DrawRectangle(new Rectangle((int)pos.X, (int)pos.Y, width, 16), Color.Gray);
-                    batch.DrawRectangle(new Rectangle((int)pos.X, (int)pos.Y, (int)(percentpre * width), 16), Color.Orange);
-                    batch.DrawRectangle(new Rectangle((int)pos.X, (int)pos.Y, (int)(percent * width), 16), Color.Red);
+                        batch.DrawRectangle(new Rectangle((int)pos.X, (int)pos.Y, width, 16), Color.Gray);
+                        batch.DrawRectangle(new Rectangle((int)pos.X, (int)pos.Y, (int)(percentpre * width), 16), Color.Orange);
+                        batch.DrawRectangle(new Rectangle((int)pos.X, (int)pos.Y, (int)(percent * width), 16), Color.Red);
 
-                    batch.DrawRectangle(new Rectangle((int)(percent * width + pos.X), (int)pos.Y, 2, 16), Color.White, 1);
-                    batch.DrawRectangle(new Rectangle((int)(percentpre * width + pos.X), (int)pos.Y, 2, 16), Color.White, 1);
-                    batch.DrawHollowRectangle(new Rectangle((int)(pos.X), (int)pos.Y, (int)width, 16), 2, Color.DarkGray, 1);
+                        batch.DrawRectangle(new Rectangle((int)(percent * width + pos.X), (int)pos.Y, 2, 16), Color.White, 1);
+                        batch.DrawRectangle(new Rectangle((int)(percentpre * width + pos.X), (int)pos.Y, 2, 16), Color.White, 1);
+                        batch.DrawHollowRectangle(new Rectangle((int)(pos.X), (int)pos.Y, (int)width, 16), 2, Color.DarkGray, 1);
+                    }
                 }
             }
         }
 
-        protected virtual void AddMoveset()
+        protected virtual void AddMoveset(int type)
         {
             moveset.Add(new Move(this, new Func<World, Enemy, Move, bool>((world, enemy, move) =>
             {
@@ -207,7 +301,7 @@ namespace HelloGame.Entities
                 {
                     move.counter2--;
 
-                    if (distanceFromPlayer > chaseDistance)
+                    if (distanceFromPlayer > chaseRadius)
                     {
                         velocity += Vector2.Normalize(target.position - position) * chaseSpeed;
                         maxSpeed = chaseMaxSpeed;

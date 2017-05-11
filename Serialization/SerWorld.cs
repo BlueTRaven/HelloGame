@@ -28,26 +28,27 @@ namespace HelloGame {
             "CFNlckNvbG9yEgkKAVIYASABKA0SCQoBRxgCIAEoDRIJCgFCGAMgASgNEgkK",
             "AUEYBCABKA0iYwoKU2VyVGV4SW5mbxIMCgRuYW1lGAEgASgJEiQKBXNjYWxl",
             "GAIgASgLMhUuSGVsbG9HYW1lLlNlclZlY3RvcjISIQoEdGludBgDIAEoCzIT",
-            "LkhlbGxvR2FtZS5TZXJDb2xvciKGAQoQU2VyRW50aXR5U3Bhd25lchIpCghw",
+            "LkhlbGxvR2FtZS5TZXJDb2xvciK3AQoQU2VyRW50aXR5U3Bhd25lchIpCghw",
             "b3NpdGlvbhgBIAEoCzIXLkhlbGxvR2FtZS5TZXJSZWN0YW5nbGUSDAoEdHlw",
             "ZRgCIAEoBRIbChNzcGF3blJhbmRvbVBvc2l0aW9uGAMgASgIEg0KBWluZm8x",
-            "GAQgASgJEg0KBWluZm8yGAUgASgJIoQBCghTZXJCcnVzaBIQCghkcmF3VHlw",
-            "ZRgBIAEoBRInCgZib3VuZHMYAiABKAsyFy5IZWxsb0dhbWUuU2VyUmVjdGFu",
-            "Z2xlEioKC3RleHR1cmVJbmZvGAMgASgLMhUuSGVsbG9HYW1lLlNlclRleElu",
-            "Zm8SEQoJZHJhd0FoZWFkGAQgASgIIjIKB1NlcldhbGwSJwoGYm91bmRzGAEg",
-            "ASgLMhcuSGVsbG9HYW1lLlNlclJlY3RhbmdsZSJvCgdTZXJQcm9wEicKCHBv",
-            "c2l0aW9uGAEgASgLMhUuSGVsbG9HYW1lLlNlclZlY3RvcjISJgoHdGV4SW5m",
-            "bxgCIAEoCzIVLkhlbGxvR2FtZS5TZXJUZXhJbmZvEhMKC3NoYWRvd1NjYWxl",
-            "GAMgASgCInwKClNlclRyaWdnZXISJwoGYm91bmRzGAEgASgLMhcuSGVsbG9H",
-            "YW1lLlNlclJlY3RhbmdsZRIPCgdjb21tYW5kGAIgASgJEgwKBGluZm8YAyAB",
-            "KAkSEwoLcGVybVRyaWdnZXIYBCABKAgSEQoJdHJpZ2dlcmVkGAUgASgIIpcC",
-            "CghTZXJXb3JsZBIkCgdicnVzaGVzGAEgAygLMhMuSGVsbG9HYW1lLlNlckJy",
-            "dXNoEiEKBXdhbGxzGAIgAygLMhIuSGVsbG9HYW1lLlNlcldhbGwSIQoFcHJv",
-            "cHMYAyADKAsyEi5IZWxsb0dhbWUuU2VyUHJvcBIzCg5lbnRpdHlTcGF3bmVy",
-            "cxgEIAMoCzIbLkhlbGxvR2FtZS5TZXJFbnRpdHlTcGF3bmVyEicKCHRyaWdn",
-            "ZXJzGAUgAygLMhUuSGVsbG9HYW1lLlNlclRyaWdnZXISEwoLZGlzcGxheU5h",
-            "bWUYBiABKAkSLAoPYmFja2dyb3VuZENvbG9yGAcgASgLMhMuSGVsbG9HYW1l",
-            "LlNlckNvbG9yYgZwcm90bzM="));
+            "GAQgASgJEg0KBWluZm8yGAUgASgJEhUKDXN0YXJ0Um90YXRpb24YBiABKAIS",
+            "GAoQc3RhcnROb3RpY2VTdGF0ZRgHIAEoBSKEAQoIU2VyQnJ1c2gSEAoIZHJh",
+            "d1R5cGUYASABKAUSJwoGYm91bmRzGAIgASgLMhcuSGVsbG9HYW1lLlNlclJl",
+            "Y3RhbmdsZRIqCgt0ZXh0dXJlSW5mbxgDIAEoCzIVLkhlbGxvR2FtZS5TZXJU",
+            "ZXhJbmZvEhEKCWRyYXdBaGVhZBgEIAEoCCIyCgdTZXJXYWxsEicKBmJvdW5k",
+            "cxgBIAEoCzIXLkhlbGxvR2FtZS5TZXJSZWN0YW5nbGUibwoHU2VyUHJvcBIn",
+            "Cghwb3NpdGlvbhgBIAEoCzIVLkhlbGxvR2FtZS5TZXJWZWN0b3IyEiYKB3Rl",
+            "eEluZm8YAiABKAsyFS5IZWxsb0dhbWUuU2VyVGV4SW5mbxITCgtzaGFkb3dT",
+            "Y2FsZRgDIAEoAiJ8CgpTZXJUcmlnZ2VyEicKBmJvdW5kcxgBIAEoCzIXLkhl",
+            "bGxvR2FtZS5TZXJSZWN0YW5nbGUSDwoHY29tbWFuZBgCIAEoCRIMCgRpbmZv",
+            "GAMgASgJEhMKC3Blcm1UcmlnZ2VyGAQgASgIEhEKCXRyaWdnZXJlZBgFIAEo",
+            "CCKXAgoIU2VyV29ybGQSJAoHYnJ1c2hlcxgBIAMoCzITLkhlbGxvR2FtZS5T",
+            "ZXJCcnVzaBIhCgV3YWxscxgCIAMoCzISLkhlbGxvR2FtZS5TZXJXYWxsEiEK",
+            "BXByb3BzGAMgAygLMhIuSGVsbG9HYW1lLlNlclByb3ASMwoOZW50aXR5U3Bh",
+            "d25lcnMYBCADKAsyGy5IZWxsb0dhbWUuU2VyRW50aXR5U3Bhd25lchInCgh0",
+            "cmlnZ2VycxgFIAMoCzIVLkhlbGxvR2FtZS5TZXJUcmlnZ2VyEhMKC2Rpc3Bs",
+            "YXlOYW1lGAYgASgJEiwKD2JhY2tncm91bmRDb2xvchgHIAEoCzITLkhlbGxv",
+            "R2FtZS5TZXJDb2xvcmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -55,7 +56,7 @@ namespace HelloGame {
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerRectangle), global::HelloGame.SerRectangle.Parser, new[]{ "X", "Y", "Width", "Height" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerColor), global::HelloGame.SerColor.Parser, new[]{ "R", "G", "B", "A" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerTexInfo), global::HelloGame.SerTexInfo.Parser, new[]{ "Name", "Scale", "Tint" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerEntitySpawner), global::HelloGame.SerEntitySpawner.Parser, new[]{ "Position", "Type", "SpawnRandomPosition", "Info1", "Info2" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerEntitySpawner), global::HelloGame.SerEntitySpawner.Parser, new[]{ "Position", "Type", "SpawnRandomPosition", "Info1", "Info2", "StartRotation", "StartNoticeState" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerBrush), global::HelloGame.SerBrush.Parser, new[]{ "DrawType", "Bounds", "TextureInfo", "DrawAhead" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerWall), global::HelloGame.SerWall.Parser, new[]{ "Bounds" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerProp), global::HelloGame.SerProp.Parser, new[]{ "Position", "TexInfo", "ShadowScale" }, null, null, null),
@@ -828,6 +829,8 @@ namespace HelloGame {
       spawnRandomPosition_ = other.spawnRandomPosition_;
       info1_ = other.info1_;
       info2_ = other.info2_;
+      startRotation_ = other.startRotation_;
+      startNoticeState_ = other.startNoticeState_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -890,6 +893,28 @@ namespace HelloGame {
       }
     }
 
+    /// <summary>Field number for the "startRotation" field.</summary>
+    public const int StartRotationFieldNumber = 6;
+    private float startRotation_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float StartRotation {
+      get { return startRotation_; }
+      set {
+        startRotation_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "startNoticeState" field.</summary>
+    public const int StartNoticeStateFieldNumber = 7;
+    private int startNoticeState_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int StartNoticeState {
+      get { return startNoticeState_; }
+      set {
+        startNoticeState_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as SerEntitySpawner);
@@ -908,6 +933,8 @@ namespace HelloGame {
       if (SpawnRandomPosition != other.SpawnRandomPosition) return false;
       if (Info1 != other.Info1) return false;
       if (Info2 != other.Info2) return false;
+      if (StartRotation != other.StartRotation) return false;
+      if (StartNoticeState != other.StartNoticeState) return false;
       return true;
     }
 
@@ -919,6 +946,8 @@ namespace HelloGame {
       if (SpawnRandomPosition != false) hash ^= SpawnRandomPosition.GetHashCode();
       if (Info1.Length != 0) hash ^= Info1.GetHashCode();
       if (Info2.Length != 0) hash ^= Info2.GetHashCode();
+      if (StartRotation != 0F) hash ^= StartRotation.GetHashCode();
+      if (StartNoticeState != 0) hash ^= StartNoticeState.GetHashCode();
       return hash;
     }
 
@@ -949,6 +978,14 @@ namespace HelloGame {
         output.WriteRawTag(42);
         output.WriteString(Info2);
       }
+      if (StartRotation != 0F) {
+        output.WriteRawTag(53);
+        output.WriteFloat(StartRotation);
+      }
+      if (StartNoticeState != 0) {
+        output.WriteRawTag(56);
+        output.WriteInt32(StartNoticeState);
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -968,6 +1005,12 @@ namespace HelloGame {
       }
       if (Info2.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Info2);
+      }
+      if (StartRotation != 0F) {
+        size += 1 + 4;
+      }
+      if (StartNoticeState != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(StartNoticeState);
       }
       return size;
     }
@@ -994,6 +1037,12 @@ namespace HelloGame {
       }
       if (other.Info2.Length != 0) {
         Info2 = other.Info2;
+      }
+      if (other.StartRotation != 0F) {
+        StartRotation = other.StartRotation;
+      }
+      if (other.StartNoticeState != 0) {
+        StartNoticeState = other.StartNoticeState;
       }
     }
 
@@ -1026,6 +1075,14 @@ namespace HelloGame {
           }
           case 42: {
             Info2 = input.ReadString();
+            break;
+          }
+          case 53: {
+            StartRotation = input.ReadFloat();
+            break;
+          }
+          case 56: {
+            StartNoticeState = input.ReadInt32();
             break;
           }
         }
