@@ -29,6 +29,7 @@ namespace HelloGame.Guis
 
             stopsWorldDraw = true;
             stopsWorldUpdate = true;
+            stopsWorldCreation = true;
         }
     }
 }

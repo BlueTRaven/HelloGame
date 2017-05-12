@@ -57,6 +57,8 @@ namespace HelloGame.Entities
                     if (e is Player)
                     {
                         world.player = (Player)e;
+                        if (world.entities.Contains(world.player) && !world.damageTakers.Contains(world.player))
+                            world.damageTakers.Add(world.player);
                         world.player.SetPosition(bounds.Center.ToVector2());
                     }
 
@@ -126,6 +128,8 @@ namespace HelloGame.Entities
             Vector2 rotVec = VectorHelper.GetAngleNormVector(startRotation);
             batch.DrawLine(bounds.Center.ToVector2() + rotVec * 8, bounds.Center.ToVector2() + rotVec * 16, Color.Red, 2);
             batch.DrawString(Main.assets.GetFont("bfMunro12"), type.ToString(), bounds.Location.ToVector2(), Color.White);
+            batch.DrawString(Main.assets.GetFont("bfMunro12"), info1, bounds.Location.ToVector2() + new Vector2(0, 16), Color.White);
+            batch.DrawString(Main.assets.GetFont("bfMunro12"), info2, bounds.Location.ToVector2() + new Vector2(0, 32), Color.White);
         }
 
         public void DrawSelect_DEBUG(SpriteBatch batch)

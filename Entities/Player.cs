@@ -41,8 +41,9 @@ namespace HelloGame.Entities
 
         public int entrancePoint;
 
-        public string saveName { get; private set; }
+        public string saveName { get; set; }
 
+        public int healing;
         public Player() : base()
         {
             texInfo = new TextureInfo(new TextureContainer("animationtest"), new Vector2(6), Color.White).SetAnimated(8, 8,
@@ -118,7 +119,20 @@ namespace HelloGame.Entities
             if (world.collisionWorld != null && collideBox == null)
             {
                 collideBox = world.collisionWorld.Create(0, 0, 32, 32);
+            }
 
+            if (healing > 0)
+            {
+                healing--;
+                if (health <= maxHealth)
+                    health++;
+                else
+                {
+                    health = maxHealth;
+                    healing = 0;
+                }
+
+                ((GuiHud)Main.guis["hud"]).SetHealth(health, maxHealth, maxHealth * 2, health);
             }
 
             ResetStats();
@@ -290,8 +304,15 @@ namespace HelloGame.Entities
             }
         }
 
+        public override void Die(World world)
+        {
+            base.Die(world);
+
+            Load(world, this, saveName, maxHealth);
+        }
         public SerPlayer Save(int entranceIndex, string mapname, string saveName)
         {
+            string fSavename;
             SerPlayer p = new SerPlayer()
             {
                 EntrancePoint = entranceIndex,
@@ -299,7 +320,11 @@ namespace HelloGame.Entities
                 MapName = mapname
             };
 
-            using (var output = File.Create("Saves/" + saveName + ".hgsf"))
+            if (saveName.EndsWith(".hgsf"))
+                fSavename = saveName.Split('.')[0];
+            else fSavename = saveName;
+
+            using (var output = File.Create("Saves/" + fSavename + ".hgsf"))
             {
                 p.WriteTo(output);
             }
@@ -313,7 +338,7 @@ namespace HelloGame.Entities
         /// </summary>
         /// <param name="player">Player who's properties and fields will be modified.</param>
         /// <param name="saveName">The save name of the file to load, to modify the player's properties and fields.</param>
-        public static void Load(World world, Player player, string saveName)
+        public static void Load(World world, Player player, string saveName, int overrideHp = -1)
         {
             SerPlayer p = null;
             try
@@ -330,9 +355,13 @@ namespace HelloGame.Entities
             }
 
             player.entrancePoint = p.EntrancePoint;
-            player.health = p.Health;
+            player.health = overrideHp == -1 ? p.Health : overrideHp;
+            ((GuiHud)Main.guis["hud"]).SetHealth(player.health, player.maxHealth, player.maxHealth * 2, player.health);
+            player.velocity = Vector2.Zero;
+            player.dead = false;
             world.Load(p.MapName);
-            player.collideBox = world.collisionWorld.Create(0, 0, 32, 32);
+            player.collideBox = world.collisionWorld.Create(0, 0, 32, 32); //we have to recreate the IBox because I'm dumb apparently
+
             for (int i = 0; i < world.spawners.Length; i++)
             {
                 if (world.spawners[i] != null)
@@ -346,6 +375,7 @@ namespace HelloGame.Entities
                             world.spawners[i].attachedEntities.Add(player); //manually add the already created player.
                             world.spawners[i].hasAttachedEntities = true;   //have to do this to prevent it from overwriting the attachedEntities List
                             world.spawners[i].SpawnEntity(world);
+                            break;
                         }
                     }
                 }
@@ -361,8 +391,9 @@ namespace HelloGame.Entities
         /// <param name="forceLoadMapName">DEPRECATED</param>
         public static void Load(World world, SerPlayer player, string forceLoadMapName = "-1")
         {
+            var temp = world.player.saveName;
             world.Load(forceLoadMapName == "-1" ? player.MapName : forceLoadMapName);
-            world.player.collideBox = world.collisionWorld.Create(0, 0, 32, 32);
+            world.player.collideBox = world.collisionWorld.Create(0, 0, 32, 32);    //we have to recreate the IBox because I'm dumb apparently
 
             for (int i = 0; i < world.spawners.Length; i++)
             {
@@ -378,10 +409,13 @@ namespace HelloGame.Entities
                             world.spawners[i].hasAttachedEntities = true;   //have to do this to prevent it from overwriting the attachedEntities List
                             world.spawners[i].SpawnEntity(world);
                             world.player.health = player.Health;
+                            break;
                         }
                     }
                 }
             }
+
+            world.player.saveName = temp;
         }
     }
 }

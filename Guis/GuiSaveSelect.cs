@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Input;
 
 using HelloGame.Guis.Widgets;
 using HelloGame.Entities;
+using HelloGame.Utility;
 
 namespace HelloGame.Guis
 {
@@ -47,13 +48,14 @@ namespace HelloGame.Guis
 
             stopsWorldDraw = true;
             stopsWorldUpdate = true;
+            stopsWorldCreation = true;
         }
 
         public override void Update()
         {
             base.Update();
 
-            if (!haschecked)
+//            if (!haschecked)
             {
                 if (!Directory.Exists("Saves"))
                     Directory.CreateDirectory("Saves");
@@ -75,10 +77,10 @@ namespace HelloGame.Guis
 
             if (GetWidget<WidgetTextBox>("savename") != null)
             {
-                if (Main.keyboard.KeyPressed(Keys.Escape))
+                if (Main.keyboard.KeyPressed(Keys.Escape, true))
                 {
                     creating = false;
-                    widgets["savename"] = null;
+                    widgets.Remove("savename");
 
                     for (int i = 0; i < 8; i++)
                         slots[i].active = true;

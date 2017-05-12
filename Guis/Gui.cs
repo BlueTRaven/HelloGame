@@ -22,7 +22,7 @@ namespace HelloGame.Guis
 
         public Color backgroundColor;
 
-        public bool stopsWorldDraw, stopsWorldUpdate;
+        public bool stopsWorldDraw, stopsWorldUpdate, stopsWorldCreation;
 
         public Gui(string key)
         {
@@ -70,7 +70,8 @@ namespace HelloGame.Guis
 
             foreach (Widget widget in widgets.Values)
             {
-                    widget.PostUpdate();
+                if (widget != null)
+                widget.PostUpdate();
             }
         }
 
@@ -85,6 +86,7 @@ namespace HelloGame.Guis
 
             foreach (Widget widget in widgets.Values)
             {
+                if (widget != null)
                     widget.Draw(batch);
             }
         }

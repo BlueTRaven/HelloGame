@@ -142,11 +142,12 @@ namespace HelloGame
                 keyboard.Update();
                 mouse.Update();
                 activeGui.Update();
-                if (!activeGui.stopsWorldUpdate)
+                if (!activeGui.stopsWorldCreation)
                 {
                     if (world == null)
                         world = new World(((GuiSaveSelect)guis["saveselect"]).saveFileName);
-                    world.Update();
+                    else
+                        world.Update();
                 }
                 camera.Update();
 

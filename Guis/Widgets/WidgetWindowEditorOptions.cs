@@ -47,8 +47,8 @@ namespace HelloGame.Guis.Widgets
 
             //trigger mode widgets
             AddWidget("trigger_command", new WidgetTextBox(new Rectangle(8, 8, 56, 24), Main.assets.GetFont("bfMunro12"), "command", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("trigger_info", new WidgetTextBox(new Rectangle(8, 32, 56, 24), Main.assets.GetFont("bfMunro12"), "info", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("trigger_perm", new WidgetCheckbox(new Rectangle(96, 8, 16, 16), Color.White));
+            AddWidget("trigger_info1", new WidgetTextBox(new Rectangle(8, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "info1", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("trigger_info2", new WidgetTextBox(new Rectangle(8, 72, 56, 24), Main.assets.GetFont("bfMunro12"), "info2", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
         }
 
         public override void Update()
@@ -115,7 +115,7 @@ namespace HelloGame.Guis.Widgets
             }
             if (mode == 4)
             {   //trigger mode
-                return new string[] { "trigger_command", "trigger_info", "trigger_perm" };
+                return new string[] { "trigger_command", "trigger_info1", "trigger_info2" };
             }
 
             return new string[] { };

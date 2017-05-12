@@ -54,10 +54,9 @@ namespace HelloGame
         {
             if (bounds.Contains(world.player.hitbox) || bounds.Intersects(world.player.hitbox) || world.player.hitbox.Contains(bounds) || (contTrigger && triggered))
             {
-                triggered = true;
-                if (!triggered && !constant) return true;
+                if (!triggered && !constant) { triggered = true; return true; }
                 else if (triggered && !constant) return false;
-                else if (constant) { triggerTime++; return true; }
+                else if (constant) { triggerTime++; triggered = true; return true; }
             }
             return false;
         }
@@ -82,11 +81,22 @@ namespace HelloGame
 
             commands.Add("save", new Action<World, Trigger>((world, trigger) => 
             {
-                int parse = 0;
+                trigger.constant = true;
+                if (trigger.PlayerEntered(world))
+                {
+                    if (Main.keyboard.KeyPressed(Main.options.interactKeybind))
+                    {
+                        int parse = 0;
 
-                int.TryParse(trigger.info1, out parse);
+                        int.TryParse(trigger.info1, out parse);
 
-                world.player.Save(parse, world.name, world.player.saveName);
+                        world.player.Save(parse, world.name, world.player.saveName);
+                        world.player.healing = world.player.maxHealth;
+                    }
+
+                    ((GuiHud)Main.guis["hud"]).showButtonPrompt = true;
+                    ((GuiHud)Main.guis["hud"]).buttonPromptAction = "Save";
+                }
             }));
 
             commands.Add("loadmap", new Action<World, Trigger>((world, trigger) => 
@@ -99,6 +109,7 @@ namespace HelloGame
                     int.TryParse(trigger.info1, out parse);
                     SerPlayer p = world.player.Save(parse, trigger.info2, world.player.saveName);
                     Player.Load(world, p);
+                    world.player.healing = world.player.maxHealth;
                 }
             }));
 
@@ -125,6 +136,8 @@ namespace HelloGame
 
             batch.DrawString(Main.assets.GetFont("bfMunro12"), commandName, bounds.Location.ToVector2(), Color.White);
             batch.DrawString(Main.assets.GetFont("bfMunro12"), info1, bounds.Location.ToVector2() + new Vector2(0, 16), Color.White);
+            batch.DrawString(Main.assets.GetFont("bfMunro12"), info2, bounds.Location.ToVector2() + new Vector2(0, 32), Color.White);
+            batch.DrawString(Main.assets.GetFont("bfMunro12"), triggered ? "triggered" : "", bounds.Location.ToVector2() + new Vector2(0, 48), Color.White);
         }
 
         #region Selectable

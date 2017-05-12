@@ -44,9 +44,9 @@ namespace HelloGame.Guis.Widgets
             AddWidget("prop_shadowscale", new WidgetTextBox(new Rectangle(80, 34, 40, 18), Main.assets.GetFont("bfMunro12"), "scale", 4, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
             //trigger
             AddWindow("trigger_bounds", new WidgetWindowRectangle(Vector2.Zero));
-            AddWidget("trigger_command", new WidgetTextBox(new Rectangle(8, 32, 56, 24), Main.assets.GetFont("bfMunro12"), "command", 4, TextAlignment.Left, TextBoxFilter.Alphabetical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("trigger_info1", new WidgetTextBox(new Rectangle(8, 64, 56, 24), Main.assets.GetFont("bfMunro12"), "info1", 4, TextAlignment.Left, TextBoxFilter.Alphabetical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("trigger_info2", new WidgetTextBox(new Rectangle(8, 96, 56, 24), Main.assets.GetFont("bfMunro12"), "info2", 4, TextAlignment.Left, TextBoxFilter.Alphabetical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("trigger_command", new WidgetTextBox(new Rectangle(8, 32, 56, 24), Main.assets.GetFont("bfMunro12"), "command", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("trigger_info1", new WidgetTextBox(new Rectangle(8, 64, 56, 24), Main.assets.GetFont("bfMunro12"), "info1", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("trigger_info2", new WidgetTextBox(new Rectangle(8, 96, 56, 24), Main.assets.GetFont("bfMunro12"), "info2", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
             AddWidget("trigger_perm", new WidgetCheckbox(new Rectangle(104, 32, 24, 24), Color.White));
         }
 

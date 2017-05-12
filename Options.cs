@@ -9,6 +9,7 @@ namespace HelloGame
 {
     public class Options
     {
-        public Keys leftKeybind = Keys.A, upKeybind = Keys.W, rightKeybind = Keys.D, downKeybind = Keys.S;
+        public Keys leftKeybind = Keys.A, upKeybind = Keys.W, rightKeybind = Keys.D, downKeybind = Keys.S, 
+            interactKeybind = Keys.E, sprintKeybind = Keys.Space;
     }
 }

@@ -24,6 +24,7 @@ namespace HelloGame
 {
     public class World
     {
+        private const string default_map_name = "citadel1_1";
         public string name { get; private set; }
         public string displayName;
         public Color backgroundColor;
@@ -75,12 +76,12 @@ namespace HelloGame
             player = new Player(collisionWorld.Create(0, 0, 32, 32));
 
             if (File.Exists("Saves/" + playerSaveName + ".hgsf"))
-            {
+            {   //if the save file exists, we load it.
                 Player.Load(this, player, playerSaveName + ".hgsf");
             }
             else
-            {
-                Load("citadel1_1"); //We load here because player.Save requires us to know the save name, and there is no default.
+            {   //otherwise it's a new save file, or a deleted one.
+                Load(default_map_name); //We load here because player.Save requires us to know the save name, and there is no default.
                 Player.Load(this, player.Save(0, name, playerSaveName));    //lol
             }
 
@@ -142,7 +143,7 @@ namespace HelloGame
                         {
                             if (hit.Collided(taker))
                             {
-                                if (taker.TakeDamage(this, hit.damage, hit.type, hit.GetHitDirection(taker)))
+                                if (taker.TakeDamage(this, hit.damage, hit.type, hit.GetHitDirection(taker)) && !(taker is Player))
                                     damageTakers.Remove(taker);
                             }
                         }
@@ -272,7 +273,6 @@ namespace HelloGame
                                     string command = wweo.GetWidget<WidgetTextBox>("trigger_command").GetStringSafely();
                                     string info1 = wweo.GetWidget<WidgetTextBox>("trigger_info1").GetStringSafely();
                                     string info2 = wweo.GetWidget<WidgetTextBox>("trigger_info2").GetStringSafely();
-                                    bool perm = wweo.GetWidget<WidgetCheckbox>("trigger_perm").isChecked;
                                     Rectangle rect = new Rectangle(editorPoints[0].ToPoint(), (editorPoints[1] - editorPoints[0]).ToPoint());
                                     AddTrigger(new Trigger(rect, command, info1, info2));
                                 }

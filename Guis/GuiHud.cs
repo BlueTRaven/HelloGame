@@ -27,6 +27,9 @@ namespace HelloGame.Guis
         private float preHitStamina;
         private int staminaDelay;
 
+        public bool showButtonPrompt;
+        public string buttonPromptAction = "<Action>";
+
         public GuiHud() : base("hud")
         {
             AddWidget("openeditor_dummy", new WidgetButton(new Rectangle(0, 0, 0, 0)))
@@ -36,6 +39,8 @@ namespace HelloGame.Guis
 
         public override void Update()
         {
+            showButtonPrompt = false;
+            buttonPromptAction = "<Action>";
             base.Update();
 
             if (healthDelay > 0)
@@ -72,6 +77,12 @@ namespace HelloGame.Guis
             batch.DrawRectangle(new Rectangle((int)(percent * staminaMaxWidth) + 8, 48, 2, 32), Color.White);
             batch.DrawRectangle(new Rectangle((int)(percentpre * staminaMaxWidth) + 8, 48, 2, 32), Color.White);
             batch.DrawHollowRectangle(new Rectangle(8, 48, (int)staminaMaxWidth, 32), 2, Color.DarkGray);
+
+            if (showButtonPrompt)
+            {
+                batch.DrawRectangle(new Rectangle(Main.WIDTH / 2 - 128, Main.HEIGHT - 128, 256, 16), Color.Black);
+                batch.DrawString(Main.assets.GetFont("bfMunro12"), "Press " + Main.options.interactKeybind.ToString() + " to " + buttonPromptAction, new Vector2(Main.WIDTH / 2 - 128, Main.HEIGHT - 128) + TextHelper.GetAlignmentOffset(Main.assets.GetFont("bfMunro12"), "Press " + Main.options.interactKeybind.ToString() + " to " + buttonPromptAction, new Rectangle(Main.WIDTH / 2 - 128, Main.HEIGHT - 128, 256, 16), TextAlignment.Center), Color.White);
+            }
         }
 
         public void SetHealth(float current, float max, float maxWidth, float preHit)
