@@ -45,7 +45,7 @@ namespace HelloGame
         {
             if (drawType == BrushDrawType.Tile)
             {
-                batch.Draw(texInfo.texture.texture, bounds.Location.ToVector2(), new Rectangle(Point.Zero, (bounds.Size.ToVector2() / texInfo.scale).ToPoint()), texInfo.tint, 0, Vector2.Zero, texInfo.scale, SpriteEffects.None, drawAhead ? 1 : 0);
+                batch.Draw(texInfo.texture.texture, bounds.Location.ToVector2(), new Rectangle(Point.Zero, (bounds.Size.ToVector2() / texInfo.scale).ToPoint()), texInfo.tint, 0, Vector2.Zero, texInfo.scale, SpriteEffects.None, drawAhead ? 1 : 0.01f);
             }
             else if (drawType == BrushDrawType.Stretch)
             {   //scale is pointless on stretch mode.
@@ -81,7 +81,7 @@ namespace HelloGame
                 Bounds = bounds.Save(),
                 DrawAhead = drawAhead,
                 DrawType = (int)drawType,
-                TextureInfo = texInfo.Save()
+                TextureInfo = texInfo.Save(),
             };
         }
 

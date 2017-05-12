@@ -72,7 +72,7 @@ namespace HelloGame
 
             collisionWorld = new Humper.World(8192, 8192);
 
-            Load("citadel1");
+            Load("citadel1_1");
 
             editorPoints = new List<Vector2>(2);
 
@@ -172,6 +172,9 @@ namespace HelloGame
 
         public void Update_DEBUG()
         {
+            if (Main.keyboard.KeyPressed(Keys.H))
+                Load(name);
+
             if (Main.DEBUG)
             {
                 GuiEditor editor = (GuiEditor)Main.guis["editor"];
@@ -596,9 +599,9 @@ namespace HelloGame
                 {
                     if (trigger.triggerTime >= 60)
                     {
-                        if (trigger.triggerTime == 60 || trigger.triggerTime == 120)
+                        if (trigger.triggerTime == 60 || trigger.triggerTime == 100 || trigger.triggerTime == 140)
                         {
-                            AddHitbox(new HitBox(new Rectangle(trigger.bounds.X, trigger.bounds.Y + trigger.bounds.Height, trigger.bounds.Width, trigger.bounds.Height), 60, 30, 20, StaggerType.KnockdownGetup, null));
+                            AddHitbox(new HitBox(new Rectangle(trigger.bounds.X, trigger.bounds.Y + trigger.bounds.Height, trigger.bounds.Width, trigger.bounds.Height), 40, 8, 20, StaggerType.KnockdownGetup, null));
                         }
                         if (trigger.triggerTime < 180)
                         {

@@ -22,10 +22,10 @@ namespace HelloGame.Guis.Widgets
         {
             //brush
             AddWindow("brush_bounds", new WidgetWindowRectangle(Vector2.Zero));
-            AddWindow("brush_texture", new WidgetWindowTextureSelector(new Vector2(0, 26)));
+            AddWindow("brush_texture", new WidgetWindowTextureSelector(new Vector2(0, 128)));
             //AddWidget("brush_type", new WidgetTextBox(new Rectangle(128, 34, 56, 24), Main.assets.GetFont("bfMunro12"), "type", 4, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("brush_type", new WidgetDropdown(new Rectangle(128, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "type", Color.White, TextAlignment.Left, 4, Enum.GetNames(typeof(BrushDrawType))));
-            AddWidget("brush_drawahead", new WidgetCheckbox(new Rectangle(128, 64, 24, 24), Color.White));
+            AddWidget("brush_type", new WidgetDropdown(new Rectangle(128, 72, 56, 24), Main.assets.GetFont("bfMunro12"), "type", Color.White, TextAlignment.Left, 4, Enum.GetNames(typeof(BrushDrawType))));
+            AddWidget("brush_drawahead", new WidgetCheckbox(new Rectangle(128, 40, 24, 24), Color.White));
 
             //wall
             AddWindow("wall_bounds", new WidgetWindowRectangle(Vector2.Zero));

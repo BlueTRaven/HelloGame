@@ -45,8 +45,8 @@ namespace HelloGame.Entities
                 new Animation(24, 8, 8, 3, true, new int[] { 15, 15, 15 }), //walk right
                 new Animation(32, 8, 8, 3, true, new int[] { 15, 15, 15 }));//walk up
 
-            health = 100;
-            maxHealth = 100;
+            health = 25;
+            maxHealth = 25;
 
             stamina = 100;
             staminaMax = 100;

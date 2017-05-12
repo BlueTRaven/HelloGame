@@ -189,10 +189,10 @@ namespace HelloGame.Entities
             }
         }
 
-        public virtual void AttackWithWeapon(World world, int weaponIndex, int force, float rotation)
+        public virtual void AttackWithWeapon(World world, int weaponIndex, int force, float rotation, int delay = -1)
         {
             weapons[weaponIndex].Attack(this, force);
-            Hits.Hit h = weapons[weaponIndex].ModifyHitForEntity(rotation);
+            Hits.Hit h = weapons[weaponIndex].ModifyHitForEntity(rotation, delay);
             hits.Add(h);
             world.AddHitbox(h);
         }
@@ -369,7 +369,7 @@ namespace HelloGame.Entities
         }
 
         #region move presets
-        protected Move MoveSingleSlashPokeOrSlam(int weaponIndex, int weaponMoveIndex, int postDelay, float weightDistance, int weight, 
+        protected Move MoveSingleSlashPokeOrSlam(int weaponIndex, int weaponMoveIndex, int preDelay, int postDelay, float weightDistance, int weight, 
             int velocityDecaysTime = 0, float lungeScale = 0)
         {
             return new Move(this, new Func<World, Enemy, Move, bool>((world, enemy, move) =>
@@ -383,14 +383,19 @@ namespace HelloGame.Entities
                     if (move.counter1 == 0)
                     {
                         move.counter1 = 1;
-                        float angle = VectorHelper.GetAngleBetweenPoints(position, target.position);
-                        AttackWithWeapon(world, weaponIndex, weaponMoveIndex, angle);
-                        move.counter2 = weapons[0].attack.runTime + postDelay;
-
-                        velocity = VectorHelper.GetAngleNormVector(angle) * lungeScale;
-                        velocityDecaysTimer = velocityDecaysTime;
+                        move.counter2 = preDelay;
+                        move.counter3 = VectorHelper.GetAngleBetweenPoints(position, target.position);
+                        AttackWithWeapon(world, weaponIndex, weaponMoveIndex, move.counter3, preDelay);
                     }
                     else if (move.counter1 == 1)
+                    {
+                        move.counter1 = 2;
+                        move.counter2 = postDelay;
+
+                        velocity = VectorHelper.GetAngleNormVector(move.counter3) * lungeScale;
+                        velocityDecaysTimer = velocityDecaysTime;
+                    }
+                    else if (move.counter1 == 2)
                     {
                         return true;
                     }
@@ -417,8 +422,8 @@ namespace HelloGame.Entities
                     {
                         move.counter1 = 1;
                         move.counter3 = VectorHelper.GetAngleBetweenPoints(position, target.position);
-                        AttackWithWeapon(world, 0, 2, move.counter3);
-                        move.counter2 = weapons[0].attack.runTime - jumpbackDelay;
+                        move.counter2 = jumpbackDelay;
+                        AttackWithWeapon(world, 0, 2, move.counter3, jumpbackDelay);
                     }
                     else if (move.counter1 == 1)
                     {
@@ -426,6 +431,7 @@ namespace HelloGame.Entities
                         move.counter2 = postJumpDelay;
                         velocity = VectorHelper.GetAngleNormVector(move.counter3) * -jumpbackScale;
                         velocityDecaysTimer = velocityDecaysTime;
+                        zVel = 20;
                     }
                     else if (move.counter1 == 2)
                     {
@@ -454,20 +460,24 @@ namespace HelloGame.Entities
                         move.counter1 = 1;
                         move.counter2 = preDelay;
                         move.counter3 = VectorHelper.GetAngleBetweenPoints(position, target.position);
+
+                        AttackWithWeapon(world, weaponIndex, weaponMoveIndexBack, move.counter3, (int)move.counter2);
                     }
                     else if (move.counter1 == 1)
                     {   //attack one, no delay
                         move.counter1 = 2;
-                        AttackWithWeapon(world, weaponIndex, weaponMoveIndexBack, move.counter3);
-                        move.counter2 = weapons[0].attack.runTime + forthDelay;
+                        move.counter2 = forthDelay;
+
                         velocityDecaysTimer = velocityDecaysTime;
                         velocity = VectorHelper.GetAngleNormVector(move.counter3) * lungeScale;
+
+                        AttackWithWeapon(world, weaponIndex, weaponMoveIndexForth, move.counter3, (int)move.counter2);
                     }
                     else if (move.counter1 == 2)
                     {   //attack two, no delay
                         move.counter1 = 3;
                         move.counter2 = weapons[0].attack.runTime + postDelay;
-                        AttackWithWeapon(world, weaponIndex, weaponMoveIndexForth, move.counter3);
+
                         velocityDecaysTimer = velocityDecaysTime;
                         velocity = VectorHelper.GetAngleNormVector(move.counter3) * lungeScale;
                     }

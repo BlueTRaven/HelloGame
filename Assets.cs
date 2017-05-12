@@ -70,6 +70,8 @@ namespace HelloGame
             //brush
             textures.Add("grass", content.Load<Texture2D>("Textures/Brush/Grass"));
             textures.Add("brick1", content.Load<Texture2D>("Textures/Brush/Brick1"));
+            textures.Add("brickSide", content.Load<Texture2D>("Textures/Brush/BrickSide"));
+            textures.Add("brickTop", content.Load<Texture2D>("Textures/Brush/BrickTop"));
             textures.Add("chip_overlay1", content.Load<Texture2D>("Textures/Brush/Chip_overlay1"));
             textures.Add("vine_overlay1", content.Load<Texture2D>("Textures/Brush/Vine_overlay1"));
 

@@ -156,7 +156,7 @@ namespace HelloGame.Entities
             if (texInfo != null && draw)
             {
                 if (shadowScale > 0)
-                    batch.Draw(Main.assets.GetTexture("shadow"), position, null, new Color(0, 0, 0, 63), 0, new Vector2(32, 16), shadowScale, SpriteEffects.None, Main.GetDepth(position));
+                    batch.Draw(Main.assets.GetTexture("shadow"), position, null, new Color(0, 0, 0, 63), 0, new Vector2(32, 16), shadowScale, SpriteEffects.None, Main.GetDepth(new Vector2(position.X, position.Y - 1)));
                 batch.Draw(texInfo.texture.texture, position + Main.camera.up * height, texInfo.sourceRect, Color.White, 0, texInfo.sourceRect.HasValue ? new Vector2(texInfo.sourceRect.Value.Width / 2, texInfo.sourceRect.Value.Height) : new Vector2(texInfo.texture.texture.Width / 2, texInfo.texture.texture.Height), texInfo.scale, SpriteEffects.None, Main.GetDepth(position));
             }
 

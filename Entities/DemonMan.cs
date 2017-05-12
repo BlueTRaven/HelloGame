@@ -18,7 +18,7 @@ namespace HelloGame.Entities
 {
     public class DemonMan : Enemy
     {
-        public DemonMan(World world) : base(world.collisionWorld.Create(0, 0, 32, 32), 25, -90, EnemyNoticeState.HighAlert, 256)
+        public DemonMan(World world) : base(world.collisionWorld.Create(0, 0, 32, 32), 250, -90, EnemyNoticeState.HighAlert, 256)
         {
             texInfo = new TextureInfo(new TextureContainer("entity"), new Vector2(2), Color.White);
             chaseRadius = 128;
@@ -98,9 +98,7 @@ namespace HelloGame.Entities
                 if (distanceFromPlayer > 256)
                     val = 5;
                 if (distanceFromPlayer > 512)
-                    val = 10;
-                if (distanceFromPlayer <= 256)
-                    val = 1;
+                    val = 10;;
                 return val;
             })));
 
@@ -119,26 +117,26 @@ namespace HelloGame.Entities
                         move.counter1 = 1;
                         move.counter2 = 30;
                         move.counter3 = VectorHelper.GetAngleBetweenPoints(position, target.position);
+                        AttackWithWeapon(world, 0, 4, move.counter3, 30);
                     }
                     else if (move.counter1 == 1)
                     {   //spin & delay
                         move.counter1 = 2;
                         move.counter2 = 20;
-                        AttackWithWeapon(world, 0, 4, move.counter3);
                         velocityDecaysTimer = 15;
                         velocity = VectorHelper.GetAngleNormVector(move.counter3) * 8;
                     }
                     else if (move.counter1 == 2)
                     {   //post spin delay
                         move.counter1 = 3;
-                        move.counter2 = 45;
+                        move.counter2 = 15;
                     }
                     else if (move.counter1 == 3)
                     {   //slam & delay
                         move.counter1 = 4;
-                        move.counter2 = 60;
+                        move.counter2 = 120;
                         move.counter3 = VectorHelper.GetAngleBetweenPoints(position, target.position);
-                        AttackWithWeapon(world, 0, 2, move.counter3);
+                        AttackWithWeapon(world, 0, 2, move.counter3, 30);
                     }
                     else if (move.counter1 == 4)
                     {   //return
@@ -149,17 +147,17 @@ namespace HelloGame.Entities
                 return false;
             }), new Func<World, Enemy, Move, int>((world, enemy, move) =>
             {
-                return distanceFromPlayer > 128 && distanceFromPlayer <= 298 ? 2 : 0;
+                return distanceFromPlayer > 128 && distanceFromPlayer <= 320 ? 20 : 0;
             })));
 
             //Poke
-            moveset.Add(MoveSingleSlashPokeOrSlam(0, 3, 45, 256, 2));
+            moveset.Add(MoveSingleSlashPokeOrSlam(0, 3, 30, 90, 256, 2));
 
             //Slam Jumpback
-            moveset.Add(MoveSlamJumpback(0, 2, -15, 8, 60, 20, 256, 1));
+            moveset.Add(MoveSlamJumpback(0, 2, 45, 8, 90, 20, 256, 1));
 
             //Back and Forth Slash
-            moveset.Add(MoveDoubleSlash(0, 0, 1, 5, 2, 5, 0, 60, 256, 2));
+            moveset.Add(MoveDoubleSlash(0, 0, 1, 30, 2, 5, 12, 90, 256, 2));
 
             //Phase Transition
             moveset.Add(new Move(this, new Func<World, Enemy, Move, bool>((world, enemy, move) =>

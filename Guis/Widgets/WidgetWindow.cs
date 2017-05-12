@@ -56,7 +56,7 @@ namespace HelloGame.Guis.Widgets
                 foreach (Widget widget in widgets.Values)
                 {
                     if (anchor != null && anchor != Vector2.Zero)
-                        widget.anchor = anchor;
+                        widget.anchor = bounds.Location.ToVector2();
                     else
                         widget.anchor = bounds.Location.ToVector2();
 

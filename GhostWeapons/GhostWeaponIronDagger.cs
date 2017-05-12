@@ -36,11 +36,11 @@ namespace HelloGame.GhostWeapons
         {
             if (combo == 0)
             {
-                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 72, -45, 45, 6, 8, 5, Entities.StaggerType.Short, parent).SetAnimated(8, true).Delay(5), 6, 30, AnimationSwing);
+                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 72, -45, 45, 6, 8, 5, Entities.StaggerType.Short, parent).SetAnimated(8, true).Delay(5), 30, 30, AnimationSwing);
             }
             else if (combo == 1)
             {
-                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 72, -45, 45, 6, 8, 5, Entities.StaggerType.Short, parent).SetAnimated(8, false).Delay(5), 6, 30, AnimationSwing);
+                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 72, -45, 45, 6, 8, 5, Entities.StaggerType.Short, parent).SetAnimated(8, false).Delay(5), 30, 30, AnimationSwing);
             }
             else if (combo == 2)    //poke
             {   //non player accessable

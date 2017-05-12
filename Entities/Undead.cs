@@ -21,7 +21,7 @@ namespace HelloGame.Entities
     {
         int type;
 
-        public Undead(World world, EnemyNoticeState state, float facingRotation, int type) : base(world.collisionWorld.Create(0, 0, 32, 32), 15, facingRotation, state, 256, -1, type)
+        public Undead(World world, EnemyNoticeState state, float facingRotation, int type) : base(world.collisionWorld.Create(0, 0, 32, 32), 30, facingRotation, state, 256, -1, type)
         {
             this.type = type;
             texInfo = new TextureInfo(new TextureContainer("entity"), new Vector2(2), Color.White);
@@ -51,16 +51,16 @@ namespace HelloGame.Entities
 
             if (type == 0 || type == 1)
             {
-                moveset.Add(MoveSingleSlashPokeOrSlam(0, 0, 100, 160, 3, 5, 1.2f));     //single slash; common
-                moveset.Add(MoveSingleSlashPokeOrSlam(0, 2, 100, 160, 3, 5, 1.2f));     //poke; common
-                moveset.Add(MoveDoubleSlash(0, 0, 1, 15, 1.2f, 5, 15, 65, 160, 2));     //double slash; uncommon
+                moveset.Add(MoveSingleSlashPokeOrSlam(0, 0, 30, 100, 160, 3, 5, 1.2f));     //single slash; common
+                moveset.Add(MoveSingleSlashPokeOrSlam(0, 2, 30, 100, 160, 3, 5, 1.2f));     //poke; common
+                moveset.Add(MoveDoubleSlash(0, 0, 1, 45, 1.2f, 5, 15, 65, 160, 2));     //double slash; uncommon
 
-                moveset.Add(MoveSingleSlashPokeOrSlam(0, 3, 100, 160, 1, 35, 3.5f));    //charge; rare
+                moveset.Add(MoveSingleSlashPokeOrSlam(0, 3, 45, 100, 160, 1, 35, 3.5f));    //charge; rare
             }
             else if (type == 2)
             {   //halberd undead is just a longer range sword/dagger undead, with less moves.
-                moveset.Add(MoveSingleSlashPokeOrSlam(0, 0, 100, 160, 4, 5, 1.2f));     //single slash; common
-                moveset.Add(MoveDoubleSlash(0, 0, 1, 15, 1.2f, 5, 15, 65, 160, 2));     //double slash; uncommon
+                moveset.Add(MoveSingleSlashPokeOrSlam(0, 0, 45, 100, 160, 4, 5, 1.2f));     //single slash; common
+                moveset.Add(MoveDoubleSlash(0, 0, 1, 45, 1.2f, 5, 15, 65, 160, 2));     //double slash; uncommon
             }
         }
 

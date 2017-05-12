@@ -36,19 +36,19 @@ namespace HelloGame.GhostWeapons
         {
             if (combo == 0)
             {
-                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 96, -45, 45, 10, 10, 10, Entities.StaggerType.Short, parent).SetAnimated(15, true).Delay(5), 15, 30, AnimationSwing);
+                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 104, -45, 45, 10, 10, 10, Entities.StaggerType.Short, parent).SetAnimated(15, true).Delay(5), 15, 30, AnimationSwing);
             }
             else if (combo == 1)
             {
-                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 96, -45, 45, 10, 10, 10, Entities.StaggerType.Short, parent).SetAnimated(15, false).Delay(5), 15, 30, AnimationSwing);
+                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 104, -45, 45, 10, 10, 10, Entities.StaggerType.Short, parent).SetAnimated(15, false).Delay(5), 15, 30, AnimationSwing);
             }
             else if (combo == 2)    //poke
             {   //non player accessable
-                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 72, -15, 15, 30, 8, 5, Entities.StaggerType.Short, parent).Delay(5), 45, 30, AnimationPoke);
+                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 112, -15, 15, 30, 8, 5, Entities.StaggerType.Short, parent).Delay(5), 45, 30, AnimationPoke);
             }
             else if (combo == 3)    //charge
             {   //non player accessable
-                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 72, -45, 45, 30, 8, 5, Entities.StaggerType.Short, parent).Delay(5), 45, 30, AnimationPoke);
+                return new GhostWeaponAttack(new HitArc(Vector2.Zero, 112, -35, 35, 30, 8, 5, Entities.StaggerType.Short, parent).Delay(5), 45, 30, AnimationPoke);
             }
 
             return null;

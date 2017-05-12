@@ -33,7 +33,7 @@ namespace HelloGame
      */
     public class Main : Game
     {
-        public static bool DEBUG = true;
+        public static bool DEBUG = false;
 
         public static int WIDTH = 1280, HEIGHT = 720;
         public static float ASPECT_RATIO = (float)WIDTH / (float)HEIGHT;

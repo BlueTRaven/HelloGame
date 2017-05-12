@@ -115,7 +115,8 @@ namespace HelloGame.GhostWeapons
                     flipped = false;
                     animationDone = false;
                     attack.hit.center = parentCenter;
-                    world.AddEntity(SpawnAnimationParticles(parentCenter));
+                    if (attack.hit.delay <= 0)
+                        world.AddEntity(SpawnAnimationParticles(parentCenter));
                     attack.animation?.Invoke(parentCenter);
                 }
             }
@@ -140,15 +141,15 @@ namespace HelloGame.GhostWeapons
 
         public virtual void Draw(SpriteBatch batch)
         {
-            batch.Draw(Main.assets.GetTexture("shadow"), currentPosition, null, new Color(0, 0, 0, 127), 0, new Vector2(32, 16), vertDrawScale, SpriteEffects.None, Main.GetDepth(currentPosition));
+            batch.Draw(Main.assets.GetTexture("shadow"), currentPosition, null, new Color(0, 0, 0, 127), 0, new Vector2(32, 16), vertDrawScale, SpriteEffects.None, Main.GetDepth(new Vector2(currentPosition.X, currentPosition.Y - 1)));
             //batch.Draw(texture, currentPosition, null, new Color(0, 0, 0, 127), MathHelper.ToRadians(currentRotation), new Vector2(texture.Width / 2, texture.Height / 2), scale, SpriteEffects.None, Main.GetDepth(currentPosition));
             //batch.Draw(texture, currentPosition + (Main.camera.up * height), null, Color.White, MathHelper.ToRadians(currentRotation), new Vector2(texture.Width / 2, texture.Height / 2), scaleReturn, SpriteEffects.None, Main.GetDepth(currentPosition));
 
-            batch.Draw(texInfo.texture.texture, currentPosition, texInfo.sourceRect, new Color(0, 0, 0, 127), MathHelper.ToRadians(currentRotation), texInfo.sourceRect.HasValue ? new Vector2(texInfo.sourceRect.Value.Width, texInfo.sourceRect.Value.Height) : new Vector2(texInfo.texture.texture.Width / 2, texInfo.texture.texture.Height / 2), scale, flipped ? SpriteEffects.FlipVertically : SpriteEffects.None, Main.GetDepth(currentPosition));
+            batch.Draw(texInfo.texture.texture, currentPosition, texInfo.sourceRect, new Color(0, 0, 0, 127), MathHelper.ToRadians(currentRotation), texInfo.sourceRect.HasValue ? new Vector2(texInfo.sourceRect.Value.Width, texInfo.sourceRect.Value.Height) : new Vector2(texInfo.texture.texture.Width / 2, texInfo.texture.texture.Height / 2), scale, flipped ? SpriteEffects.FlipVertically : SpriteEffects.None, Main.GetDepth(new Vector2(currentPosition.X, currentPosition.Y - 1)));
             batch.Draw(texInfo.texture.texture, currentPosition + (Main.camera.up * height), texInfo.sourceRect, texInfo.tint, MathHelper.ToRadians(currentRotation), texInfo.sourceRect.HasValue ? new Vector2(texInfo.sourceRect.Value.Width, texInfo.sourceRect.Value.Height) : new Vector2(texInfo.texture.texture.Width / 2, texInfo.texture.texture.Height / 2), scaleReturn, flipped ? SpriteEffects.FlipVertically : SpriteEffects.None, Main.GetDepth(currentPosition));
         }   
 
-        public virtual Hit ModifyHitForEntity(float rotation)
+        public virtual Hit ModifyHitForEntity(float rotation, int delay = -1)
         {
             if (!attack.hasHit)
             {
@@ -159,6 +160,9 @@ namespace HelloGame.GhostWeapons
                     hit.min += rotation;
                 }
                     attack.hasHit = true;
+
+                if (delay != -1)
+                    attack.hit.delay = delay;
             }
 
             return attack.hit;
@@ -171,7 +175,7 @@ namespace HelloGame.GhostWeapons
         {
             HitArc hit = (HitArc)attack.hit;
             currentRotation = hit.max;
-            currentPosition = Vector2.Lerp(currentPosition, parentCenter + (VectorHelper.GetAngleNormVector(hit.max) * (hit.radius - texInfo.texture.texture.Width)), .3f);
+            currentPosition = Vector2.Lerp(currentPosition, parentCenter + (VectorHelper.GetAngleNormVector(hit.max) * (hit.radius - texInfo.texture.texture.Width)), .8f);
             if (flipsOnCC && !hit.clockwise)
                 flipped = true;
             else flipped = false;
@@ -209,13 +213,14 @@ namespace HelloGame.GhostWeapons
         /// Supports: HitCircle
         /// </summary>
         public void AnimationRaise(Vector2 parentCenter)
-        {   
+        {
             HitCircle hit = (HitCircle)attack.hit;
             verticalDraw = true;
 
             currentRotation = 90;
 
             height = MathHelper.Lerp(height, 64, height / 64);
+            currentPosition = Vector2.Lerp(currentPosition, parentCenter, .12f);
         }
 
         public void AnimationPoke(Vector2 parentCenter)
@@ -225,7 +230,7 @@ namespace HelloGame.GhostWeapons
             currentRotation = angle;
             if (hit.delay > 0)
             {
-                currentPosition = Vector2.Lerp(currentPosition, parentCenter + (VectorHelper.GetAngleNormVector(angle) * 16), .12f);
+                currentPosition = Vector2.Lerp(currentPosition, parentCenter + (VectorHelper.GetAngleNormVector(angle) * -8), .2f);
             }
             else
             {
