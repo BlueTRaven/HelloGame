@@ -12,7 +12,7 @@ namespace HelloGame.Guis.Widgets
 {
     public abstract class Widget
     {
-        protected const int state_hovered = 1, state_clicked = 2, state_held = 3, state_released = 4, state_default = 0;
+        public const int state_hovered = 1, state_clicked = 2, state_held = 3, state_released = 4, state_default = 0;
 
         public Vector2 createdPosition;
         public Vector2 anchor;

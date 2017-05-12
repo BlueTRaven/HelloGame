@@ -124,21 +124,30 @@ namespace HelloGame
 
                 if (alive == 1)
                 {
+                    activeGui = new GuiSaveSelect();
                     activeGui = new GuiHud();
                     activeGui = new GuiEditor();
                     activeGui = new GuiMainMenu();
-                    world = new World();
                 }
 
+                #region preupdate
                 keyboard.PreUpdate();
                 mouse.PreUpdate();
                 activeGui.PreUpdate();
-                world.PreUpdate();
+                if (!activeGui.stopsWorldUpdate)
+                    world.PreUpdate();
+                #endregion
 
+                #region update
                 keyboard.Update();
                 mouse.Update();
                 activeGui.Update();
-                world.Update();
+                if (!activeGui.stopsWorldUpdate)
+                {
+                    if (world == null)
+                        world = new World(((GuiSaveSelect)guis["saveselect"]).saveFileName);
+                    world.Update();
+                }
                 camera.Update();
 
                 foreach (TextureInfo animinfo in animatedTextures)
@@ -146,12 +155,16 @@ namespace HelloGame
 
                 if (keyboard.KeyModifierPressed(Keys.LeftAlt, Keys.T))
                     DEBUG = !DEBUG;
+                #endregion
 
+                #region postupdate
                 keyboard.PostUpdate();
                 mouse.PostUpdate();
                 activeGui.PostUpdate();
-                world.PostUpdate();
+                if (!activeGui.stopsWorldUpdate)
+                    world.PostUpdate();
                 camera.PostUpdate(this);
+                #endregion
 
                 base.Update(gameTime);
 
@@ -182,9 +195,12 @@ namespace HelloGame
             GraphicsDevice.SetRenderTarget(render);
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            batch.Begin(DEBUG ? SpriteSortMode.Deferred : SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointWrap, null, null, null, camera.GetViewMatrix());
-            world.Draw(batch);
-            batch.End();
+            if (!activeGui.stopsWorldDraw)
+            {
+                batch.Begin(DEBUG ? SpriteSortMode.Deferred : SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointWrap, null, null, null, camera.GetViewMatrix());
+                world.Draw(batch);
+                batch.End();
+            }
 
             GraphicsDevice.SetRenderTarget(null);
 

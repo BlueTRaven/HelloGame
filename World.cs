@@ -52,7 +52,7 @@ namespace HelloGame
 
         public Dictionary<int, Type> entityTypes;
 
-        public World()
+        public World(string playerSaveName)
         {
             backgroundColor = Color.Black;
 
@@ -72,7 +72,17 @@ namespace HelloGame
 
             collisionWorld = new Humper.World(8192, 8192);
 
-            Load("citadel1_1");
+            player = new Player(collisionWorld.Create(0, 0, 32, 32));
+
+            if (File.Exists("Saves/" + playerSaveName))
+            {
+                Player.Load(this, player, playerSaveName);
+            }
+            else
+            {
+                Load("citadel1_1");
+                Player.Load(this, player.Save(0, name, playerSaveName));    //lol
+            }
 
             editorPoints = new List<Vector2>(2);
 
@@ -260,10 +270,11 @@ namespace HelloGame
                                 else if (mode == mode_trigger)
                                 {
                                     string command = wweo.GetWidget<WidgetTextBox>("trigger_command").GetStringSafely();
-                                    string info = wweo.GetWidget<WidgetTextBox>("trigger_info").GetStringSafely();
+                                    string info1 = wweo.GetWidget<WidgetTextBox>("trigger_info1").GetStringSafely();
+                                    string info2 = wweo.GetWidget<WidgetTextBox>("trigger_info2").GetStringSafely();
                                     bool perm = wweo.GetWidget<WidgetCheckbox>("trigger_perm").isChecked;
                                     Rectangle rect = new Rectangle(editorPoints[0].ToPoint(), (editorPoints[1] - editorPoints[0]).ToPoint());
-                                    AddTrigger(new Trigger(rect, command, info, perm));
+                                    AddTrigger(new Trigger(rect, command, info1, info2));
                                 }
                                 else if (mode == mode_selection)
                                 {   //selection mode
@@ -859,9 +870,9 @@ namespace HelloGame
                     world = SerWorld.Parser.ParseFrom(input);
                 }
             }
-            catch
+            catch (Exception e)
             {
-                Console.WriteLine("There was an error loading the map file " + name + ".");
+                Console.WriteLine("There was an error loading the map file " + name + ".\n" + e);
                 return;
             }
 

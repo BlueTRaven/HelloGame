@@ -62,9 +62,8 @@ message SerProp {
 message SerTrigger {
 	SerRectangle bounds = 1;
 	string command = 2;
-	string info = 3;
-	bool permTrigger = 4;
-	bool triggered = 5;
+	string info1 = 3;
+	string info2 = 4;
 }
 
 message SerWorld {

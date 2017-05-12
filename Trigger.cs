@@ -20,14 +20,13 @@ namespace HelloGame
 {
     public class Trigger : ISelectable
     {
-        private static Dictionary<string, Action<World, Trigger, string>> commands;
+        private static Dictionary<string, Action<World, Trigger>> commands;
 
-        private string info, commandName;
-        private Action<World, Trigger, string> command;
+        private string info1, info2, commandName;
+        private Action<World, Trigger> command;
 
         public bool constant;
 
-        public bool permTrigger;
         private bool triggered;
         private bool contTrigger;
 
@@ -35,21 +34,20 @@ namespace HelloGame
 
         public int triggerTime { get; private set; }
 
-        public Trigger(Rectangle bounds, string command, string info, bool permTrigger, bool triggered = false)
+        public Trigger(Rectangle bounds, string command, string info1, string info2)
         {
             this.bounds = bounds;
             this.commandName = command;
-            this.info = info;
+            this.info1 = info1;
+            this.info2 = info2;
             if (commands.Keys.Contains(command))
                 this.command = commands[command];
 
-            this.permTrigger = permTrigger;
-            this.triggered = triggered;
         }
 
         public void Update(World world)
         {
-            command?.Invoke(world, this, info);
+            command?.Invoke(world, this);
         }
 
         public bool PlayerEntered(World world)
@@ -70,30 +68,41 @@ namespace HelloGame
             {
                 Bounds = bounds.Save(),
                 Command = commandName,
-                Info = info,
-                PermTrigger = permTrigger,
-                Triggered = false //if it's a permanant trigger, save the triggered value. Otherwise, just save false.
+                Info1 = info1,
+                Info2 = info2
             };
         }
 
         public static void LoadTriggerActions()
         {
             if (commands == null)
-                commands = new Dictionary<string, Action<World, Trigger, string>>();
+                commands = new Dictionary<string, Action<World, Trigger>>();
 
-            commands.Add("default", new Action<World, Trigger, string>((world, trigger, info) => { }));
+            commands.Add("default", new Action<World, Trigger>((world, trigger) => { }));
 
-            commands.Add("loadmap", new Action<World, Trigger, string>((world, trigger, info) => 
+            commands.Add("save", new Action<World, Trigger>((world, trigger) => 
+            {
+                int parse = 0;
+
+                int.TryParse(trigger.info1, out parse);
+
+                world.player.Save(parse, world.name, world.player.saveName);
+            }));
+
+            commands.Add("loadmap", new Action<World, Trigger>((world, trigger) => 
             {
                 trigger.constant = false;
 
                 if (trigger.PlayerEntered(world))
                 {
-                    world.Load(info);
+                    int parse = 0;
+                    int.TryParse(trigger.info1, out parse);
+                    SerPlayer p = world.player.Save(parse, trigger.info2, world.player.saveName);
+                    Player.Load(world, p);
                 }
             }));
 
-            commands.Add("mapfunc", new Action<World, Trigger, string>((world, trigger, info) =>
+            commands.Add("mapfunc", new Action<World, Trigger>((world, trigger) =>
             {
                 trigger.contTrigger = true;
                 trigger.constant = true;
@@ -101,7 +110,7 @@ namespace HelloGame
                 if (trigger.PlayerEntered(world))
                 {
                     int parsed = 0;
-                    int.TryParse(info, out parsed);
+                    int.TryParse(trigger.info1, out parsed);
 
                     world.MapFunc(parsed, trigger);
                 }
@@ -115,7 +124,7 @@ namespace HelloGame
             batch.DrawString(Main.assets.GetFont("bfMunro12"), "TRIGGER", bounds.Location.ToVector2() - new Vector2(0, 16), Color.White);
 
             batch.DrawString(Main.assets.GetFont("bfMunro12"), commandName, bounds.Location.ToVector2(), Color.White);
-            batch.DrawString(Main.assets.GetFont("bfMunro12"), info, bounds.Location.ToVector2() + new Vector2(0, 16), Color.White);
+            batch.DrawString(Main.assets.GetFont("bfMunro12"), info1, bounds.Location.ToVector2() + new Vector2(0, 16), Color.White);
         }
 
         #region Selectable
@@ -143,9 +152,10 @@ namespace HelloGame
 
             WidgetTextBox text = window.GetWidget<WidgetTextBox>("trigger_command");
             text.SetString(commandName.ToString());
-            text = window.GetWidget<WidgetTextBox>("trigger_info");
-            text.SetString(info.ToString());
-            window.GetWidget<WidgetCheckbox>("trigger_perm").isChecked = permTrigger;
+            text = window.GetWidget<WidgetTextBox>("trigger_info1");
+            text.SetString(info1.ToString());
+            text = window.GetWidget<WidgetTextBox>("trigger_info2");
+            text.SetString(info2.ToString());
         }
 
         public void UpdateSelectableProperties(WidgetWindowEditProperties window)
@@ -156,8 +166,8 @@ namespace HelloGame
                 comname = "default";
             command = commands[comname];
 
-            info = window.GetWidget<WidgetTextBox>("trigger_info").GetStringSafely();
-            permTrigger = window.GetWidget<WidgetCheckbox>("trigger_perm").isChecked;
+            info1 = window.GetWidget<WidgetTextBox>("trigger_info1").GetStringSafely();
+            info2 = window.GetWidget<WidgetTextBox>("trigger_info2").GetStringSafely();
         }
 
         public void Move(Vector2 amt)

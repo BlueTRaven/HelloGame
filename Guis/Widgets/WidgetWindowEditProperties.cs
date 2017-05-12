@@ -45,7 +45,8 @@ namespace HelloGame.Guis.Widgets
             //trigger
             AddWindow("trigger_bounds", new WidgetWindowRectangle(Vector2.Zero));
             AddWidget("trigger_command", new WidgetTextBox(new Rectangle(8, 32, 56, 24), Main.assets.GetFont("bfMunro12"), "command", 4, TextAlignment.Left, TextBoxFilter.Alphabetical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("trigger_info", new WidgetTextBox(new Rectangle(8, 64, 56, 24), Main.assets.GetFont("bfMunro12"), "info", 4, TextAlignment.Left, TextBoxFilter.Alphabetical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("trigger_info1", new WidgetTextBox(new Rectangle(8, 64, 56, 24), Main.assets.GetFont("bfMunro12"), "info1", 4, TextAlignment.Left, TextBoxFilter.Alphabetical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("trigger_info2", new WidgetTextBox(new Rectangle(8, 96, 56, 24), Main.assets.GetFont("bfMunro12"), "info2", 4, TextAlignment.Left, TextBoxFilter.Alphabetical)).SetBackgroundColor(Color.White, Color.Gray);
             AddWidget("trigger_perm", new WidgetCheckbox(new Rectangle(104, 32, 24, 24), Color.White));
         }
 
@@ -120,7 +121,7 @@ namespace HelloGame.Guis.Widgets
             }
             else if (mode == World.mode_trigger)
             {
-                return new string[] { "trigger_command", "trigger_info", "trigger_perm" };
+                return new string[] { "trigger_command", "trigger_info1", "trigger_info2", "trigger_perm" };
             }
 
             return new string[] { };

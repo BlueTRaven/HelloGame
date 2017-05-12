@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+
+using Google.Protobuf;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -36,6 +39,9 @@ namespace HelloGame.Entities
 
         private GhostWeapon weapon;
 
+        public int entrancePoint;
+
+        public string saveName { get; private set; }
         public Player(IBox hitbox) : base(hitbox)
         {
             texInfo = new TextureInfo(new TextureContainer("animationtest"), new Vector2(6), Color.White).SetAnimated(8, 8,
@@ -252,6 +258,96 @@ namespace HelloGame.Entities
                 stamina = 0;
                 staminaRegainDelay = 90;
                 staminaLossPunish = true;
+            }
+        }
+
+        public SerPlayer Save(int entranceIndex, string mapname, string saveName)
+        {
+            SerPlayer p = new SerPlayer()
+            {
+                EntrancePoint = entranceIndex,
+                Health = health,
+                MapName = mapname
+            };
+
+            using (var output = File.Create("Saves/" + saveName + ".hgsf"))
+            {
+                p.WriteTo(output);
+            }
+
+            this.saveName = saveName;
+            return p;
+        }
+
+        /// <summary>
+        /// Load function used when we want to load a preexisting save file.
+        /// </summary>
+        /// <param name="player">Player who's properties and fields will be modified.</param>
+        /// <param name="saveName">The save name of the file to load, to modify the player's properties and fields.</param>
+        public static void Load(World world, Player player, string saveName)
+        {
+            SerPlayer p = null;
+            try
+            {
+                using (var input = File.OpenRead("Saves/" + saveName))
+                {
+                    p = SerPlayer.Parser.ParseFrom(input);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("There was an error loading the save file " + saveName + ".\n" + e);
+                return;
+            }
+
+            player.entrancePoint = p.EntrancePoint;
+            player.health = p.Health;
+            world.Load(p.MapName);
+            world.AddEntity(player);
+
+            for (int i = 0; i < world.spawners.Length; i++)
+            {
+                if (world.spawners[i] != null)
+                {
+                    if (world.spawners[i].type == 0)
+                    {   //check for player spawners
+                        int parse = 0;
+                        int.TryParse(world.spawners[i].info1, out parse);
+                        if (parse == player.entrancePoint)
+                        {   //check to see if the entrance point of the player's save file is the same as the current spawner's
+                            world.spawners[i].SpawnEntity(world);
+                        }
+                    }
+                }
+            }
+
+            player.saveName = saveName;
+        }
+
+        /// <summary>
+        /// Load function used when a new savefile must be created.
+        /// </summary>
+        /// <param name="player">The serialized player.</param>
+        /// <param name="forceLoadMapName">DEPRECATED</param>
+        public static void Load(World world, SerPlayer player, string forceLoadMapName = "-1")
+        {
+            world.Load(forceLoadMapName == "-1" ? player.MapName : forceLoadMapName);
+
+            for (int i = 0; i < world.spawners.Length; i++)
+            {
+                if (world.spawners[i] != null)
+                {
+                    if (world.spawners[i].type == 0)
+                    {   //check for player spawners
+                        int parse = 0;
+                        int.TryParse(world.spawners[i].info1, out parse);
+                        if (parse == player.EntrancePoint)
+                        {   //check to see if the entrance point of the player's save file is the same as the current spawner's
+                            world.spawners[i].SpawnEntity(world);
+                            world.player.health = player.Health;
+                        }
+                    }
+                }
             }
         }
     }

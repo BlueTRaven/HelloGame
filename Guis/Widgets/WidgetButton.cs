@@ -16,7 +16,7 @@ namespace HelloGame.Guis.Widgets
     {
         protected bool hasText;
         protected SpriteFont font;
-        protected string text;
+        public string text;
         protected TextAlignment alignment;
         public Color textColor;
 

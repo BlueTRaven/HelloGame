@@ -39,16 +39,15 @@ namespace HelloGame {
             "cxgBIAEoCzIXLkhlbGxvR2FtZS5TZXJSZWN0YW5nbGUibwoHU2VyUHJvcBIn",
             "Cghwb3NpdGlvbhgBIAEoCzIVLkhlbGxvR2FtZS5TZXJWZWN0b3IyEiYKB3Rl",
             "eEluZm8YAiABKAsyFS5IZWxsb0dhbWUuU2VyVGV4SW5mbxITCgtzaGFkb3dT",
-            "Y2FsZRgDIAEoAiJ8CgpTZXJUcmlnZ2VyEicKBmJvdW5kcxgBIAEoCzIXLkhl",
-            "bGxvR2FtZS5TZXJSZWN0YW5nbGUSDwoHY29tbWFuZBgCIAEoCRIMCgRpbmZv",
-            "GAMgASgJEhMKC3Blcm1UcmlnZ2VyGAQgASgIEhEKCXRyaWdnZXJlZBgFIAEo",
-            "CCKXAgoIU2VyV29ybGQSJAoHYnJ1c2hlcxgBIAMoCzITLkhlbGxvR2FtZS5T",
-            "ZXJCcnVzaBIhCgV3YWxscxgCIAMoCzISLkhlbGxvR2FtZS5TZXJXYWxsEiEK",
-            "BXByb3BzGAMgAygLMhIuSGVsbG9HYW1lLlNlclByb3ASMwoOZW50aXR5U3Bh",
-            "d25lcnMYBCADKAsyGy5IZWxsb0dhbWUuU2VyRW50aXR5U3Bhd25lchInCgh0",
-            "cmlnZ2VycxgFIAMoCzIVLkhlbGxvR2FtZS5TZXJUcmlnZ2VyEhMKC2Rpc3Bs",
-            "YXlOYW1lGAYgASgJEiwKD2JhY2tncm91bmRDb2xvchgHIAEoCzITLkhlbGxv",
-            "R2FtZS5TZXJDb2xvcmIGcHJvdG8z"));
+            "Y2FsZRgDIAEoAiJkCgpTZXJUcmlnZ2VyEicKBmJvdW5kcxgBIAEoCzIXLkhl",
+            "bGxvR2FtZS5TZXJSZWN0YW5nbGUSDwoHY29tbWFuZBgCIAEoCRINCgVpbmZv",
+            "MRgDIAEoCRINCgVpbmZvMhgEIAEoCSKXAgoIU2VyV29ybGQSJAoHYnJ1c2hl",
+            "cxgBIAMoCzITLkhlbGxvR2FtZS5TZXJCcnVzaBIhCgV3YWxscxgCIAMoCzIS",
+            "LkhlbGxvR2FtZS5TZXJXYWxsEiEKBXByb3BzGAMgAygLMhIuSGVsbG9HYW1l",
+            "LlNlclByb3ASMwoOZW50aXR5U3Bhd25lcnMYBCADKAsyGy5IZWxsb0dhbWUu",
+            "U2VyRW50aXR5U3Bhd25lchInCgh0cmlnZ2VycxgFIAMoCzIVLkhlbGxvR2Ft",
+            "ZS5TZXJUcmlnZ2VyEhMKC2Rpc3BsYXlOYW1lGAYgASgJEiwKD2JhY2tncm91",
+            "bmRDb2xvchgHIAEoCzITLkhlbGxvR2FtZS5TZXJDb2xvcmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -60,7 +59,7 @@ namespace HelloGame {
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerBrush), global::HelloGame.SerBrush.Parser, new[]{ "DrawType", "Bounds", "TextureInfo", "DrawAhead" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerWall), global::HelloGame.SerWall.Parser, new[]{ "Bounds" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerProp), global::HelloGame.SerProp.Parser, new[]{ "Position", "TexInfo", "ShadowScale" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerTrigger), global::HelloGame.SerTrigger.Parser, new[]{ "Bounds", "Command", "Info", "PermTrigger", "Triggered" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerTrigger), global::HelloGame.SerTrigger.Parser, new[]{ "Bounds", "Command", "Info1", "Info2" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerWorld), global::HelloGame.SerWorld.Parser, new[]{ "Brushes", "Walls", "Props", "EntitySpawners", "Triggers", "DisplayName", "BackgroundColor" }, null, null, null)
           }));
     }
@@ -1638,9 +1637,8 @@ namespace HelloGame {
     public SerTrigger(SerTrigger other) : this() {
       Bounds = other.bounds_ != null ? other.Bounds.Clone() : null;
       command_ = other.command_;
-      info_ = other.info_;
-      permTrigger_ = other.permTrigger_;
-      triggered_ = other.triggered_;
+      info1_ = other.info1_;
+      info2_ = other.info2_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1670,36 +1668,25 @@ namespace HelloGame {
       }
     }
 
-    /// <summary>Field number for the "info" field.</summary>
-    public const int InfoFieldNumber = 3;
-    private string info_ = "";
+    /// <summary>Field number for the "info1" field.</summary>
+    public const int Info1FieldNumber = 3;
+    private string info1_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Info {
-      get { return info_; }
+    public string Info1 {
+      get { return info1_; }
       set {
-        info_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        info1_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
-    /// <summary>Field number for the "permTrigger" field.</summary>
-    public const int PermTriggerFieldNumber = 4;
-    private bool permTrigger_;
+    /// <summary>Field number for the "info2" field.</summary>
+    public const int Info2FieldNumber = 4;
+    private string info2_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool PermTrigger {
-      get { return permTrigger_; }
+    public string Info2 {
+      get { return info2_; }
       set {
-        permTrigger_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "triggered" field.</summary>
-    public const int TriggeredFieldNumber = 5;
-    private bool triggered_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Triggered {
-      get { return triggered_; }
-      set {
-        triggered_ = value;
+        info2_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -1718,9 +1705,8 @@ namespace HelloGame {
       }
       if (!object.Equals(Bounds, other.Bounds)) return false;
       if (Command != other.Command) return false;
-      if (Info != other.Info) return false;
-      if (PermTrigger != other.PermTrigger) return false;
-      if (Triggered != other.Triggered) return false;
+      if (Info1 != other.Info1) return false;
+      if (Info2 != other.Info2) return false;
       return true;
     }
 
@@ -1729,9 +1715,8 @@ namespace HelloGame {
       int hash = 1;
       if (bounds_ != null) hash ^= Bounds.GetHashCode();
       if (Command.Length != 0) hash ^= Command.GetHashCode();
-      if (Info.Length != 0) hash ^= Info.GetHashCode();
-      if (PermTrigger != false) hash ^= PermTrigger.GetHashCode();
-      if (Triggered != false) hash ^= Triggered.GetHashCode();
+      if (Info1.Length != 0) hash ^= Info1.GetHashCode();
+      if (Info2.Length != 0) hash ^= Info2.GetHashCode();
       return hash;
     }
 
@@ -1750,17 +1735,13 @@ namespace HelloGame {
         output.WriteRawTag(18);
         output.WriteString(Command);
       }
-      if (Info.Length != 0) {
+      if (Info1.Length != 0) {
         output.WriteRawTag(26);
-        output.WriteString(Info);
+        output.WriteString(Info1);
       }
-      if (PermTrigger != false) {
-        output.WriteRawTag(32);
-        output.WriteBool(PermTrigger);
-      }
-      if (Triggered != false) {
-        output.WriteRawTag(40);
-        output.WriteBool(Triggered);
+      if (Info2.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Info2);
       }
     }
 
@@ -1773,14 +1754,11 @@ namespace HelloGame {
       if (Command.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Command);
       }
-      if (Info.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Info);
+      if (Info1.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Info1);
       }
-      if (PermTrigger != false) {
-        size += 1 + 1;
-      }
-      if (Triggered != false) {
-        size += 1 + 1;
+      if (Info2.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Info2);
       }
       return size;
     }
@@ -1799,14 +1777,11 @@ namespace HelloGame {
       if (other.Command.Length != 0) {
         Command = other.Command;
       }
-      if (other.Info.Length != 0) {
-        Info = other.Info;
+      if (other.Info1.Length != 0) {
+        Info1 = other.Info1;
       }
-      if (other.PermTrigger != false) {
-        PermTrigger = other.PermTrigger;
-      }
-      if (other.Triggered != false) {
-        Triggered = other.Triggered;
+      if (other.Info2.Length != 0) {
+        Info2 = other.Info2;
       }
     }
 
@@ -1830,15 +1805,11 @@ namespace HelloGame {
             break;
           }
           case 26: {
-            Info = input.ReadString();
+            Info1 = input.ReadString();
             break;
           }
-          case 32: {
-            PermTrigger = input.ReadBool();
-            break;
-          }
-          case 40: {
-            Triggered = input.ReadBool();
+          case 34: {
+            Info2 = input.ReadString();
             break;
           }
         }

@@ -19,7 +19,7 @@ namespace HelloGame.Utility
         #region save/load
         public static Trigger Load(this SerTrigger trigger)
         {
-            return new Trigger(trigger.Bounds.Load(), trigger.Command, trigger.Info, trigger.PermTrigger, trigger.PermTrigger);
+            return new Trigger(trigger.Bounds.Load(), trigger.Command, trigger.Info1, trigger.Info2);
         }
 
         public static Prop Load(this SerProp prop)

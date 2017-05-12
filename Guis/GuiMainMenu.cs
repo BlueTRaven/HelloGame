@@ -20,7 +20,7 @@ namespace HelloGame.Guis
             SpriteFont font = Main.assets.GetFont("bfMunro23_bold");
             AddWidget("start", new WidgetButton(new Rectangle(128, 128, 64, 64)))
                 .SetHasText(font, "Start", Color.White, Utility.TextAlignment.Center)
-                .SetOpensGui("hud")
+                .SetOpensGui("saveselect")
                 .SetKeybind(Keys.Enter);
 
             AddWidget("test", new WidgetDropdown(new Rectangle(256, 128, 128, 32), Main.assets.GetFont("bfMunro12"), "test", Color.White, Utility.TextAlignment.Left, 5, Enum.GetNames(typeof(EnemyNoticeState))));

@@ -43,7 +43,10 @@ namespace HelloGame.Guis.Widgets
 
         public TextBoxFilter filter;
 
+        private List<char> blackList;
+
         public bool canTabProgressThisTick;
+
         public WidgetTextBox(Rectangle bounds, SpriteFont font, string startText, int max, TextAlignment alignment = TextAlignment.TopLeft, TextBoxFilter filter = TextBoxFilter.AlphaNumeric) : base(bounds)
         {
             this.font = font;
@@ -57,6 +60,12 @@ namespace HelloGame.Guis.Widgets
 
             this.alignment = alignment;
             this.filter = filter;
+        }
+
+        public WidgetTextBox SetHasBlackList(params char[] blackList)
+        {
+            this.blackList = blackList.ToList();
+            return this;
         }
 
         public WidgetTextBox SetTabProgressesTo(WidgetTextBox otherbox)
@@ -151,8 +160,13 @@ namespace HelloGame.Guis.Widgets
                                 if (!char.IsLetter(chars[i]) && !char.IsSymbol(chars[i]) && !char.IsPunctuation(chars[i]) && chars[i] != ' ')
                                     continue;
                             if (filter == TextBoxFilter.AlphaNumeric)
+                            {
                                 if (!char.IsLetterOrDigit(chars[i]) && !char.IsSymbol(chars[i]) && !char.IsPunctuation(chars[i]) && chars[i] != ' ')
                                     continue;
+                                if (blackList != null && blackList.Contains(chars[i]))
+                                    continue;
+                            }
+
                             if (hasStartText)
                             {
                                 hasStartText = false;

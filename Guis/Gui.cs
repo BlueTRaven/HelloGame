@@ -105,12 +105,12 @@ namespace HelloGame.Guis
 
         public T GetWidget<T>(string index) where T : Widget
         {
-            return (T)widgets[index];
+            return widgets.Keys.Contains(index) ? (T)widgets[index] : null;
         }
 
         public T GetWidgetWindow<T>(string index) where T : WidgetWindow
         {
-            return (T)windows[index];
+            return windows.Keys.Contains(index) ? (T)windows[index] : null;
         }
 
         public bool LastClickOnWidget()
