@@ -74,13 +74,13 @@ namespace HelloGame
 
             player = new Player(collisionWorld.Create(0, 0, 32, 32));
 
-            if (File.Exists("Saves/" + playerSaveName))
+            if (File.Exists("Saves/" + playerSaveName + ".hgsf"))
             {
-                Player.Load(this, player, playerSaveName);
+                Player.Load(this, player, playerSaveName + ".hgsf");
             }
             else
             {
-                Load("citadel1_1");
+                Load("citadel1_1"); //We load here because player.Save requires us to know the save name, and there is no default.
                 Player.Load(this, player.Save(0, name, playerSaveName));    //lol
             }
 

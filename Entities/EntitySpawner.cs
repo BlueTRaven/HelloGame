@@ -55,7 +55,10 @@ namespace HelloGame.Entities
                 foreach (Entity e in attachedEntities)
                 {
                     if (e is Player)
+                    {
                         world.player = (Player)e;
+                        world.player.SetPosition(bounds.Center.ToVector2());
+                    }
 
                     if (e is EntityLiving)
                         world.AddEntityLiving((EntityLiving)e);
@@ -73,8 +76,8 @@ namespace HelloGame.Entities
             {
                 List<Entity> entities = new List<Entity>();
                 if (type == 0)
-                {
-                    entities.Add(new Player(world.collisionWorld.Create(0, 0, 32, 32)));
+                {   //this entityspawner merely serves as a placemarker. The actual movement of the player to the spawner is done inside the player's loading code.
+                    //entities.Add(new Player(world.collisionWorld.Create(0, 0, 32, 32)));
                 }
                 else if (type == 1)
                 {

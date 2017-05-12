@@ -48,6 +48,12 @@ namespace HelloGame.Entities
         private FixedSizedQueue<int> prevHealth;
         protected FixedSizedQueue<int> damageSustained;
 
+        public EntityLiving() : base()
+        {
+            prevHealth = new FixedSizedQueue<int>(4);
+            damageSustained = new FixedSizedQueue<int>(4);   //record the last 4 seconds of damage sustained
+        }
+
         public EntityLiving(IBox hitbox) : base()
         {
             this.collideBox = hitbox;

@@ -18,6 +18,7 @@ namespace HelloGame.Guis
     {
         bool[] isnew;
         WidgetButton[] slots;
+        WidgetButton[] deleteSlots;
 
         private bool haschecked;
         private bool creating;
@@ -28,13 +29,18 @@ namespace HelloGame.Guis
         {
             isnew = new bool[8];
             slots = new WidgetButton[8];
+            deleteSlots = new WidgetButton[8];
 
             for (int i = 0; i < 8; i++)
             {
                 isnew[i] = true;
                 slots[i] = AddWidget("saveslot_" + i, new WidgetButton(new Rectangle((int)((Main.WIDTH / 2) - 128), 64 * i + 72 + i * 8, 256, 64))
                     .SetBackgroundColor(Color.White, Color.LightGray, Color.DarkGray, Color.Gray, Color.White)
-                    .SetHasText(Main.assets.GetFont("bfMunro12"), "New File " + i + 1, Color.White, Utility.TextAlignment.Center));
+                    .SetHasText(Main.assets.GetFont("bfMunro12"), "New File " + (i + 1), Color.White, Utility.TextAlignment.Center));
+                deleteSlots[i] = AddWidget("delsaveslot_" + i, new WidgetButton(new Rectangle((Main.WIDTH / 2) + 128, 64 * i + 72 + i * 8, 64, 64))
+                    .SetBackgroundColor(Color.White, Color.LightGray, Color.DarkGray, Color.Gray, Color.White)
+                    .SetHasText(Main.assets.GetFont("bfMunro12"), "Delete", Color.White, Utility.TextAlignment.Center));
+                deleteSlots[i].active = false;
             }
 
             backgroundColor = Color.Black;
@@ -53,10 +59,16 @@ namespace HelloGame.Guis
                     Directory.CreateDirectory("Saves");
                 DirectoryInfo di = new DirectoryInfo("Saves");
                 FileInfo[] fi = di.GetFiles("*.hgsf");
+
+                for (int i = 0; i < 8; i++)
+                {
+                    isnew[i] = true;
+                }
                 for (int i = 0; i < fi.Length; i++)
                 {
                     isnew[i] = false;
                     slots[i].text = fi[i].Name.Split('.')[0];
+                    deleteSlots[i].active = true;
                 }
                 haschecked = true;
             }
@@ -96,6 +108,14 @@ namespace HelloGame.Guis
                             saveFileName = slots[i].text;
                             Main.activeGui = Main.guis["hud"];
                         }
+                    }
+                    else if (deleteSlots[i].state == Widget.state_clicked)
+                    {
+                        deleteSlots[i].active = false;
+                        haschecked = false;
+                        File.Delete("Saves/" + slots[i].text + ".hgsf");
+
+                        slots[i].text = "New File " + (i + 1);
                     }
                 }
             }

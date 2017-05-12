@@ -42,6 +42,29 @@ namespace HelloGame.Entities
         public int entrancePoint;
 
         public string saveName { get; private set; }
+
+        public Player() : base()
+        {
+            texInfo = new TextureInfo(new TextureContainer("animationtest"), new Vector2(6), Color.White).SetAnimated(8, 8,
+                   new Animation(0, 8, 8, 2, true, new int[] { 45, 30 }),  //idle
+                   new Animation(8, 8, 8, 3, true, new int[] { 15, 15, 15 }),  //walk down
+                   new Animation(16, 8, 8, 3, true, new int[] { 15, 15, 15 }), //walk left
+                   new Animation(24, 8, 8, 3, true, new int[] { 15, 15, 15 }), //walk right
+                   new Animation(32, 8, 8, 3, true, new int[] { 15, 15, 15 }));//walk up
+
+            health = 25;
+            maxHealth = 25;
+
+            stamina = 100;
+            staminaMax = 100;
+
+            ((GuiHud)Main.guis["hud"]).SetHealth(health, maxHealth, maxHealth * 2, health);
+            ((GuiHud)Main.guis["hud"]).SetStamina(stamina, staminaMax, staminaMax * 2, stamina);
+
+            weapon = new GhostWeaponIronSword();
+
+        }
+
         public Player(IBox hitbox) : base(hitbox)
         {
             texInfo = new TextureInfo(new TextureContainer("animationtest"), new Vector2(6), Color.White).SetAnimated(8, 8,
@@ -92,6 +115,12 @@ namespace HelloGame.Entities
 
         public override void PreUpdate(World world)
         {
+            if (world.collisionWorld != null && collideBox == null)
+            {
+                collideBox = world.collisionWorld.Create(0, 0, 32, 32);
+
+            }
+
             ResetStats();
 
             if (staggerTime > 0)
@@ -303,8 +332,7 @@ namespace HelloGame.Entities
             player.entrancePoint = p.EntrancePoint;
             player.health = p.Health;
             world.Load(p.MapName);
-            world.AddEntity(player);
-
+            player.collideBox = world.collisionWorld.Create(0, 0, 32, 32);
             for (int i = 0; i < world.spawners.Length; i++)
             {
                 if (world.spawners[i] != null)
@@ -315,6 +343,8 @@ namespace HelloGame.Entities
                         int.TryParse(world.spawners[i].info1, out parse);
                         if (parse == player.entrancePoint)
                         {   //check to see if the entrance point of the player's save file is the same as the current spawner's
+                            world.spawners[i].attachedEntities.Add(player); //manually add the already created player.
+                            world.spawners[i].hasAttachedEntities = true;   //have to do this to prevent it from overwriting the attachedEntities List
                             world.spawners[i].SpawnEntity(world);
                         }
                     }
@@ -332,6 +362,7 @@ namespace HelloGame.Entities
         public static void Load(World world, SerPlayer player, string forceLoadMapName = "-1")
         {
             world.Load(forceLoadMapName == "-1" ? player.MapName : forceLoadMapName);
+            world.player.collideBox = world.collisionWorld.Create(0, 0, 32, 32);
 
             for (int i = 0; i < world.spawners.Length; i++)
             {
@@ -343,6 +374,8 @@ namespace HelloGame.Entities
                         int.TryParse(world.spawners[i].info1, out parse);
                         if (parse == player.EntrancePoint)
                         {   //check to see if the entrance point of the player's save file is the same as the current spawner's
+                            world.spawners[i].attachedEntities.Add(world.player); //manually add the already created player.
+                            world.spawners[i].hasAttachedEntities = true;   //have to do this to prevent it from overwriting the attachedEntities List
                             world.spawners[i].SpawnEntity(world);
                             world.player.health = player.Health;
                         }
