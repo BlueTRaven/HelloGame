@@ -21,10 +21,10 @@ namespace HelloGame.Entities
     {
         int type;
 
-        public Undead(World world, EnemyNoticeState state, float facingRotation, int type) : base(world.collisionWorld.Create(0, 0, 32, 32), 30, facingRotation, state, 256, -1, type)
+        public Undead(World world, EnemyNoticeState state, float facingRotation, int type) : base(new Vector2(32), 30, facingRotation, state, 256, -1, type)
         {
             this.type = type;
-            texInfo = new TextureInfo(new TextureContainer("entity"), new Vector2(2), Color.White);
+            texInfos[0] = new TextureInfo(new TextureContainer("entity"), new Vector2(2), Color.White);
 
             chaseRadius = 112;
             chaseSpeed = .5f;

@@ -27,8 +27,9 @@ namespace HelloGame.Guis
         private float preHitStamina;
         private int staminaDelay;
 
-        public bool showButtonPrompt;
-        public string buttonPromptAction = "<Action>";
+        private int promptTime;
+        public bool showPrompt;
+        public string promptText = "Press {0} to <Action>";
 
         public GuiHud() : base("hud")
         {
@@ -39,8 +40,16 @@ namespace HelloGame.Guis
 
         public override void Update()
         {
-            showButtonPrompt = false;
-            buttonPromptAction = "<Action>";
+            if (promptTime <= 0)
+            {
+                showPrompt = false;
+                promptText = "Press {0} to <Action>";
+            }
+            else
+            {
+                promptTime--;
+            }
+
             base.Update();
 
             if (healthDelay > 0)
@@ -52,6 +61,17 @@ namespace HelloGame.Guis
                 staminaDelay--;
             if (preHitStamina > currentStamina && staminaDelay == 0)
                 preHitStamina--;
+        }
+
+        public void ShowPrompt(int time, string actionName = "Press {0} to <Action>", bool force = false)
+        {
+            showPrompt = true;
+
+            if (promptTime > 0 && !force)
+                return;
+
+            promptTime = time;
+            promptText = actionName;
         }
 
         public override void Draw(SpriteBatch batch)
@@ -78,10 +98,10 @@ namespace HelloGame.Guis
             batch.DrawRectangle(new Rectangle((int)(percentpre * staminaMaxWidth) + 8, 48, 2, 32), Color.White);
             batch.DrawHollowRectangle(new Rectangle(8, 48, (int)staminaMaxWidth, 32), 2, Color.DarkGray);
 
-            if (showButtonPrompt)
+            if (showPrompt)
             {
                 batch.DrawRectangle(new Rectangle(Main.WIDTH / 2 - 128, Main.HEIGHT - 128, 256, 16), Color.Black);
-                batch.DrawString(Main.assets.GetFont("bfMunro12"), "Press " + Main.options.interactKeybind.ToString() + " to " + buttonPromptAction, new Vector2(Main.WIDTH / 2 - 128, Main.HEIGHT - 128) + TextHelper.GetAlignmentOffset(Main.assets.GetFont("bfMunro12"), "Press " + Main.options.interactKeybind.ToString() + " to " + buttonPromptAction, new Rectangle(Main.WIDTH / 2 - 128, Main.HEIGHT - 128, 256, 16), TextAlignment.Center), Color.White);
+                batch.DrawString(Main.assets.GetFont("bfMunro12"), string.Format(promptText, Main.options.interactKeybind), new Vector2(Main.WIDTH / 2 - 128, Main.HEIGHT - 128) + TextHelper.GetAlignmentOffset(Main.assets.GetFont("bfMunro12"), string.Format(promptText, Main.options.interactKeybind), new Rectangle(Main.WIDTH / 2 - 128, Main.HEIGHT - 128, 256, 16), TextAlignment.Center), Color.White);
             }
         }
 
@@ -104,6 +124,11 @@ namespace HelloGame.Guis
                 preHitStamina = preval;
 
             staminaDelay = delay;
+        }
+
+        public static void SetPromptText(int time, string actionName = "Press {0} to <Action>", bool force = false)
+        {
+            ((GuiHud)Main.guis["hud"]).ShowPrompt(time, actionName, force);
         }
     }
 }

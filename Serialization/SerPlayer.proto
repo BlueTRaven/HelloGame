@@ -7,5 +7,5 @@ message SerPlayer {
 	
 	string mapName = 3;
 
-	repeated bool kills = 4;
+	repeated int32 kills = 4;
 }

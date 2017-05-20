@@ -17,6 +17,7 @@ using HelloGame.Guis.Widgets;
 using HelloGame.Hits;
 using HelloGame.GhostWeapons;
 using HelloGame.Entities.Particles;
+using HelloGame.Items;
 
 using Humper;
 using Humper.Responses;
@@ -44,14 +45,13 @@ namespace HelloGame.Entities
         public string saveName { get; set; }
 
         public int healing;
-        public Player() : base()
+        public List<int> kills;
+
+        public List<Item> items;
+
+        public Player() : base(new Vector2(32))
         {
-            texInfo = new TextureInfo(new TextureContainer("animationtest"), new Vector2(6), Color.White).SetAnimated(8, 8,
-                   new Animation(0, 8, 8, 2, true, new int[] { 45, 30 }),  //idle
-                   new Animation(8, 8, 8, 3, true, new int[] { 15, 15, 15 }),  //walk down
-                   new Animation(16, 8, 8, 3, true, new int[] { 15, 15, 15 }), //walk left
-                   new Animation(24, 8, 8, 3, true, new int[] { 15, 15, 15 }), //walk right
-                   new Animation(32, 8, 8, 3, true, new int[] { 15, 15, 15 }));//walk up
+            texInfos[0] = GetPlayerCharacterTexInfo("charBase", new Vector2(5));
 
             health = 25;
             maxHealth = 25;
@@ -64,27 +64,8 @@ namespace HelloGame.Entities
 
             weapon = new GhostWeaponIronSword();
 
-        }
-
-        public Player(IBox hitbox) : base(hitbox)
-        {
-            texInfo = new TextureInfo(new TextureContainer("animationtest"), new Vector2(6), Color.White).SetAnimated(8, 8,
-                new Animation(0, 8, 8, 2, true, new int[] { 45, 30 }),  //idle
-                new Animation(8, 8, 8, 3, true, new int[] { 15, 15, 15 }),  //walk down
-                new Animation(16, 8, 8, 3, true, new int[] { 15, 15, 15 }), //walk left
-                new Animation(24, 8, 8, 3, true, new int[] { 15, 15, 15 }), //walk right
-                new Animation(32, 8, 8, 3, true, new int[] { 15, 15, 15 }));//walk up
-
-            health = 25;
-            maxHealth = 25;
-
-            stamina = 100;
-            staminaMax = 100;
-
-            ((GuiHud)Main.guis["hud"]).SetHealth(health, maxHealth, maxHealth * 2, health);
-            ((GuiHud)Main.guis["hud"]).SetStamina(stamina, staminaMax, staminaMax * 2, stamina);
-
-            weapon = new GhostWeaponIronSword();
+            kills = new List<int>();
+            items = new List<Item>();
         }
 
         protected void ResetStats()
@@ -201,36 +182,36 @@ namespace HelloGame.Entities
                     pressed++;
                     moved = true;
                     velocity.X -= movespeed;
-                    texInfo.AddAnimationToQueue(2, true);
+                    texInfos[0].AddAnimationToQueue(2, true);
                 }
                 if (Main.keyboard.KeyHeld(Main.options.upKeybind))
                 {
                     pressed++;
                     moved = true;
                     velocity.Y -= movespeed;
-                    texInfo.AddAnimationToQueue(4, true);
+                    texInfos[0].AddAnimationToQueue(4, true);
                 }
                 if (Main.keyboard.KeyHeld(Main.options.rightKeybind))
                 {
                     pressed++;
                     moved = true;
                     velocity.X += movespeed;
-                    texInfo.AddAnimationToQueue(3, true);
+                    texInfos[0].AddAnimationToQueue(1, true);
                 }
                 if (Main.keyboard.KeyHeld(Main.options.downKeybind))
                 {
                     pressed++;
                     moved = true;
                     velocity.Y += movespeed;
-                    texInfo.AddAnimationToQueue(1, true);
+                    texInfos[0].AddAnimationToQueue(3, true);
                 }
 
                 if (pressed > 1)
                     velocity *= .95f;
 
-                if (!moved && velocity.Length() < .5f)
+                if (!moved || velocity.Length() < .5f)
                 {
-                    texInfo.AddAnimationToQueue(0, true);
+                    texInfos[0].AddAnimationToQueue(0, true);
 
                     rolling = false;
                     inputTimer = 0;
@@ -262,6 +243,11 @@ namespace HelloGame.Entities
             base.Update(world);
 
             weapon.Update(world, position, velocity != Vector2.Zero ? Vector2.Normalize(velocity) * 16 : Vector2.Zero, VectorHelper.GetVectorAngle(velocity).RoundDown(90));
+        }
+
+        public void AddItem(Item item)
+        {   //Adder for later
+            items.Add(item);
         }
 
         public override void Draw(SpriteBatch batch)
@@ -304,12 +290,24 @@ namespace HelloGame.Entities
             }
         }
 
-        public override void Die(World world)
+        public override void Die(World world, bool force = false, bool dropItems = true)
         {
-            base.Die(world);
+            base.Die(world, force);
 
             Load(world, this, saveName, maxHealth);
         }
+
+        public bool HasItem<T>(int type) where T : Item
+        {
+            return items.Where(x => x is T && x.type == type).Count() > 0;
+        }
+
+        public T GetItem<T>(int type) where T : Item
+        {
+            return (T)(items.Where(x => x is T && x.type == type).ToList()[0]); //always return at the 0 index. Duplicates will not make a difference.
+        }
+
+        #region Serialization
         public SerPlayer Save(int entranceIndex, string mapname, string saveName)
         {
             string fSavename;
@@ -317,8 +315,10 @@ namespace HelloGame.Entities
             {
                 EntrancePoint = entranceIndex,
                 Health = health,
-                MapName = mapname
+                MapName = mapname,
             };
+
+            p.Kills.AddRange(kills);
 
             if (saveName.EndsWith(".hgsf"))
                 fSavename = saveName.Split('.')[0];
@@ -357,6 +357,7 @@ namespace HelloGame.Entities
             player.entrancePoint = p.EntrancePoint;
             player.health = overrideHp == -1 ? p.Health : overrideHp;
             ((GuiHud)Main.guis["hud"]).SetHealth(player.health, player.maxHealth, player.maxHealth * 2, player.health);
+            player.kills = p.Kills.ToList();
             player.velocity = Vector2.Zero;
             player.dead = false;
             world.Load(p.MapName);
@@ -374,12 +375,14 @@ namespace HelloGame.Entities
                         {   //check to see if the entrance point of the player's save file is the same as the current spawner's
                             world.spawners[i].attachedEntities.Add(player); //manually add the already created player.
                             world.spawners[i].hasAttachedEntities = true;   //have to do this to prevent it from overwriting the attachedEntities List
-                            world.spawners[i].SpawnEntity(world);
+                            world.spawners[i].SpawnEntity(world, player);
                             break;
                         }
                     }
                 }
             }
+
+            Main.camera.Position = player.position;
 
             player.saveName = saveName;
         }
@@ -394,6 +397,7 @@ namespace HelloGame.Entities
             var temp = world.player.saveName;
             world.Load(forceLoadMapName == "-1" ? player.MapName : forceLoadMapName);
             world.player.collideBox = world.collisionWorld.Create(0, 0, 32, 32);    //we have to recreate the IBox because I'm dumb apparently
+            world.player.kills = player.Kills.ToList();
 
             for (int i = 0; i < world.spawners.Length; i++)
             {
@@ -407,15 +411,17 @@ namespace HelloGame.Entities
                         {   //check to see if the entrance point of the player's save file is the same as the current spawner's
                             world.spawners[i].attachedEntities.Add(world.player); //manually add the already created player.
                             world.spawners[i].hasAttachedEntities = true;   //have to do this to prevent it from overwriting the attachedEntities List
-                            world.spawners[i].SpawnEntity(world);
+                            world.spawners[i].SpawnEntity(world, world.player);
                             world.player.health = player.Health;
                             break;
                         }
                     }
                 }
             }
+            Main.camera.Position = world.player.position;
 
             world.player.saveName = temp;
         }
+        #endregion
     }
 }

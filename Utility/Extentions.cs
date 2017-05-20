@@ -291,6 +291,23 @@ namespace HelloGame.Utility
             }
         }
 
+        public T Dequeue()
+        {
+            lock (syncObject)
+            {
+                T outObj;
+                if (base.TryDequeue(out outObj))
+                    return outObj;
+                return default(T);
+            }
+        }
+
+        public void Clear()
+        {
+            while (Count > 0)   //this is... probably not the best way to do things.
+                Dequeue();
+        }
+
         public T Peek()
         {
             T outobj;

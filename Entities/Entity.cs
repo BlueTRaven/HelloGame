@@ -24,7 +24,7 @@ namespace HelloGame.Entities
 
         public float groundFriction = .8f;
 
-        protected TextureInfo texInfo;
+        protected TextureInfo[] texInfos;
         protected bool draw = true;
         protected float shadowScale = 1;
 
@@ -42,8 +42,19 @@ namespace HelloGame.Entities
 
         protected int alive;
 
+        public int index;
+
+        protected Action<Entity, Vector2, TextureInfo>[] animations;
+        protected Vector2 targetPos;
         public Entity()
         {
+            texInfos = new TextureInfo[8];
+            animations = new Action<Entity, Vector2, TextureInfo>[8];
+        }
+
+        public virtual void OnSpawn(World world, Vector2 position)
+        {
+            this.position = position;
         }
 
         public virtual void PreUpdate(World world) { alive++; }
@@ -72,6 +83,14 @@ namespace HelloGame.Entities
                 height = 0;
             }
 
+            for (int i = 0; i < animations.Length; i++)
+            {
+                if (animations[i] != null)
+                {
+                    animations[i]?.Invoke(this, targetPos, texInfos[i]);
+                }
+            }
+
             Move();
         }
 
@@ -91,7 +110,7 @@ namespace HelloGame.Entities
                 velocity *= groundFriction;
         }
 
-        public virtual void Die(World world)
+        public virtual void Die(World world, bool force = false, bool dropItems = true)
         {
             dead = true;
         }
@@ -102,6 +121,34 @@ namespace HelloGame.Entities
             {
                 batch.DrawHollowCircle(position, 8, Color.Red);
             }
+        }
+
+        public TextureInfo GetPlayerCharacterTexInfo(string characterTextureFile, Vector2 scale)
+        {
+            return new TextureInfo(new TextureContainer(characterTextureFile), scale, Color.White).SetAnimated(8, 8,
+                new Animation(8, 8, 8, 1, true, false, new int[] { 2 }),            //0. idle
+                new Animation(0, 8, 8, 2, true, false, new int[] { 15, 15 }),       //1. walk right
+                new Animation(0, 8, 8, 2, true, true, new int[] { 15, 15 }),        //2. walk left
+                new Animation(8, 8, 8, 3, true, false, new int[] { 15, 15, 15 }),   //3. walk down
+                new Animation(16, 8, 8, 3, true, false, new int[] { 15, 15, 15 }),  //4. walk up
+                new Animation(24, 8, 8, 1, true, false, new int[] { 2 }),           //5. jump right
+                new Animation(24, 8, 8, 1, true, true, new int[] { 2 }),            //6. jump left
+                new Animation(32, 8, 8, 1, true, false, new int[] { 2 }),           //7. jump down
+                new Animation(40, 8, 8, 1, true, false, new int[] { 2 }));          //8. jump up
+        }
+
+        public int GetFacingDirection(Vector2 focusTarget)
+        {
+            float angle = VectorHelper.GetAngleBetweenPoints(position, focusTarget);
+            if (angle <= 45 || angle > 315)
+                return 0;   //left
+            else if (angle > 45 && angle <= 135)
+                return 1;   //up
+            else if (angle > 135 && angle <= 225)
+                return 2;   //right
+            else if (angle > 225 && angle <= 315)
+                return 3;   //down
+            return 0;
         }
     }
 }

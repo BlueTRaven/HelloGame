@@ -66,6 +66,11 @@ namespace HelloGame
             textures.Add("ghostAxe", content.Load<Texture2D>("Textures/Entity/GhostAxe"));
             textures.Add("ghostHalberd", content.Load<Texture2D>("Textures/Entity/GhostHalberd"));
             textures.Add("ghostHolyBlade", content.Load<Texture2D>("Textures/Entity/GhostHolyBlade"));
+            textures.Add("charBase", content.Load<Texture2D>("Textures/Entity/Character/CharBase"));
+
+            textures.Add("dragon1", content.Load<Texture2D>("Textures/Entity/Dragon1"));
+            textures.Add("dragon1_eyes", content.Load<Texture2D>("Textures/Entity/Dragon1_Eyes"));
+            textures.Add("dragon1_white", content.Load<Texture2D>("Textures/Entity/Dragon1_White"));
 
             //brush
             textures.Add("grass", content.Load<Texture2D>("Textures/Brush/Grass"));

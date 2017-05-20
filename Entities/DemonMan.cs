@@ -12,15 +12,19 @@ using HelloGame.Utility;
 using HelloGame.Hits;
 using HelloGame.GhostWeapons;
 using HelloGame.Entities.Particles;
+using HelloGame.Items;
+
 using Humper;
 
 namespace HelloGame.Entities
 {
     public class DemonMan : Enemy
     {
-        public DemonMan(World world) : base(world.collisionWorld.Create(0, 0, 32, 32), 250, -90, EnemyNoticeState.HighAlert, 256)
+        public DemonMan(World world) : base(new Vector2(32), 250, -90, EnemyNoticeState.HighAlert, 256)
         {
-            texInfo = new TextureInfo(new TextureContainer("entity"), new Vector2(2), Color.White);
+            texInfos[0] = GetPlayerCharacterTexInfo("charBase", new Vector2(6));
+            animations[0] = GetPlayerAnimation();
+
             chaseRadius = 128;
             chaseSpeed = 1;
             chaseMaxSpeed = 2;
@@ -28,10 +32,15 @@ namespace HelloGame.Entities
             circleMaxSpeed = 1;
 
             maxSpeed = 8;
-
-            boss = true;
-
+            
             AddGhostWeapon(new GhostWeaponHolyBlade());
+            drops.Enqueue(new ItemKey(0));
+        }
+
+        public override void OnSpawn(World world, Vector2 position)
+        {
+            base.OnSpawn(world, position);
+            SetBoss(0, position);
         }
 
         public override void Update(World world)
@@ -98,7 +107,9 @@ namespace HelloGame.Entities
                 if (distanceFromPlayer > 256)
                     val = 5;
                 if (distanceFromPlayer > 512)
-                    val = 10;;
+                    val = 1;
+
+                val *= bossPhase + 1;   //* 1 in p1, * 2 in p2
                 return val;
             })));
 
@@ -203,28 +214,6 @@ namespace HelloGame.Entities
             {   //if below half hp, and the phase is still 1, this attack should almost always be used.
                 return health <= maxHealth / 2 && bossPhase != 1 ? 20 : 0;
             })));
-        }
-
-        public override void Die(World world)
-        {
-            base.Die(world);
-
-            for (int i = 0; i < 128; i++)
-            {
-                if (world.entities[i] is Particle)
-                {
-                    world.entities[i].Die(world);
-                }
-            }
-
-            for (int i = 0; i < Main.rand.Next(64, 128); i++)
-            {
-                Particle p = world.AddEntity(new ParticleDust(1000, position, Main.rand.Next(5, 10), 16, Main.rand.NextFloat(0, 360), Color.Black)
-                    .SetGravity(-.1f, .1f, 5, new Action<Entity>(particle => particle.Die(world)))
-                    .SetHomes(world.player, 970, 0, 1.2f, true));
-                if (p != null)
-                    p.velocity = Main.rand.NextAngle() * Main.rand.NextFloat(0, 25);
-            }
         }
     }
 }

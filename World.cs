@@ -57,8 +57,6 @@ namespace HelloGame
         {
             backgroundColor = Color.Black;
 
-            Trigger.LoadTriggerActions();
-
             brushes = new Brush[128];
             walls = new Wall[128];
             spawners = new EntitySpawner[128];
@@ -73,7 +71,7 @@ namespace HelloGame
 
             collisionWorld = new Humper.World(8192, 8192);
 
-            player = new Player(collisionWorld.Create(0, 0, 32, 32));
+            player = new Player();
 
             if (File.Exists("Saves/" + playerSaveName + ".hgsf"))
             {   //if the save file exists, we load it.
@@ -82,7 +80,7 @@ namespace HelloGame
             else
             {   //otherwise it's a new save file, or a deleted one.
                 Load(default_map_name); //We load here because player.Save requires us to know the save name, and there is no default.
-                Player.Load(this, player.Save(0, name, playerSaveName));    //lol
+                Player.Load(this, player.Save(0, name, playerSaveName));
             }
 
             editorPoints = new List<Vector2>(2);
@@ -101,19 +99,7 @@ namespace HelloGame
                 {
                     if (spawner != null)
                     {
-                        if (!spawner.spawned)
-                        {
-                            if (spawner.type == 0)
-                                spawner.SpawnEntity(this);
-                            else
-                            {
-                                float len = (player.position - spawner.bounds.Center.ToVector2()).Length();
-                                if (len < spawner.spawnDistance)
-                                {
-                                    spawner.SpawnEntity(this);
-                                }
-                            }
-                        }
+                        spawner.SpawnEntity(this);
                     }
                 }
 
@@ -236,7 +222,6 @@ namespace HelloGame
                             else editorPoints[0] = mouseWorldPos;
                         }
                     }
-
 
                     if (mode != mode_props)
                     {
@@ -575,8 +560,8 @@ namespace HelloGame
         }
         #endregion
 
-        public void MapFunc(int index, Trigger trigger)
-        {
+        public bool MapFunc(int index, Trigger trigger)
+        {   //return true to stop triggering; otherwise, triggering will be constant, whether in or out of the trigger.
             if (name == "citadel1" || name == "citadel1_1")
             {
                 if (index == 0)
@@ -603,7 +588,8 @@ namespace HelloGame
 
                     if (amt >= 2)
                     {
-                        doors.ForEach(x => x.opening = true);   
+                        doors.ForEach(x => x.opening = true);
+                        return true; 
                     }
                 }
                 else if (index == 1)
@@ -628,10 +614,11 @@ namespace HelloGame
                                 p.velocityDecaysTimer = 5;
                             }
                         }
-                        else trigger.constant = false;  //stop triggering.
+                        else return true;   //done
                     }
                 }
             }
+            return false;
         }
 
         #region draw
@@ -1020,7 +1007,9 @@ namespace HelloGame
                 if (triggers[i] == null)
                 {
                     trigger = t;
+                    trigger.index = i;
                     triggers[i] = trigger;
+                    trigger.OnCreated(this);
                     return trigger;
                 }
             }
@@ -1047,12 +1036,16 @@ namespace HelloGame
 
         public T AddEntity<T>(T e) where T : Entity
         {
+            if (e is EntityLiving)
+                Console.WriteLine("[Warning] Creating EntityLiving using AddEntity. This will cause hit detection issues.\nSymptoms: Player cannot hit entity.");
+
             T entity = null;
             for (int i = 0; i < brushes.Length; i++)
             {
                 if (entities[i] == null || entities[i].dead)
                 {
                     entity = e;
+                    entity.index = i;
                     entities[i] = entity;
                     return entity;
                 }
@@ -1069,6 +1062,7 @@ namespace HelloGame
                 if (entities[i] == null || entities[i].dead)
                 {
                     entity = e;
+                    entity.index = i;
                     entities[i] = entity;
                     damageTakers.Add(entity);
                     return entity;

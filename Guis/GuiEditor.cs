@@ -16,6 +16,7 @@ namespace HelloGame.Guis
     {
         Vector2 worldTarget;
         private const float movespeed = 20;
+        private float cMoveSpeed;
 
         public List<ISelectable> selected;
         public ISelectable trueSelected;
@@ -78,21 +79,27 @@ namespace HelloGame.Guis
             base.PreUpdate();
 
             Main.camera.target = worldTarget;
+
+            cMoveSpeed = movespeed;
+
+            if (Main.keyboard.KeyHeld(Keys.LeftShift))
+                cMoveSpeed *= 2;
+
             if (Main.keyboard.KeyHeld(Main.options.leftKeybind))
             {
-                worldTarget.X -= movespeed;
+                worldTarget.X -= cMoveSpeed;
             }
             if (Main.keyboard.KeyHeld(Main.options.upKeybind))
             {
-                worldTarget.Y -= movespeed;
+                worldTarget.Y -= cMoveSpeed;
             }
             if (Main.keyboard.KeyHeld(Main.options.rightKeybind))
             {
-                worldTarget.X += movespeed;
+                worldTarget.X += cMoveSpeed;
             }
             if (Main.keyboard.KeyHeld(Main.options.downKeybind))
             {
-                worldTarget.Y += movespeed;
+                worldTarget.Y += cMoveSpeed;
             }
         }
 

@@ -13,6 +13,8 @@ using HelloGame.Guis;
 using HelloGame.Guis.Widgets;
 using HelloGame.Hits;
 using HelloGame.GhostWeapons;
+using HelloGame.Entities.Particles;
+using HelloGame.Items;
 
 using Humper;
 using Humper.Responses;
@@ -24,7 +26,7 @@ namespace HelloGame.Entities
         Alert,      //player must be in line of sight.
         HighAlert,  //player can be anywhere in its aggro range.
         Sleeping,   //will not aggro unless hit, in which case it transfers into alert state.
-        Aggrod,
+        Aggrod,     //Aware of the player; able to perform moves.
         Returning   //returning to its initial position, after the player has moved out of its chase radius.
     }
 
@@ -40,15 +42,19 @@ namespace HelloGame.Entities
 
         public List<Hits.Hit> hits;
 
+        protected Enums.DirectionClock chaseDirection;
         protected float chaseSpeed, chaseMaxSpeed;
         protected float chaseRadius;
         protected float circleSpeed, circleMaxSpeed;
+        protected Vector2 chasePos;
 
         private float healthMaxWidth;
         private float preHitHealth;
         private int healthDelay;
 
-        protected bool boss;
+        private bool boss;
+        private int bossIndex;
+        private Vector2 bossAnchor;
         protected int bossPhase;
 
         protected bool drawHealthBar = true;
@@ -66,6 +72,9 @@ namespace HelloGame.Entities
         public float aggroRadius;
         public float leashRadius;
         public float facingRotation;
+
+        protected Queue<Item> drops;
+
         /// <summary>
         /// Creates A new Enemy.
         /// </summary>
@@ -74,7 +83,7 @@ namespace HelloGame.Entities
         /// <param name="state">The starting Notice State of the enemy. When in doubt, use Alert.</param>
         /// <param name="aggroRadius">How close the player has to be to the enemy to get noticed. Only applicable in HighAlert notice state.</param>
         /// <param name="leashRadius">How far away from its spawn point an enemy will chase the player. Set to -1 for infinte chase range.</param>
-        public Enemy(IBox hitbox, int health, float facingRotation, EnemyNoticeState state, float aggroRadius, float leashRadius = -1, int type = 0) : base(hitbox)
+        public Enemy(Vector2 hitboxSize, int health, float facingRotation, EnemyNoticeState state, float aggroRadius, float leashRadius = -1, int type = 0) : base(hitboxSize)
         {
             moveset = new List<Move>();
             hits = new List<Hits.Hit>();
@@ -95,6 +104,8 @@ namespace HelloGame.Entities
 
             weapons = new List<GhostWeapon>();
 
+            drops = new Queue<Item>();
+
             gravity = .25f;
             maxZVel = 4;
         }
@@ -106,11 +117,33 @@ namespace HelloGame.Entities
             preHitHealth = health;
         }
 
+        protected void SetChase(Enums.DirectionClock chaseDirection, float chaseRadius, float chaseSpeed, float chaseMaxSpeed, float circleSpeed, float circleMaxSpeed)
+        {
+            this.chaseDirection = chaseDirection;
+            this.chaseRadius = chaseRadius;
+            this.chaseSpeed = chaseSpeed;
+            this.chaseMaxSpeed = chaseMaxSpeed;
+            this.circleSpeed = circleSpeed;
+            this.circleMaxSpeed = circleMaxSpeed;
+        }
+
+        protected void AddGhostWeapon(GhostWeapon weapon)
+        {
+            weapons.Add(weapon);
+
+            Array.Resize(ref gwRestPos, weapons.Count);
+            Array.Resize(ref gwRestRot, weapons.Count);
+        }
+
         public override void PreUpdate(World world)
         {
             base.PreUpdate(world);
 
+            if (boss && world.player.kills.Contains(bossIndex))
+                Die(world, true);
+
             target = world.player;
+            targetPos = world.player.position;
             distanceFromPlayer = (world.player.position - position).Length();
         }
 
@@ -233,19 +266,57 @@ namespace HelloGame.Entities
             }
         }
 
+        public override void Die(World world, bool force = false, bool dropItems = true)
+        {
+            base.Die(world, force, dropItems);
+
+            if (boss && !world.player.kills.Contains(bossIndex))
+            {
+                world.player.kills.Add(bossIndex);
+            }
+            if (boss)
+            {   //NOTE: don't add spawner. spawner should already be created, but inaccessable.
+                world.AddProp(new Prop(bossAnchor, new TextureInfo(new TextureContainer("tree1"), Vector2.One, Color.White), .5f));
+                world.AddTrigger(new Trigger(new Rectangle((bossAnchor - new Vector2(32)).ToPoint(), new Point(64)), "save", "2", ""));
+
+                if (!force)
+                {   //we use this so we don't spawn the particles every time the player loads from the boss's save point.
+                    for (int i = 0; i < 128; i++)
+                    {   //kill all other particles
+                        if (world.entities[i] is Particle)
+                        {
+                            world.entities[i].Die(world);
+                        }
+                    }
+
+                    for (int i = 0; i < Main.rand.Next(64, 128); i++)
+                    {
+                        Particle p = world.AddEntity(new ParticleDust(1000, position, Main.rand.Next(5, 10), 16, Main.rand.NextFloat(0, 360), Color.Black)
+                            .SetGravity(-.1f, .1f, 5, new Action<Entity>(particle => particle.Die(world)))
+                            .SetHomes(world.player, 970, 0, 1.2f, true));
+                        if (p != null)
+                            p.velocity = Main.rand.NextAngle() * Main.rand.NextFloat(0, 25);
+                    }
+                }
+            }
+
+            if (dropItems)
+            {
+                while (drops.Count > 0)
+                    world.player.items.Add(drops.Dequeue());
+            }
+        }
+
         public override void Draw(SpriteBatch batch)
         {
             base.Draw(batch);
 
             weapons.ForEach(x => x.Draw(batch));
-        }
 
-        protected void AddGhostWeapon(GhostWeapon weapon)
-        {
-            weapons.Add(weapon);
-
-            Array.Resize(ref gwRestPos, weapons.Count);
-            Array.Resize(ref gwRestRot, weapons.Count);
+            if (boss && Main.DEBUG)
+            {
+                batch.DrawLine(position, bossAnchor, Color.Red, 2);
+            }
         }
 
         public virtual void DrawHealthbar(SpriteBatch batch)
@@ -290,36 +361,38 @@ namespace HelloGame.Entities
         {
             moveset.Add(new Move(this, new Func<World, Enemy, Move, bool>((world, enemy, move) =>
             {
-                velocityDecays = true;
                 if (move.counter1 == 0)
                 {
                     move.counter1 = 1;
-                    move.counter2 = 30 + Main.rand.Next(0, 120);
+                    move.counter2 = 120 + Main.rand.Next(0, 120);
+                    move.counter3 = Main.rand.Next(2);  //next 0-1
+                    chasePos = Vector2.Normalize(new Vector2(-1, 0).RotateBy(Main.rand.NextFloat(0, 360))) * (chaseRadius - 16);
                 }
 
                 if (move.counter2 > 0)
                 {
                     move.counter2--;
 
-                    if (distanceFromPlayer > chaseRadius)
+                    if (distanceFromPlayer > chaseRadius)   //move towards the target position
                     {
                         velocity += Vector2.Normalize(target.position - position) * chaseSpeed;
                         maxSpeed = chaseMaxSpeed;
                     }
                     else
                     {
-                        Vector2 next = Vector2.Transform(position - target.position, Matrix.CreateRotationZ(MathHelper.ToRadians(1)));  //this doesn't actually work
-                        velocity += Vector2.Normalize(next - position) * circleSpeed;
+                        chasePos = chasePos.RotateBy(circleSpeed * move.counter3 == 0 ? -1 : 1);
+                        velocity += Vector2.Normalize(target.position + (chasePos - position)) * circleSpeed;
                         maxSpeed = circleMaxSpeed;
                     }
+                    
                     return false;
                 }
                 maxSpeed = 8;
                 return true;
             }), new Func<World, Enemy, Move, int>((world, enemy, move) =>
             {
-                return enemy.distanceFromPlayer > 96 ? 1 : 0;
-            }), false));
+                return enemy.distanceFromPlayer > chaseRadius + 16 ? 1 : 0;
+            })));
         }
 
         protected Move SelectMove(World world)
@@ -353,7 +426,12 @@ namespace HelloGame.Entities
             if (moveQueue.Count > 0)
                 currentMove = moveQueue.Dequeue();
             else
-                currentMove = moveset.RandomElementByWeight(new Func<Move, float>(move => move.weightScenario(world, this, move)));
+            {
+                Move next = moveset.RandomElementByWeight(new Func<Move, float>(move => move.weightScenario(world, this, move)));
+                if (next == currentMove)    //less duplicates probably
+                    next = moveset.RandomElementByWeight(new Func<Move, float>(move => move.weightScenario(world, this, move)));
+                currentMove = next;
+            }
 
             return currentMove;
         }
@@ -366,6 +444,18 @@ namespace HelloGame.Entities
             move.counter3 = counter3;
             move.counter4 = counter4;
             moveQueue.Enqueue(move);
+        }
+
+        /// <summary>
+        /// Sets the current enemy to be a boss.
+        /// </summary>
+        /// <param name="bossIndex">The "boss index" used by the player to save what bosses they've killed.</param>
+        /// <param name="bossAnchor">The place where the save location will appear. NOT relative to the enemy's position.</param>
+        protected void SetBoss(int bossIndex, Vector2 bossAnchor)
+        {
+            this.boss = true;
+            this.bossIndex = bossIndex;
+            this.bossAnchor = bossAnchor;
         }
 
         #region move presets
@@ -494,5 +584,36 @@ namespace HelloGame.Entities
             }));
         }
         #endregion
+
+        public Action<Entity, Vector2, TextureInfo> GetPlayerAnimation()
+        {
+            return new Action<Entity, Vector2, TextureInfo>((entity, focusTarget, texInfo) =>
+            {   //this fancy thing converts the angle to its nearest angle to 90, then divides by 90 so it's 0-3. 0 = left, 1 = up, 2 = right, 3 = down
+                int direction = entity.GetFacingDirection(focusTarget);
+
+                if (zVel > 0)
+                {
+                    if (direction == 0)
+                        texInfo.AddAnimationToQueue(6);
+                    else if (direction == 1)
+                        texInfo.AddAnimationToQueue(8);
+                    else if (direction == 2)
+                        texInfo.AddAnimationToQueue(5);
+                    else if (direction == 3)
+                        texInfo.AddAnimationToQueue(7);
+                    return;
+                }
+
+                if (direction == 0)
+                    texInfo.AddAnimationToQueue(2);
+                else if (direction == 1)
+                    texInfo.AddAnimationToQueue(4);
+                else if (direction == 2)
+                    texInfo.AddAnimationToQueue(1);
+                else if (direction == 3)
+                    texInfo.AddAnimationToQueue(3);
+
+            });
+        }
     }
 }

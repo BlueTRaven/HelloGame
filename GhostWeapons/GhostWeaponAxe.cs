@@ -20,8 +20,8 @@ namespace HelloGame.GhostWeapons
     public class GhostWeaponAxe : GhostWeapon
     {
         public GhostWeaponAxe() : base(new TextureInfo(new TextureContainer("ghostAxe"), Vector2.Zero, Color.White).SetAnimated(32, 24, 
-            new Animation(0, 32, 24, 1, true, 5), 
-            new Animation(32, 32, 24, 1, true, 5)))
+            new Animation(0, 32, 24, 1, true, false, 5), 
+            new Animation(32, 32, 24, 1, true, false, 5)))
         {
             comboMax = 3;
             height = 18;

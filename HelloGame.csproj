@@ -47,6 +47,7 @@
     <Compile Include="Entities\DemonMan.cs" />
     <Compile Include="Entities\Enemy.cs" />
     <Compile Include="Entities\EnemyDoor.cs" />
+    <Compile Include="Entities\EnemyDragon1.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\EntityLiving.cs" />
     <Compile Include="Entities\EntitySpawner.cs" />
@@ -90,6 +91,8 @@
     <Compile Include="IDamageDealer.cs" />
     <Compile Include="IDamageTaker.cs" />
     <Compile Include="ISelectable.cs" />
+    <Compile Include="Items\Item.cs" />
+    <Compile Include="Items\ItemKey.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
@@ -101,6 +104,7 @@
     <Compile Include="TextureInfo.cs" />
     <Compile Include="Trigger.cs" />
     <Compile Include="Utility\EngineMathHelper.cs" />
+    <Compile Include="Utility\Enums.cs" />
     <Compile Include="Utility\Extentions.cs" />
     <Compile Include="Utility\ObjectExtentions.cs" />
     <Compile Include="Utility\TextHelper.cs" />

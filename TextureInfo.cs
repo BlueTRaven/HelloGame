@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
 using HelloGame.Utility;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace HelloGame
 {
@@ -19,7 +20,7 @@ namespace HelloGame
         public bool isAnimated;
         public Rectangle? sourceRect;
 
-        private Queue<int> playIndexQueue = new Queue<int>();
+        private FixedSizedQueue<int> playIndexQueue;
         private int currentPlayIndex;
         private Animation[] animations;
         private Animation currentAnimation;
@@ -29,6 +30,8 @@ namespace HelloGame
             this.texture = container;
             this.scale = scale;
             this.tint = tint;
+
+            playIndexQueue = new FixedSizedQueue<int>(8);
         }
 
         #region animation
@@ -55,11 +58,12 @@ namespace HelloGame
             return this;
         }
 
-        public void AddAnimationToQueue(int index, bool interrupt, bool interruptsame = false)
+        public void AddAnimationToQueue(int index, bool interrupt = false, bool interruptsame = false)
         {
             if (interrupt)
             {
-                if (!interruptsame && currentPlayIndex == index)
+                playIndexQueue.Clear();
+                if (!interruptsame && currentPlayIndex == index || !currentAnimation.interruptable)
                     return;
 
                 currentPlayIndex = index;
@@ -71,7 +75,8 @@ namespace HelloGame
             }
             else
             {
-                playIndexQueue.Enqueue(index);
+                if (!(playIndexQueue.Peek() == index || currentPlayIndex == index))
+                    playIndexQueue.Enqueue(index);
             }
         }
 
@@ -90,6 +95,11 @@ namespace HelloGame
             return false;
         }
         #endregion
+        
+        public SpriteEffects GetSpriteEffects()
+        {
+            return currentAnimation != null && currentAnimation.flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+        }
 
         public int GetFirstAnimationFrames()
         {
@@ -129,13 +139,17 @@ namespace HelloGame
         public bool interruptable;
 
         public bool done;
-        public Animation(int baseX, int frameWidth, int frameHeight, int numFrames, bool interruptable, params int[] eachFrameDuration)
+
+        public bool flipped;
+
+        public Animation(int baseX, int frameWidth, int frameHeight, int numFrames, bool interruptable, bool flipped, params int[] eachFrameDuration)
         {
             this.baseX = baseX;
 
             this.frameWidth = frameWidth;
             this.frameHeight = frameHeight;
             this.numFrames = numFrames;
+            this.flipped = flipped;
             this.interruptable = interruptable;
             eachFrameDurationMax = new int[eachFrameDuration.Length];
             eachFrameDurationMax = Array.AsReadOnly(eachFrameDuration).ToArray();

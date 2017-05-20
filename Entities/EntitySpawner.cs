@@ -46,10 +46,8 @@ namespace HelloGame.Entities
             attachedEntities = new List<Entity>();
         }
 
-        public void SpawnEntity(World world)
+        public void SpawnEntity(World world, Entity entity)
         {
-            GetEntitiesToSpawn(world);
-
             if (!spawned)
             {
                 foreach (Entity e in attachedEntities)
@@ -59,16 +57,58 @@ namespace HelloGame.Entities
                         world.player = (Player)e;
                         if (world.entities.Contains(world.player) && !world.damageTakers.Contains(world.player))
                             world.damageTakers.Add(world.player);
-                        world.player.SetPosition(bounds.Center.ToVector2());
+                        //world.player.SetPosition(bounds.Center.ToVector2());
                     }
 
                     if (e is EntityLiving)
+                    {
                         world.AddEntityLiving((EntityLiving)e);
+                    }
                     else
+                    {
                         world.AddEntity(e);
+                    }
+
+                    e.OnSpawn(world, spawnRandomPosition ? Main.rand.NextPointInside(bounds) : bounds.Center.ToVector2());
                 }
 
                 spawned = true;
+            }
+        }
+
+        public void SpawnEntity(World world)
+        {
+            GetEntitiesToSpawn(world);
+
+            float len = Math.Abs((world.player.position - bounds.Center.ToVector2()).Length());
+            if (spawnDistance == -1 || len < spawnDistance)
+            {
+                if (!spawned)
+                {
+                    foreach (Entity e in attachedEntities)
+                    {
+                        if (e is Player)
+                        {
+                            world.player = (Player)e;
+                            if (world.entities.Contains(world.player) && !world.damageTakers.Contains(world.player))
+                                world.damageTakers.Add(world.player);
+                            //world.player.SetPosition(bounds.Center.ToVector2());
+                        }
+
+                        if (e is EntityLiving)
+                        {
+                            world.AddEntityLiving((EntityLiving)e);
+                        }
+                        else
+                        {
+                            world.AddEntity(e);
+                        }
+
+                        e.OnSpawn(world, spawnRandomPosition ? Main.rand.NextPointInside(bounds) : bounds.Center.ToVector2());
+                    }
+
+                    spawned = true;
+                }
             }
         }
 
@@ -78,8 +118,8 @@ namespace HelloGame.Entities
             {
                 List<Entity> entities = new List<Entity>();
                 if (type == 0)
-                {   //this entityspawner merely serves as a placemarker. The actual movement of the player to the spawner is done inside the player's loading code.
-                    //entities.Add(new Player(world.collisionWorld.Create(0, 0, 32, 32)));
+                {   //this entityspawner merely serves as a placemarker. The actual movement of the player to the spawner is done inside the OnSpawn code.
+                    spawnDistance = -1;
                 }
                 else if (type == 1)
                 {
@@ -95,26 +135,12 @@ namespace HelloGame.Entities
                 }
                 else if (type == 3)
                 {
+                    spawnDistance = -1;
                     entities.Add(new DemonMan(world));
                 }
-
-                if (entities.Count > 0)
+                else if (type == 4)
                 {
-                    foreach (Entity e in entities)
-                    {
-                        if (spawnRandomPosition)
-                        {
-                            if (e is EntityLiving)
-                                ((EntityLiving)e).SetPosition(Main.rand.NextPointInside(bounds));
-                            else e.position = Main.rand.NextPointInside(bounds);
-                        }
-                        else
-                        {
-                            if (e is EntityLiving)
-                                ((EntityLiving)e).SetPosition(bounds.Center.ToVector2());
-                            else e.position = bounds.Center.ToVector2();
-                        }
-                    }
+                    entities.Add(new EnemyDragon1(world, startNoticeState, startRotation));
                 }
 
                 attachedEntities = entities;

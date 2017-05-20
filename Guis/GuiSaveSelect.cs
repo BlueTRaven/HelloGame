@@ -55,24 +55,22 @@ namespace HelloGame.Guis
         {
             base.Update();
 
-//            if (!haschecked)
-            {
-                if (!Directory.Exists("Saves"))
-                    Directory.CreateDirectory("Saves");
-                DirectoryInfo di = new DirectoryInfo("Saves");
-                FileInfo[] fi = di.GetFiles("*.hgsf");
+            if (!Directory.Exists("Saves"))
+                Directory.CreateDirectory("Saves");
+            DirectoryInfo di = new DirectoryInfo("Saves");
+            FileInfo[] fi = di.GetFiles("*.hgsf");
 
-                for (int i = 0; i < 8; i++)
-                {
-                    isnew[i] = true;
-                }
-                for (int i = 0; i < fi.Length; i++)
-                {
-                    isnew[i] = false;
-                    slots[i].text = fi[i].Name.Split('.')[0];
-                    deleteSlots[i].active = true;
-                }
-                haschecked = true;
+            for (int i = 0; i < 8; i++)
+            {
+                isnew[i] = true;
+                slots[i].text = "New File " + (i + 1);
+                deleteSlots[i].active = false;
+            }
+            for (int i = 0; i < fi.Length; i++)
+            {
+                isnew[i] = false;
+                slots[i].text = fi[i].Name.Split('.')[0];
+                deleteSlots[i].active = true;
             }
 
             if (GetWidget<WidgetTextBox>("savename") != null)
@@ -99,11 +97,11 @@ namespace HelloGame.Guis
                     {
                         if (isnew[i])
                         {
-
                             slots[i].active = false;
                             creating = true;
                             AddWidget("savename", new WidgetTextBox(slots[i].bounds, Main.assets.GetFont("bfMunro12"), "Enter A Save Name", 32, Utility.TextAlignment.Center, TextBoxFilter.AlphaNumeric)
-                                .SetHasBlackList('.')); //we don't want periods as it uses them to determine the file name.
+                                .SetHasBlackList('.'))//we don't want periods as it uses them to determine the file name.
+                                .SetBackgroundColor(Color.White, Color.Gray); 
                         }
                         else
                         {

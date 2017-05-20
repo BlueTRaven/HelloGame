@@ -120,7 +120,7 @@ namespace HelloGame.Guis.Widgets
                       .SetAnimated(Main.assets.GetTexture(GetTexture()).Width, GetAnimatedFrameHeight(),
                       new Animation(0, Main.assets.GetTexture(GetTexture()).Width, GetAnimatedFrameHeight(),
                       int.Parse(GetWidget<WidgetTextBox>("frames").GetStringSafely()), false,
-                      frames));
+                      false, frames));
             }
             return new TextureInfo(new TextureContainer(GetTexture()), GetScale(), GetColor());
         }

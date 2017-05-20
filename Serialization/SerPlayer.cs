@@ -24,7 +24,7 @@ namespace HelloGame {
           string.Concat(
             "Cg9TZXJQbGF5ZXIucHJvdG8SCUhlbGxvR2FtZSJSCglTZXJQbGF5ZXISDgoG",
             "aGVhbHRoGAEgASgFEhUKDWVudHJhbmNlUG9pbnQYAiABKAUSDwoHbWFwTmFt",
-            "ZRgDIAEoCRINCgVraWxscxgEIAMoCGIGcHJvdG8z"));
+            "ZRgDIAEoCRINCgVraWxscxgEIAMoBWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -105,11 +105,11 @@ namespace HelloGame {
 
     /// <summary>Field number for the "kills" field.</summary>
     public const int KillsFieldNumber = 4;
-    private static readonly pb::FieldCodec<bool> _repeated_kills_codec
-        = pb::FieldCodec.ForBool(34);
-    private readonly pbc::RepeatedField<bool> kills_ = new pbc::RepeatedField<bool>();
+    private static readonly pb::FieldCodec<int> _repeated_kills_codec
+        = pb::FieldCodec.ForInt32(34);
+    private readonly pbc::RepeatedField<int> kills_ = new pbc::RepeatedField<int>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<bool> Kills {
+    public pbc::RepeatedField<int> Kills {
       get { return kills_; }
     }
 

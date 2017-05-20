@@ -9,6 +9,22 @@ namespace HelloGame.Utility
 {
     public static class VectorHelper
     {
+        public static Vector2 RotateBy(this Vector2 vector, float degrees)
+        {
+            var temp = Vector2.Transform(vector, Matrix.CreateRotationZ(MathHelper.ToRadians(degrees)));
+            vector.X = temp.X;
+            vector.Y = temp.Y;
+            return vector;
+        }
+
+        public static Vector2 RoundToAngle(this Vector2 vector, int roundAngle)
+        {
+            float currentAngle = GetVectorAngle(vector);
+
+            float len = vector.Length();
+
+            return GetAngleNormVector(currentAngle.RoundDown(roundAngle)) * len;
+        }
         /// <summary>
         /// Gets the angle of a given vector, relative to 0,0.
         /// </summary>
