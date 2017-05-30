@@ -15,6 +15,7 @@ using HelloGame.Entities.Particles;
 using HelloGame.Items;
 
 using Humper;
+using HelloGame.Guis;
 
 namespace HelloGame.Entities
 {
@@ -22,6 +23,8 @@ namespace HelloGame.Entities
     {
         public DemonMan(World world) : base(new Vector2(32), 250, -90, EnemyNoticeState.HighAlert, 256)
         {
+            name = "Placeholder Name";
+            bossDescription = "Placeholder Description";
             texInfos[0] = GetPlayerCharacterTexInfo("charBase", new Vector2(6));
             animations[0] = GetPlayerAnimation();
 
@@ -37,9 +40,9 @@ namespace HelloGame.Entities
             drops.Enqueue(new ItemKey(0));
         }
 
-        public override void OnSpawn(World world, Vector2 position)
+        public override void OnSpawn(EntitySpawner spawner, World world, Vector2 position)
         {
-            base.OnSpawn(world, position);
+            base.OnSpawn(spawner, world, position);
             SetBoss(0, position);
         }
 

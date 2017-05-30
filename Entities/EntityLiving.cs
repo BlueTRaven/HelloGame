@@ -56,9 +56,9 @@ namespace HelloGame.Entities
             damageSustained = new FixedSizedQueue<int>(4);   //record the last 4 seconds of damage sustained
         }
 
-        public override void OnSpawn(World world, Vector2 position)
+        public override void OnSpawn(EntitySpawner spawner, World world, Vector2 position)
         {
-            base.OnSpawn(world, position);
+            base.OnSpawn(spawner, world, position);
 
             this.collideBox = world.collisionWorld.Create(0, 0, hitboxSize.X, hitboxSize.Y);
             SetPosition(position);
@@ -106,10 +106,12 @@ namespace HelloGame.Entities
             }
         }
 
-        public void SetPosition(Vector2 position)
+        public void SetPosition(Vector2 position, bool soft = false)
         {
             this.position = position;
-            this.initialPosition = position;
+
+            if (!soft) this.initialPosition = position;
+
             collideBox.Move(position.X, position.Y, (collision) => CollisionResponses.None);
         }
 
@@ -169,8 +171,8 @@ namespace HelloGame.Entities
                 {
                     if (texInfos[i] != null)
                     {
-                        batch.Draw(texInfos[i].texture.texture, position + Main.camera.up * height, texInfos[i].sourceRect, texInfos[i].tint, 0, 
-                            texInfos[i].sourceRect.HasValue ? new Vector2(texInfos[i].sourceRect.Value.Width / 2, texInfos[i].sourceRect.Value.Height) 
+                        batch.Draw(texInfos[i].texture.texture, position + Main.camera.up * height, texInfos[i].sourceRect, texInfos[i].tint, MathHelper.ToRadians(visualRotation), 
+                            texInfos[i].sourceRect.HasValue ? texInfos[i].offset 
                             : new Vector2(texInfos[i].texture.texture.Width / 2, texInfos[i].texture.texture.Height), 
                             texInfos[i].scale, texInfos[i].GetSpriteEffects(), Main.GetDepth(new Vector2(position.X, position.Y - i * .5f)));
                     }

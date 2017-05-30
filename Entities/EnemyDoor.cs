@@ -23,6 +23,8 @@ namespace HelloGame.Entities
 
         public bool opening;
 
+        private float xmoved;
+
         public EnemyDoor(World world, float doorHeight, float obscureHeight, bool left = true) : base(new Vector2(64, 32), 1, 0, EnemyNoticeState.Sleeping, 0)
         {
             this.doorHeight = doorHeight;
@@ -49,11 +51,16 @@ namespace HelloGame.Entities
                 float wantx = initialPosition.X - (left ? 128 : -128);
 
                 if (position.Y != wanty)
+                {
                     position.Y--;
+                    obscureHeight--;
+                }
                 else
                 {
-                    if (position.X != wantx)
+                    if (xmoved < 128)
+                    //if (position.X != wantx)
                     {
+                        xmoved++;
                         position.X -= left ? 1 : -1;
                     }
                     else
@@ -69,6 +76,7 @@ namespace HelloGame.Entities
             if (draw)
             {
                 Rectangle rect = new Rectangle((int)(position.X - 32), (int)(position.Y - doorHeight) + 16, 64, (int)doorHeight);
+                batch.DrawRectangle(new Rectangle(rect.X + (left ? (int)xmoved : 0), (int)position.Y + 16, (int)(64 - (xmoved > 64 ? 64 : xmoved)), 64), new Color(Color.Black, 63), 0);
                 batch.DrawRectangle(rect, Color.White, Main.GetDepth(position));
 
                 rect = new Rectangle((int)(position.X - 32), (int)(position.Y - (doorHeight + obscureHeight)) + 16, 64, (int)obscureHeight);

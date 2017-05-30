@@ -8,4 +8,16 @@ message SerPlayer {
 	string mapName = 3;
 
 	repeated int32 kills = 4;
+	repeated SerItem items = 5;
+	repeated SerOpenable openables = 6;
+}
+
+message SerOpenable {
+	string mapname = 1;
+	int32 index = 2;
+}
+
+message SerItem {
+	int32 itemType = 1;
+	int32 type = 2;
 }

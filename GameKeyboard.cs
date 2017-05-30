@@ -129,7 +129,7 @@ namespace HelloGame
                     continue;
                 if (KeyPressed(key, true))
                 {
-                    char k = ' ';
+                    char k = '\0';
                     switch (key)
                     {
                         case Keys.A: if (shift) { k = 'A'; } else { k = 'a'; } break;

@@ -18,15 +18,15 @@ namespace HelloGame.Guis.Widgets
         public WidgetWindowTextureSelector(Vector2 topleft) : base(new Rectangle(topleft.ToPoint(), new Point(104,128)), false, null)
         {
             backgroundColor = Color.Black;
-            WidgetTextBox name = AddWidget("name", new WidgetTextBox(new Rectangle(8, 8, 56, 24), Main.assets.GetFont("bfMunro12"), "name", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox R = AddWidget("R", new WidgetTextBox(new Rectangle(8, 40, 24, 16), Main.assets.GetFont("bfMunro8"), "R", 3, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox G = AddWidget("G", new WidgetTextBox(new Rectangle(8, 62, 24, 16), Main.assets.GetFont("bfMunro8"), "G", 3, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox B = AddWidget("B", new WidgetTextBox(new Rectangle(8, 84, 24, 16), Main.assets.GetFont("bfMunro8"), "B", 3, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox A = AddWidget("A", new WidgetTextBox(new Rectangle(8, 104, 24, 16), Main.assets.GetFont("bfMunro8"), "A", 3, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox name = AddWidget("name", new WidgetTextBox(new Rectangle(8, 8, 56, 24), Main.assets.GetFont("bfMunro12"), "name", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox R = AddWidget("R", new WidgetTextBox(new Rectangle(8, 40, 24, 16), Main.assets.GetFont("bfMunro8"), "R", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox G = AddWidget("G", new WidgetTextBox(new Rectangle(8, 62, 24, 16), Main.assets.GetFont("bfMunro8"), "G", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox B = AddWidget("B", new WidgetTextBox(new Rectangle(8, 84, 24, 16), Main.assets.GetFont("bfMunro8"), "B", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox A = AddWidget("A", new WidgetTextBox(new Rectangle(8, 104, 24, 16), Main.assets.GetFont("bfMunro8"), "A", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
             AddWidget("textureshow_nomodify", new WidgetButton(new Rectangle(40, 40, 32, 32))).SetHasTexture(Main.assets.GetTexture("whitePixel")).SetBackgroundColor(Color.White, Color.White, Color.White, Color.White, Color.White);
 
-            WidgetTextBox scaleX = AddWidget("scale_x", new WidgetTextBox(new Rectangle(40, 84, 24, 16), Main.assets.GetFont("bfMunro8"), "X", 3, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox scaleY = AddWidget("scale_y", new WidgetTextBox(new Rectangle(40, 104, 24, 16), Main.assets.GetFont("bfMunro8"), "Y", 3, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox scaleX = AddWidget("scale_x", new WidgetTextBox(new Rectangle(40, 84, 24, 16), Main.assets.GetFont("bfMunro8"), "X", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox scaleY = AddWidget("scale_y", new WidgetTextBox(new Rectangle(40, 104, 24, 16), Main.assets.GetFont("bfMunro8"), "Y", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
 
             name.SetTabProgressesTo(R); //wew
             R.SetTabProgressesTo(G);
@@ -37,8 +37,8 @@ namespace HelloGame.Guis.Widgets
             scaleY.SetTabProgressesTo(name);
 
             AddWidget("isanimated", new WidgetCheckbox(new Rectangle(80, 84 - 24, 16, 16), Color.White));
-            WidgetTextBox frames = AddWidget("frames", new WidgetTextBox(new Rectangle(72, 84, 24, 16), Main.assets.GetFont("bfMunro8"), "frames", 2, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox frameTime = AddWidget("frametime", new WidgetTextBox(new Rectangle(72, 104, 24, 16), Main.assets.GetFont("bfMunro8"), "time", 4, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox frames = AddWidget("frames", new WidgetTextBox(new Rectangle(72, 84, 24, 16), Main.assets.GetFont("bfMunro8"), "frames", 2, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox frameTime = AddWidget("frametime", new WidgetTextBox(new Rectangle(72, 104, 24, 16), Main.assets.GetFont("bfMunro8"), "time", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
 
             frames.SetTabProgressesTo(frameTime);
             frameTime.SetTabProgressesTo(frames);

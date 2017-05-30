@@ -8,6 +8,19 @@ namespace HelloGame.Utility
 {
     public class Enums
     {
+        public enum Alignment
+        {
+            Left,
+            TopLeft,
+            BottomLeft,
+            Right,
+            TopRight,
+            BottomRight,
+            Top,
+            Bottom,
+            Center
+        }
+
         public enum DirectionBinary
         {
             Left,

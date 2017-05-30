@@ -46,14 +46,22 @@ namespace HelloGame.Entities
 
         protected Action<Entity, Vector2, TextureInfo>[] animations;
         protected Vector2 targetPos;
+
+        public float visualRotation;
+
+        public Enums.DirectionCardinalG facingDirection;
+
+        public EntitySpawner spawner;
+
         public Entity()
         {
             texInfos = new TextureInfo[8];
             animations = new Action<Entity, Vector2, TextureInfo>[8];
         }
 
-        public virtual void OnSpawn(World world, Vector2 position)
+        public virtual void OnSpawn(EntitySpawner spawner, World world, Vector2 position)
         {
+            this.spawner = spawner;
             this.position = position;
         }
 
@@ -134,7 +142,13 @@ namespace HelloGame.Entities
                 new Animation(24, 8, 8, 1, true, false, new int[] { 2 }),           //5. jump right
                 new Animation(24, 8, 8, 1, true, true, new int[] { 2 }),            //6. jump left
                 new Animation(32, 8, 8, 1, true, false, new int[] { 2 }),           //7. jump down
-                new Animation(40, 8, 8, 1, true, false, new int[] { 2 }));          //8. jump up
+                new Animation(40, 8, 8, 1, true, false, new int[] { 2 }),           //8. jump up
+                new Animation(48, 16, 8, 2, false, false, new int[] { 15, 15 },      //9. attack right
+                new Vector2[] { new Vector2(-4, 0), new Vector2(-4, 0) }),          
+                new Animation(48, 16, 8, 2, false, true, new int[] { 15, 15 },       //10. attack left
+                new Vector2[] { new Vector2(4, 0), new Vector2(4, 0) }),          
+                new Animation(64, 8, 8, 2, false, false, new int[] { 15, 15 }),      //11. attack down
+                new Animation(72, 8, 8, 2, false, false, new int[] { 15, 15 }));     //12. attack up
         }
 
         public int GetFacingDirection(Vector2 focusTarget)

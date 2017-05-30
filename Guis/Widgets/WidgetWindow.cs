@@ -25,6 +25,7 @@ namespace HelloGame.Guis.Widgets
 
         public Vector2 createdPosition;
         public Vector2 anchor;
+        public bool shouldAnchor = true;
 
         public WidgetWindow(Rectangle bounds, bool draggable, Dictionary<string, Widget> widgets)
         {
@@ -48,16 +49,14 @@ namespace HelloGame.Guis.Widgets
         {
             if (active)
             {
-                if (anchor != null && anchor != Vector2.Zero)
+                if (anchor != null && anchor != Vector2.Zero && shouldAnchor)
                 {
                     bounds = new Rectangle((int)(createdPosition.X + anchor.X), (int)(createdPosition.Y + anchor.Y), bounds.Width, bounds.Height);
                 }
 
                 foreach (Widget widget in widgets.Values)
                 {
-                    if (anchor != null && anchor != Vector2.Zero)
-                        widget.anchor = bounds.Location.ToVector2();
-                    else
+                    if (anchor != null && anchor != Vector2.Zero && shouldAnchor)
                         widget.anchor = bounds.Location.ToVector2();
 
                     widget.PreUpdate();
@@ -65,10 +64,8 @@ namespace HelloGame.Guis.Widgets
 
                 foreach (WidgetWindow window in windows.Values)
                 {
-                    if (anchor != null && anchor != Vector2.Zero)
+                    if (anchor != null && anchor != Vector2.Zero && shouldAnchor)
                         window.anchor = anchor;
-                    else
-                        window.anchor = bounds.Location.ToVector2();
 
                     window.PreUpdate();
                 }

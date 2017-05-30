@@ -9,14 +9,30 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using HelloGame.Entities;
+using HelloGame.Items;
 
 using Humper;
+using static HelloGame.Entities.Player;
 
 namespace HelloGame.Utility
 {
     public static class Extentions
     {
         #region save/load
+        public static Openable Load(this SerOpenable openable)
+        {
+            return new Openable(openable.Mapname, openable.Index);
+        }
+
+        public static Item Load(this SerItem item)
+        {
+            if (item.ItemType == 0)
+            {
+                return new ItemKey(item.Type);
+            }
+            return null;
+        }
+
         public static Trigger Load(this SerTrigger trigger)
         {
             return new Trigger(trigger.Bounds.Load(), trigger.Command, trigger.Info1, trigger.Info2);
@@ -39,7 +55,7 @@ namespace HelloGame.Utility
 
         public static Brush Load(this SerBrush brush)
         {
-            return new Brush(brush.Bounds.Load(), brush.TextureInfo.Load(), (BrushDrawType)brush.DrawType, brush.DrawAhead);
+            return new Brush(brush.Bounds.Load(), brush.TextureInfo.Load(), (BrushDrawType)brush.DrawType, (BrushDepth)brush.DrawDepth);
         }
 
         public static TextureInfo Load(this SerTexInfo texInfo)

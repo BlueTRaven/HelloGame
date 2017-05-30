@@ -32,6 +32,8 @@ namespace HelloGame.Entities
 
         public string info1, info2;
 
+        public bool noSave;
+
         public EntitySpawner(Rectangle bounds, int type, float startRotation, bool spawnRandomPosition = false, EnemyNoticeState noticeState = EnemyNoticeState.Alert, string info1 = "", string info2 = "")
         {
             this.bounds = bounds;
@@ -46,36 +48,66 @@ namespace HelloGame.Entities
             attachedEntities = new List<Entity>();
         }
 
+        public void OnCreated(World world)
+        {
+            if (type == 0)
+            {
+                Prop pr = new Prop(bounds.Center.ToVector2(), new TextureInfo(new TextureContainer("tree1"), Vector2.One, Color.White), .5f);
+                world.AddProp(pr);
+                Trigger t = new Trigger(new Rectangle((bounds.Center.ToVector2() - new Vector2(32)).ToPoint(), new Point(64)), "save", info1, "");
+                world.AddTrigger(t);
+            }
+        }
+
+        public bool AllAttachedDead()
+        {
+            bool dead = true;
+
+            if (spawned)
+            {
+                if (attachedEntities != null && attachedEntities.Count > 0)
+                    attachedEntities.ForEach(x => { if (!x.dead) dead = false; });
+                else return true;   //there are no attached entities.
+            }
+            else return false;  //we haven't spawned yet.
+
+            return dead;
+        }
+
+        /// <summary>
+        /// Manually spawns an entity.
+        /// </summary>
+        /// <param name="entity">The entity to spawn.</param>
         public void SpawnEntity(World world, Entity entity)
         {
             if (!spawned)
             {
-                foreach (Entity e in attachedEntities)
+                if (entity is Player)
                 {
-                    if (e is Player)
-                    {
-                        world.player = (Player)e;
-                        if (world.entities.Contains(world.player) && !world.damageTakers.Contains(world.player))
-                            world.damageTakers.Add(world.player);
-                        //world.player.SetPosition(bounds.Center.ToVector2());
-                    }
-
-                    if (e is EntityLiving)
-                    {
-                        world.AddEntityLiving((EntityLiving)e);
-                    }
-                    else
-                    {
-                        world.AddEntity(e);
-                    }
-
-                    e.OnSpawn(world, spawnRandomPosition ? Main.rand.NextPointInside(bounds) : bounds.Center.ToVector2());
+                    world.player = (Player)entity;
+                    if (world.entities.Contains(world.player) && !world.damageTakers.Contains(world.player))
+                        world.damageTakers.Add(world.player);
+                    //world.player.SetPosition(bounds.Center.ToVector2());
                 }
+
+                if (entity is EntityLiving)
+                {
+                    world.AddEntityLiving((EntityLiving)entity);
+                }
+                else
+                {
+                    world.AddEntity(entity);
+                }
+
+                entity.OnSpawn(this, world, spawnRandomPosition ? Main.rand.NextPointInside(bounds) : bounds.Center.ToVector2());
 
                 spawned = true;
             }
         }
 
+        /// <summary>
+        /// spawns all entities attached to this spawner.
+        /// </summary>
         public void SpawnEntity(World world)
         {
             GetEntitiesToSpawn(world);
@@ -92,7 +124,6 @@ namespace HelloGame.Entities
                             world.player = (Player)e;
                             if (world.entities.Contains(world.player) && !world.damageTakers.Contains(world.player))
                                 world.damageTakers.Add(world.player);
-                            //world.player.SetPosition(bounds.Center.ToVector2());
                         }
 
                         if (e is EntityLiving)
@@ -104,7 +135,7 @@ namespace HelloGame.Entities
                             world.AddEntity(e);
                         }
 
-                        e.OnSpawn(world, spawnRandomPosition ? Main.rand.NextPointInside(bounds) : bounds.Center.ToVector2());
+                        e.OnSpawn(this, world, spawnRandomPosition ? Main.rand.NextPointInside(bounds) : bounds.Center.ToVector2());
                     }
 
                     spawned = true;
@@ -112,11 +143,11 @@ namespace HelloGame.Entities
             }
         }
 
-        public void GetEntitiesToSpawn(World world)
+        private void GetEntitiesToSpawn(World world)
         {
             if (!hasAttachedEntities)
             {
-                List<Entity> entities = new List<Entity>();
+                //List<Entity> entities = new List<Entity>();
                 if (type == 0)
                 {   //this entityspawner merely serves as a placemarker. The actual movement of the player to the spawner is done inside the OnSpawn code.
                     spawnDistance = -1;
@@ -126,24 +157,26 @@ namespace HelloGame.Entities
                     int type = 0;
                     int.TryParse(info1, out type);
 
-                    entities.Add(new Undead(world, startNoticeState, startRotation, type));
+                    attachedEntities.Add(new Undead(world, startNoticeState, startRotation, type));
                 }
                 else if (type == 2)
                 {
                     bool left = info1 != null && (info1.ToLower() == "true" || info1.ToLower() == "left");
-                    entities.Add(new EnemyDoor(world, 128, 256, left));
+                    attachedEntities.Add(new EnemyDoor(world, 128, 256, left));
                 }
                 else if (type == 3)
                 {
                     spawnDistance = -1;
-                    entities.Add(new DemonMan(world));
+                    attachedEntities.Add(new DemonMan(world));
                 }
                 else if (type == 4)
                 {
-                    entities.Add(new EnemyDragon1(world, startNoticeState, startRotation));
+                    attachedEntities.Add(new EnemyDragon1(world, startNoticeState, startRotation));
                 }
 
-                attachedEntities = entities;
+                //attachedEntities = entities;
+
+                hasAttachedEntities = true;
             }
         }
 

@@ -35,7 +35,7 @@ namespace HelloGame {
             "GAoQc3RhcnROb3RpY2VTdGF0ZRgHIAEoBSKEAQoIU2VyQnJ1c2gSEAoIZHJh",
             "d1R5cGUYASABKAUSJwoGYm91bmRzGAIgASgLMhcuSGVsbG9HYW1lLlNlclJl",
             "Y3RhbmdsZRIqCgt0ZXh0dXJlSW5mbxgDIAEoCzIVLkhlbGxvR2FtZS5TZXJU",
-            "ZXhJbmZvEhEKCWRyYXdBaGVhZBgEIAEoCCIyCgdTZXJXYWxsEicKBmJvdW5k",
+            "ZXhJbmZvEhEKCWRyYXdEZXB0aBgEIAEoBSIyCgdTZXJXYWxsEicKBmJvdW5k",
             "cxgBIAEoCzIXLkhlbGxvR2FtZS5TZXJSZWN0YW5nbGUibwoHU2VyUHJvcBIn",
             "Cghwb3NpdGlvbhgBIAEoCzIVLkhlbGxvR2FtZS5TZXJWZWN0b3IyEiYKB3Rl",
             "eEluZm8YAiABKAsyFS5IZWxsb0dhbWUuU2VyVGV4SW5mbxITCgtzaGFkb3dT",
@@ -56,7 +56,7 @@ namespace HelloGame {
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerColor), global::HelloGame.SerColor.Parser, new[]{ "R", "G", "B", "A" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerTexInfo), global::HelloGame.SerTexInfo.Parser, new[]{ "Name", "Scale", "Tint" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerEntitySpawner), global::HelloGame.SerEntitySpawner.Parser, new[]{ "Position", "Type", "SpawnRandomPosition", "Info1", "Info2", "StartRotation", "StartNoticeState" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerBrush), global::HelloGame.SerBrush.Parser, new[]{ "DrawType", "Bounds", "TextureInfo", "DrawAhead" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerBrush), global::HelloGame.SerBrush.Parser, new[]{ "DrawType", "Bounds", "TextureInfo", "DrawDepth" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerWall), global::HelloGame.SerWall.Parser, new[]{ "Bounds" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerProp), global::HelloGame.SerProp.Parser, new[]{ "Position", "TexInfo", "ShadowScale" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerTrigger), global::HelloGame.SerTrigger.Parser, new[]{ "Bounds", "Command", "Info1", "Info2" }, null, null, null),
@@ -1117,7 +1117,7 @@ namespace HelloGame {
       drawType_ = other.drawType_;
       Bounds = other.bounds_ != null ? other.Bounds.Clone() : null;
       TextureInfo = other.textureInfo_ != null ? other.TextureInfo.Clone() : null;
-      drawAhead_ = other.drawAhead_;
+      drawDepth_ = other.drawDepth_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1158,14 +1158,14 @@ namespace HelloGame {
       }
     }
 
-    /// <summary>Field number for the "drawAhead" field.</summary>
-    public const int DrawAheadFieldNumber = 4;
-    private bool drawAhead_;
+    /// <summary>Field number for the "drawDepth" field.</summary>
+    public const int DrawDepthFieldNumber = 4;
+    private int drawDepth_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool DrawAhead {
-      get { return drawAhead_; }
+    public int DrawDepth {
+      get { return drawDepth_; }
       set {
-        drawAhead_ = value;
+        drawDepth_ = value;
       }
     }
 
@@ -1185,7 +1185,7 @@ namespace HelloGame {
       if (DrawType != other.DrawType) return false;
       if (!object.Equals(Bounds, other.Bounds)) return false;
       if (!object.Equals(TextureInfo, other.TextureInfo)) return false;
-      if (DrawAhead != other.DrawAhead) return false;
+      if (DrawDepth != other.DrawDepth) return false;
       return true;
     }
 
@@ -1195,7 +1195,7 @@ namespace HelloGame {
       if (DrawType != 0) hash ^= DrawType.GetHashCode();
       if (bounds_ != null) hash ^= Bounds.GetHashCode();
       if (textureInfo_ != null) hash ^= TextureInfo.GetHashCode();
-      if (DrawAhead != false) hash ^= DrawAhead.GetHashCode();
+      if (DrawDepth != 0) hash ^= DrawDepth.GetHashCode();
       return hash;
     }
 
@@ -1218,9 +1218,9 @@ namespace HelloGame {
         output.WriteRawTag(26);
         output.WriteMessage(TextureInfo);
       }
-      if (DrawAhead != false) {
+      if (DrawDepth != 0) {
         output.WriteRawTag(32);
-        output.WriteBool(DrawAhead);
+        output.WriteInt32(DrawDepth);
       }
     }
 
@@ -1236,8 +1236,8 @@ namespace HelloGame {
       if (textureInfo_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(TextureInfo);
       }
-      if (DrawAhead != false) {
-        size += 1 + 1;
+      if (DrawDepth != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(DrawDepth);
       }
       return size;
     }
@@ -1262,8 +1262,8 @@ namespace HelloGame {
         }
         TextureInfo.MergeFrom(other.TextureInfo);
       }
-      if (other.DrawAhead != false) {
-        DrawAhead = other.DrawAhead;
+      if (other.DrawDepth != 0) {
+        DrawDepth = other.DrawDepth;
       }
     }
 
@@ -1294,7 +1294,7 @@ namespace HelloGame {
             break;
           }
           case 32: {
-            DrawAhead = input.ReadBool();
+            DrawDepth = input.ReadInt32();
             break;
           }
         }

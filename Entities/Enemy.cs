@@ -32,6 +32,8 @@ namespace HelloGame.Entities
 
     public abstract class Enemy : EntityLiving
     {
+        public string name;
+
         protected List<Move> moveset;
 
         public Queue<Move> moveQueue;
@@ -56,7 +58,9 @@ namespace HelloGame.Entities
         private int bossIndex;
         private Vector2 bossAnchor;
         protected int bossPhase;
+        protected string bossDescription;
 
+        protected bool introducted;
         protected bool drawHealthBar = true;
 
         protected List<GhostWeapon> weapons;
@@ -140,7 +144,7 @@ namespace HelloGame.Entities
             base.PreUpdate(world);
 
             if (boss && world.player.kills.Contains(bossIndex))
-                Die(world, true);
+                Die(world, true, false);
 
             target = world.player;
             targetPos = world.player.position;
@@ -164,6 +168,12 @@ namespace HelloGame.Entities
                 if (currentMove == null || currentMove.done || currentMove.interruptable)
                 {
                     SelectMove(world);
+                }
+
+                if (!introducted)
+                {
+                    OnAggroed(world);
+                    introducted = true;
                 }
 
                 float distFromInit = Math.Abs((initialPosition - position).Length());
@@ -222,6 +232,14 @@ namespace HelloGame.Entities
             }
         }
 
+        public virtual void OnAggroed(World world)
+        {
+            if (boss)
+            {
+                GuiHud.SetBigText(name, bossDescription, Main.assets.GetFont("bfMunro72"), Main.assets.GetFont("bfMunro23_bold"), Color.White);
+            }
+        }
+
         public virtual void AttackWithWeapon(World world, int weaponIndex, int force, float rotation, int delay = -1)
         {
             weapons[weaponIndex].Attack(this, force);
@@ -276,11 +294,17 @@ namespace HelloGame.Entities
             }
             if (boss)
             {   //NOTE: don't add spawner. spawner should already be created, but inaccessable.
-                world.AddProp(new Prop(bossAnchor, new TextureInfo(new TextureContainer("tree1"), Vector2.One, Color.White), .5f));
-                world.AddTrigger(new Trigger(new Rectangle((bossAnchor - new Vector2(32)).ToPoint(), new Point(64)), "save", "2", ""));
+                Prop pr = new Prop(bossAnchor, new TextureInfo(new TextureContainer("tree1"), Vector2.One, Color.White), .5f);
+                pr.noSave = true;
+                world.AddProp(pr);
+                Trigger t = new Trigger(new Rectangle((bossAnchor - new Vector2(32)).ToPoint(), new Point(64)), "save", "2", "");
+                t.noSave = true;
+                world.AddTrigger(t);
 
                 if (!force)
                 {   //we use this so we don't spawn the particles every time the player loads from the boss's save point.
+                    Main.camera.SetFade(new Color(255, 255, 255, 127), true, 45);
+                    GuiHud.SetBigText("Victory Achieved", null, Main.assets.GetFont("bfMunro72"), null, Color.White);
                     for (int i = 0; i < 128; i++)
                     {   //kill all other particles
                         if (world.entities[i] is Particle)
@@ -313,9 +337,10 @@ namespace HelloGame.Entities
 
             weapons.ForEach(x => x.Draw(batch));
 
-            if (boss && Main.DEBUG)
+            if (boss)
             {
-                batch.DrawLine(position, bossAnchor, Color.Red, 2);
+                if (Main.DEBUG)
+                    batch.DrawLine(position, bossAnchor, Color.Red, 2);
             }
         }
 
@@ -342,10 +367,12 @@ namespace HelloGame.Entities
                 {
                     if (noticeState == EnemyNoticeState.Aggrod)
                     {
-                        int width = Main.WIDTH - 96;
-                        var pos = Camera.ToWorldCoords(new Vector2(48, Main.HEIGHT - 64));
+                        float width = Main.WIDTH - 96;
 
-                        batch.DrawRectangle(new Rectangle((int)pos.X, (int)pos.Y, width, 16), Color.Gray);
+                        Vector2 pos = Camera.ToWorldCoords(new Vector2(48, Main.HEIGHT - 64));
+
+                        batch.DrawString(Main.assets.GetFont("bfMunro12"), name, pos - new Vector2(0, 16), Color.White);
+                        batch.DrawRectangle(new Rectangle((int)pos.X, (int)pos.Y, (int)width, 16), Color.Gray);
                         batch.DrawRectangle(new Rectangle((int)pos.X, (int)pos.Y, (int)(percentpre * width), 16), Color.Orange);
                         batch.DrawRectangle(new Rectangle((int)pos.X, (int)pos.Y, (int)(percent * width), 16), Color.Red);
 

@@ -33,6 +33,11 @@ namespace HelloGame
             world.collisionWorld.Remove(box);
         }
 
+        public void Draw(SpriteBatch batch)
+        {
+            batch.DrawRectangle(new Rectangle(bounds.X, bounds.Y, bounds.Width + 64, bounds.Height + 64), new Color(Color.Black, 63), 0);
+        }
+
         public void Draw_DEBUG(SpriteBatch batch)
         {
             batch.DrawHollowRectangle(bounds, 2, Color.Red);

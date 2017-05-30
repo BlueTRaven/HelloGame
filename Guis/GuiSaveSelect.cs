@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Input;
 using HelloGame.Guis.Widgets;
 using HelloGame.Entities;
 using HelloGame.Utility;
+using HelloGame.Content.Localization;
 
 namespace HelloGame.Guis
 {
@@ -37,10 +38,10 @@ namespace HelloGame.Guis
                 isnew[i] = true;
                 slots[i] = AddWidget("saveslot_" + i, new WidgetButton(new Rectangle((int)((Main.WIDTH / 2) - 128), 64 * i + 72 + i * 8, 256, 64))
                     .SetBackgroundColor(Color.White, Color.LightGray, Color.DarkGray, Color.Gray, Color.White)
-                    .SetHasText(Main.assets.GetFont("bfMunro12"), "New File " + (i + 1), Color.White, Utility.TextAlignment.Center));
+                    .SetHasText(Main.assets.GetFont("bfMunro12"), string.Format(MenuOptions.NewFile, (i + 1)), Color.White, Enums.Alignment.Center));
                 deleteSlots[i] = AddWidget("delsaveslot_" + i, new WidgetButton(new Rectangle((Main.WIDTH / 2) + 128, 64 * i + 72 + i * 8, 64, 64))
                     .SetBackgroundColor(Color.White, Color.LightGray, Color.DarkGray, Color.Gray, Color.White)
-                    .SetHasText(Main.assets.GetFont("bfMunro12"), "Delete", Color.White, Utility.TextAlignment.Center));
+                    .SetHasText(Main.assets.GetFont("bfMunro12"), MenuOptions.DeleteFile, Color.White, Enums.Alignment.Center));
                 deleteSlots[i].active = false;
             }
 
@@ -99,7 +100,7 @@ namespace HelloGame.Guis
                         {
                             slots[i].active = false;
                             creating = true;
-                            AddWidget("savename", new WidgetTextBox(slots[i].bounds, Main.assets.GetFont("bfMunro12"), "Enter A Save Name", 32, Utility.TextAlignment.Center, TextBoxFilter.AlphaNumeric)
+                            AddWidget("savename", new WidgetTextBox(slots[i].bounds, Main.assets.GetFont("bfMunro12"), MenuOptions.SaveName, 32, Enums.Alignment.Center, TextBoxFilter.AlphaNumeric)
                                 .SetHasBlackList('.'))//we don't want periods as it uses them to determine the file name.
                                 .SetBackgroundColor(Color.White, Color.Gray); 
                         }
@@ -115,7 +116,7 @@ namespace HelloGame.Guis
                         haschecked = false;
                         File.Delete("Saves/" + slots[i].text + ".hgsf");
 
-                        slots[i].text = "New File " + (i + 1);
+                        slots[i].text = string.Format(MenuOptions.NewFile, (i + 1));
                     }
                 }
             }

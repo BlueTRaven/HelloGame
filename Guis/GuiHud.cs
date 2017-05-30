@@ -31,6 +31,12 @@ namespace HelloGame.Guis
         public bool showPrompt;
         public string promptText = "Press {0} to <Action>";
 
+        private int bigtextTime, bigTextFadeDelay, bigTextFadeInTime;
+        private const int bigtextTimeMax = 60;
+        private Color currentColor, baseColor, toColor;
+        private SpriteFont font, smallFont;
+        private string text, littletext;
+
         public GuiHud() : base("hud")
         {
             AddWidget("openeditor_dummy", new WidgetButton(new Rectangle(0, 0, 0, 0)))
@@ -61,6 +67,24 @@ namespace HelloGame.Guis
                 staminaDelay--;
             if (preHitStamina > currentStamina && staminaDelay == 0)
                 preHitStamina--;
+
+            if (bigTextFadeInTime > 0)
+            {
+                bigTextFadeInTime--;
+                currentColor = Color.Lerp(baseColor, toColor, (float)bigTextFadeInTime / (float)(bigtextTimeMax / 2));
+            }
+            else
+            {
+                if (bigTextFadeDelay <= 0)
+                {
+                    if (bigtextTime > 0)
+                    {
+                        bigtextTime--;
+                        currentColor = Color.Lerp(toColor, baseColor, (float)bigtextTime / (float)bigtextTimeMax);
+                    }
+                }
+                else bigTextFadeDelay--;
+            }
         }
 
         public void ShowPrompt(int time, string actionName = "Press {0} to <Action>", bool force = false)
@@ -72,6 +96,22 @@ namespace HelloGame.Guis
 
             promptTime = time;
             promptText = actionName;
+        }
+
+        public void ShowBigText(string text, string littletext, SpriteFont font, SpriteFont smallFont, Color color)
+        {
+            this.text = text;
+            this.littletext = littletext;
+
+            this.font = font;
+            this.smallFont = smallFont;
+
+            bigTextFadeDelay = 120;
+            bigtextTime = bigtextTimeMax;
+            bigTextFadeInTime = bigtextTimeMax / 2;
+            currentColor = color;
+            baseColor = color;
+            toColor = Color.Transparent;
         }
 
         public override void Draw(SpriteBatch batch)
@@ -101,7 +141,35 @@ namespace HelloGame.Guis
             if (showPrompt)
             {
                 batch.DrawRectangle(new Rectangle(Main.WIDTH / 2 - 128, Main.HEIGHT - 128, 256, 16), Color.Black);
-                batch.DrawString(Main.assets.GetFont("bfMunro12"), string.Format(promptText, Main.options.interactKeybind), new Vector2(Main.WIDTH / 2 - 128, Main.HEIGHT - 128) + TextHelper.GetAlignmentOffset(Main.assets.GetFont("bfMunro12"), string.Format(promptText, Main.options.interactKeybind), new Rectangle(Main.WIDTH / 2 - 128, Main.HEIGHT - 128, 256, 16), TextAlignment.Center), Color.White);
+                batch.DrawString(Main.assets.GetFont("bfMunro12"), string.Format(promptText, Main.options.interactKeybind), new Vector2(Main.WIDTH / 2 - 128, Main.HEIGHT - 128) + TextHelper.GetAlignmentOffset(Main.assets.GetFont("bfMunro12"), string.Format(promptText, Main.options.interactKeybind), new Rectangle(Main.WIDTH / 2 - 128, Main.HEIGHT - 128, 256, 16), Enums.Alignment.Center), Color.White);
+            }
+
+            if (bigtextTime > 0 && (bigTextFadeInTime != bigtextTimeMax / 2))
+            {
+                if (font != null && smallFont != null)
+                {   //both big and small font
+                    Vector2 s1 = font.MeasureString(text);
+                    Rectangle rect = new Rectangle(Main.WIDTH / 2 - (int)s1.X / 2, Main.HEIGHT / 2 - (int)s1.Y / 2, (int)s1.X, (int)s1.Y);
+                    batch.DrawString(font, text, rect.Location.ToVector2(), currentColor);
+
+                    Vector2 s2 = smallFont.MeasureString(littletext);
+                    rect = new Rectangle(Main.WIDTH / 2 - (int)s2.X / 2, Main.HEIGHT / 2 - (int)s2.Y / 2, (int)s2.X, (int)s2.Y);
+                    batch.DrawString(smallFont, littletext, new Vector2(rect.X, rect.Y + s1.Y / 2), currentColor);
+                }
+
+                if (smallFont != null && font == null)
+                {   //only small font
+                    Vector2 s2 = smallFont.MeasureString(littletext);
+                    Rectangle rect = new Rectangle(Main.WIDTH / 2 - (int)s2.X / 2, Main.HEIGHT / 2 - (int)s2.Y / 2, (int)s2.X, (int)s2.Y);
+                    batch.DrawString(smallFont, littletext, new Vector2(rect.X, rect.Y), currentColor);
+                }
+
+                if (font != null && smallFont == null)
+                {   //only big font
+                    Vector2 s1 = font.MeasureString(text);
+                    Rectangle rect = new Rectangle(Main.WIDTH / 2 - (int)s1.X / 2, Main.HEIGHT / 2 - (int)s1.Y / 2, (int)s1.X, (int)s1.Y);
+                    batch.DrawString(font, text, rect.Location.ToVector2(), currentColor);
+                }
             }
         }
 
@@ -129,6 +197,11 @@ namespace HelloGame.Guis
         public static void SetPromptText(int time, string actionName = "Press {0} to <Action>", bool force = false)
         {
             ((GuiHud)Main.guis["hud"]).ShowPrompt(time, actionName, force);
+        }
+
+        public static void SetBigText(string text, string littletext, SpriteFont font, SpriteFont smallFont, Color color)
+        {
+            ((GuiHud)Main.guis["hud"]).ShowBigText(text, littletext, font, smallFont, color);
         }
     }
 }

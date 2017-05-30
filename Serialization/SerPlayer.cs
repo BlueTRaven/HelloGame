@@ -22,13 +22,19 @@ namespace HelloGame {
     static SerPlayerReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9TZXJQbGF5ZXIucHJvdG8SCUhlbGxvR2FtZSJSCglTZXJQbGF5ZXISDgoG",
-            "aGVhbHRoGAEgASgFEhUKDWVudHJhbmNlUG9pbnQYAiABKAUSDwoHbWFwTmFt",
-            "ZRgDIAEoCRINCgVraWxscxgEIAMoBWIGcHJvdG8z"));
+            "Cg9TZXJQbGF5ZXIucHJvdG8SCUhlbGxvR2FtZSKgAQoJU2VyUGxheWVyEg4K",
+            "BmhlYWx0aBgBIAEoBRIVCg1lbnRyYW5jZVBvaW50GAIgASgFEg8KB21hcE5h",
+            "bWUYAyABKAkSDQoFa2lsbHMYBCADKAUSIQoFaXRlbXMYBSADKAsyEi5IZWxs",
+            "b0dhbWUuU2VySXRlbRIpCglvcGVuYWJsZXMYBiADKAsyFi5IZWxsb0dhbWUu",
+            "U2VyT3BlbmFibGUiLQoLU2VyT3BlbmFibGUSDwoHbWFwbmFtZRgBIAEoCRIN",
+            "CgVpbmRleBgCIAEoBSIpCgdTZXJJdGVtEhAKCGl0ZW1UeXBlGAEgASgFEgwK",
+            "BHR5cGUYAiABKAViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerPlayer), global::HelloGame.SerPlayer.Parser, new[]{ "Health", "EntrancePoint", "MapName", "Kills" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerPlayer), global::HelloGame.SerPlayer.Parser, new[]{ "Health", "EntrancePoint", "MapName", "Kills", "Items", "Openables" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerOpenable), global::HelloGame.SerOpenable.Parser, new[]{ "Mapname", "Index" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerItem), global::HelloGame.SerItem.Parser, new[]{ "ItemType", "Type" }, null, null, null)
           }));
     }
     #endregion
@@ -63,6 +69,8 @@ namespace HelloGame {
       entrancePoint_ = other.entrancePoint_;
       mapName_ = other.mapName_;
       kills_ = other.kills_.Clone();
+      items_ = other.items_.Clone();
+      openables_ = other.openables_.Clone();
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -113,6 +121,26 @@ namespace HelloGame {
       get { return kills_; }
     }
 
+    /// <summary>Field number for the "items" field.</summary>
+    public const int ItemsFieldNumber = 5;
+    private static readonly pb::FieldCodec<global::HelloGame.SerItem> _repeated_items_codec
+        = pb::FieldCodec.ForMessage(42, global::HelloGame.SerItem.Parser);
+    private readonly pbc::RepeatedField<global::HelloGame.SerItem> items_ = new pbc::RepeatedField<global::HelloGame.SerItem>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::HelloGame.SerItem> Items {
+      get { return items_; }
+    }
+
+    /// <summary>Field number for the "openables" field.</summary>
+    public const int OpenablesFieldNumber = 6;
+    private static readonly pb::FieldCodec<global::HelloGame.SerOpenable> _repeated_openables_codec
+        = pb::FieldCodec.ForMessage(50, global::HelloGame.SerOpenable.Parser);
+    private readonly pbc::RepeatedField<global::HelloGame.SerOpenable> openables_ = new pbc::RepeatedField<global::HelloGame.SerOpenable>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<global::HelloGame.SerOpenable> Openables {
+      get { return openables_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as SerPlayer);
@@ -130,6 +158,8 @@ namespace HelloGame {
       if (EntrancePoint != other.EntrancePoint) return false;
       if (MapName != other.MapName) return false;
       if(!kills_.Equals(other.kills_)) return false;
+      if(!items_.Equals(other.items_)) return false;
+      if(!openables_.Equals(other.openables_)) return false;
       return true;
     }
 
@@ -140,6 +170,8 @@ namespace HelloGame {
       if (EntrancePoint != 0) hash ^= EntrancePoint.GetHashCode();
       if (MapName.Length != 0) hash ^= MapName.GetHashCode();
       hash ^= kills_.GetHashCode();
+      hash ^= items_.GetHashCode();
+      hash ^= openables_.GetHashCode();
       return hash;
     }
 
@@ -163,6 +195,8 @@ namespace HelloGame {
         output.WriteString(MapName);
       }
       kills_.WriteTo(output, _repeated_kills_codec);
+      items_.WriteTo(output, _repeated_items_codec);
+      openables_.WriteTo(output, _repeated_openables_codec);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -178,6 +212,8 @@ namespace HelloGame {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(MapName);
       }
       size += kills_.CalculateSize(_repeated_kills_codec);
+      size += items_.CalculateSize(_repeated_items_codec);
+      size += openables_.CalculateSize(_repeated_openables_codec);
       return size;
     }
 
@@ -196,6 +232,8 @@ namespace HelloGame {
         MapName = other.MapName;
       }
       kills_.Add(other.kills_);
+      items_.Add(other.items_);
+      openables_.Add(other.openables_);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -221,6 +259,304 @@ namespace HelloGame {
           case 34:
           case 32: {
             kills_.AddEntriesFrom(input, _repeated_kills_codec);
+            break;
+          }
+          case 42: {
+            items_.AddEntriesFrom(input, _repeated_items_codec);
+            break;
+          }
+          case 50: {
+            openables_.AddEntriesFrom(input, _repeated_openables_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class SerOpenable : pb::IMessage<SerOpenable> {
+    private static readonly pb::MessageParser<SerOpenable> _parser = new pb::MessageParser<SerOpenable>(() => new SerOpenable());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<SerOpenable> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::HelloGame.SerPlayerReflection.Descriptor.MessageTypes[1]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SerOpenable() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SerOpenable(SerOpenable other) : this() {
+      mapname_ = other.mapname_;
+      index_ = other.index_;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SerOpenable Clone() {
+      return new SerOpenable(this);
+    }
+
+    /// <summary>Field number for the "mapname" field.</summary>
+    public const int MapnameFieldNumber = 1;
+    private string mapname_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Mapname {
+      get { return mapname_; }
+      set {
+        mapname_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "index" field.</summary>
+    public const int IndexFieldNumber = 2;
+    private int index_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Index {
+      get { return index_; }
+      set {
+        index_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as SerOpenable);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(SerOpenable other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Mapname != other.Mapname) return false;
+      if (Index != other.Index) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Mapname.Length != 0) hash ^= Mapname.GetHashCode();
+      if (Index != 0) hash ^= Index.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Mapname.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Mapname);
+      }
+      if (Index != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Index);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Mapname.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Mapname);
+      }
+      if (Index != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Index);
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(SerOpenable other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Mapname.Length != 0) {
+        Mapname = other.Mapname;
+      }
+      if (other.Index != 0) {
+        Index = other.Index;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 10: {
+            Mapname = input.ReadString();
+            break;
+          }
+          case 16: {
+            Index = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  public sealed partial class SerItem : pb::IMessage<SerItem> {
+    private static readonly pb::MessageParser<SerItem> _parser = new pb::MessageParser<SerItem>(() => new SerItem());
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<SerItem> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::HelloGame.SerPlayerReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SerItem() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SerItem(SerItem other) : this() {
+      itemType_ = other.itemType_;
+      type_ = other.type_;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SerItem Clone() {
+      return new SerItem(this);
+    }
+
+    /// <summary>Field number for the "itemType" field.</summary>
+    public const int ItemTypeFieldNumber = 1;
+    private int itemType_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int ItemType {
+      get { return itemType_; }
+      set {
+        itemType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "type" field.</summary>
+    public const int TypeFieldNumber = 2;
+    private int type_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Type {
+      get { return type_; }
+      set {
+        type_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as SerItem);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(SerItem other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ItemType != other.ItemType) return false;
+      if (Type != other.Type) return false;
+      return true;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ItemType != 0) hash ^= ItemType.GetHashCode();
+      if (Type != 0) hash ^= Type.GetHashCode();
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (ItemType != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(ItemType);
+      }
+      if (Type != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(Type);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (ItemType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ItemType);
+      }
+      if (Type != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Type);
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(SerItem other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ItemType != 0) {
+        ItemType = other.ItemType;
+      }
+      if (other.Type != 0) {
+        Type = other.Type;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            input.SkipLastField();
+            break;
+          case 8: {
+            ItemType = input.ReadInt32();
+            break;
+          }
+          case 16: {
+            Type = input.ReadInt32();
             break;
           }
         }

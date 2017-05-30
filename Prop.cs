@@ -24,6 +24,8 @@ namespace HelloGame
         public TextureInfo texInfo;
         public float shadowScale;
 
+        public bool noSave;
+
         public Prop(Vector2 position, TextureInfo texInfo, float shadowScale)
         {
             this.position = position;

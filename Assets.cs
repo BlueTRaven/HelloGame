@@ -56,6 +56,7 @@ namespace HelloGame
             whitePixel = new Texture2D(device, 1, 1);
             whitePixel.SetData(new Color[] { Color.White });
             textures.Add("whitePixel", whitePixel);
+            textures.Add("shadowPixel", content.Load<Texture2D>("Textures/ShadowPixel"));
             textures.Add("shadow", content.Load<Texture2D>("Textures/Shadow"));
             textures.Add("displace", content.Load<Texture2D>("Textures/displace"));
 
@@ -77,6 +78,7 @@ namespace HelloGame
             textures.Add("brick1", content.Load<Texture2D>("Textures/Brush/Brick1"));
             textures.Add("brickSide", content.Load<Texture2D>("Textures/Brush/BrickSide"));
             textures.Add("brickTop", content.Load<Texture2D>("Textures/Brush/BrickTop"));
+            textures.Add("brickFloor", content.Load<Texture2D>("Textures/Brush/BrickFloor"));
             textures.Add("chip_overlay1", content.Load<Texture2D>("Textures/Brush/Chip_overlay1"));
             textures.Add("vine_overlay1", content.Load<Texture2D>("Textures/Brush/Vine_overlay1"));
 
@@ -101,6 +103,7 @@ namespace HelloGame
             this.fonts.Add("bfMunro12", content.Load<SpriteFont>("Fonts/bitfontMunro12"));
             this.fonts.Add("bfMunro8", content.Load<SpriteFont>("Fonts/bitfontMunro8"));
             this.fonts.Add("bfMunro23_bold", content.Load<SpriteFont>("Fonts/bitfontMunro23BOLD"));
+            this.fonts.Add("bfMunro72", content.Load<SpriteFont>("Fonts/bitfontMunro72"));
         }
     }
 }

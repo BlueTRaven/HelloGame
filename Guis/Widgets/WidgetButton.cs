@@ -17,7 +17,7 @@ namespace HelloGame.Guis.Widgets
         protected bool hasText;
         protected SpriteFont font;
         public string text;
-        protected TextAlignment alignment;
+        protected Enums.Alignment alignment;
         public Color textColor;
 
         private bool hasBackgroundColor;
@@ -36,7 +36,7 @@ namespace HelloGame.Guis.Widgets
 
         }
 
-        public WidgetButton SetHasText(SpriteFont font, string text, Color textColor, TextAlignment alignment = TextAlignment.Center)
+        public WidgetButton SetHasText(SpriteFont font, string text, Color textColor, Enums.Alignment alignment = Enums.Alignment.Center)
         {
             hasText = true;
             this.font = font;

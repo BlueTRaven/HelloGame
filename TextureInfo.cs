@@ -19,6 +19,7 @@ namespace HelloGame
 
         public bool isAnimated;
         public Rectangle? sourceRect;
+        public Vector2 offset;
 
         private FixedSizedQueue<int> playIndexQueue;
         private int currentPlayIndex;
@@ -37,7 +38,7 @@ namespace HelloGame
         #region animation
         public void Update()
         {
-            if (PlayAnimation(currentPlayIndex))
+            if (UpdateAnimation(currentPlayIndex))
             {
                 if (playIndexQueue.Count > 0)
                     currentPlayIndex = playIndexQueue.Dequeue();
@@ -45,6 +46,7 @@ namespace HelloGame
 
                 sourceRect = currentAnimation.GetSourceRect();
             }
+            offset = currentAnimation.GetOffset();
         }
 
         public TextureInfo SetAnimated(int baseWidth, int baseHeight, params Animation[] animations)
@@ -80,7 +82,7 @@ namespace HelloGame
             }
         }
 
-        public bool PlayAnimation(int indexPlay)
+        private bool UpdateAnimation(int indexPlay)
         {
             currentAnimation = animations[indexPlay];
             currentAnimation.Animate();
@@ -131,7 +133,7 @@ namespace HelloGame
         public readonly int frameHeight, frameWidth, numFrames, baseX;
         private readonly IReadOnlyCollection<int> eachFrameDurationMax;
         public int[] eachFrameDuration;
-
+        public Vector2[] eachFrameOffset;
         private int currentFrameHeight;
 
         private int currentFrame;
@@ -142,7 +144,7 @@ namespace HelloGame
 
         public bool flipped;
 
-        public Animation(int baseX, int frameWidth, int frameHeight, int numFrames, bool interruptable, bool flipped, params int[] eachFrameDuration)
+        public Animation(int baseX, int frameWidth, int frameHeight, int numFrames, bool interruptable, bool flipped, int[] eachFrameDuration, Vector2[] eachFrameOffset = null)
         {
             this.baseX = baseX;
 
@@ -151,6 +153,9 @@ namespace HelloGame
             this.numFrames = numFrames;
             this.flipped = flipped;
             this.interruptable = interruptable;
+
+            this.eachFrameOffset = eachFrameOffset;
+
             eachFrameDurationMax = new int[eachFrameDuration.Length];
             eachFrameDurationMax = Array.AsReadOnly(eachFrameDuration).ToArray();
             this.eachFrameDuration = eachFrameDuration;
@@ -187,6 +192,17 @@ namespace HelloGame
         public Rectangle GetSourceRect()
         {
             return new Rectangle(baseX, currentFrameHeight, frameWidth, frameHeight);
+        }
+
+        public Vector2 GetOffset()
+        {
+            Rectangle sr = GetSourceRect();
+            Vector2 vec = new Vector2(sr.Width / 2, sr.Height);
+            if (eachFrameOffset != null)
+            {
+                vec += eachFrameOffset[currentFrame];
+            }
+            return vec;
         }
 
         public int GetFrameCount()

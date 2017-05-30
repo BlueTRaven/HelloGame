@@ -28,27 +28,28 @@ namespace HelloGame.Guis.Widgets
             AddWindow("brush_textureselector", new WidgetWindowTextureSelector(new Vector2(0, 0)));
             GetWindow<WidgetWindowTextureSelector>("brush_textureselector").backgroundColor = Color.Black;
 
-            AddWidget("brush_type", new WidgetDropdown(new Rectangle(112, 40, 64, 24), Main.assets.GetFont("bfMunro12"), "type", Color.White, TextAlignment.Left, 4, Enum.GetNames(typeof(BrushDrawType))));
-            //AddWidget("brush_mode", new WidgetTextBox(new Rectangle(112, 40, 64, 24), Main.assets.GetFont("bfMunro12"), "mode", 1, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("brush_drawahead", new WidgetCheckbox(new Rectangle(112, 8, 24, 24), Color.White));
+            AddWidget("brush_type", new WidgetDropdown(new Rectangle(112, 40, 64, 24), Main.assets.GetFont("bfMunro12"), "type", Color.White, Enums.Alignment.Left, 2, Enum.GetNames(typeof(BrushDrawType))));
+            //AddWidget("brush_mode", new WidgetTextBox(new Rectangle(112, 40, 64, 24), Main.assets.GetFont("bfMunro12"), "mode", 1, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("brush_depth", new WidgetDropdown(new Rectangle(112, 8, 64, 24), Main.assets.GetFont("bfMunro12"), "depth", Color.White, Enums.Alignment.Left, 3, Enum.GetNames(typeof(BrushDepth))));
 
             //entity mode widgets
-            AddWidget("entity_type", new WidgetTextBox(new Rectangle(8, 8, 56, 24), Main.assets.GetFont("bfMunro12"), "type", 4, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("entity_info1", new WidgetTextBox(new Rectangle(8, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "info 1", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("entity_info2", new WidgetTextBox(new Rectangle(72, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "info 2", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("entity_type", new WidgetTextBox(new Rectangle(8, 8, 56, 24), Main.assets.GetFont("bfMunro12"), "type", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("entity_info1", new WidgetTextBox(new Rectangle(8, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "info 1", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("entity_info2", new WidgetTextBox(new Rectangle(72, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "info 2", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
             AddWidget("entity_spawnrandom", new WidgetCheckbox(new Rectangle(104, 8, 24, 24), Color.White));
-            AddWidget("entity_spawnrotation", new WidgetTextBox(new Rectangle(136, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "rotation", 3, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("entity_spawnstate", new WidgetDropdown(new Rectangle(8, 72, 56, 24), Main.assets.GetFont("bfMunro12"), "mode", Color.White, TextAlignment.Left, 5, Enum.GetNames(typeof(EnemyNoticeState))));
+            AddWidget("entity_spawnrotation", new WidgetTextBox(new Rectangle(136, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "rotation", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("entity_spawnstate", new WidgetDropdown(new Rectangle(8, 72, 56, 24), Main.assets.GetFont("bfMunro12"), "mode", Color.White, Enums.Alignment.Left, 5, Enum.GetNames(typeof(EnemyNoticeState))));
 
             //prop mode widgets
             AddWindow("prop_textureselector", new WidgetWindowTextureSelector(new Vector2(0, -64)));
             GetWindow<WidgetWindowTextureSelector>("prop_textureselector").backgroundColor = Color.Black;
-            AddWidget("prop_shadowscale", new WidgetTextBox(new Rectangle(112, 40, 32, 24), Main.assets.GetFont("bfMunro12"), "scale", 4, TextAlignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("prop_shadowscale", new WidgetTextBox(new Rectangle(112, 40, 32, 24), Main.assets.GetFont("bfMunro12"), "scale", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
 
             //trigger mode widgets
-            AddWidget("trigger_command", new WidgetTextBox(new Rectangle(8, 8, 56, 24), Main.assets.GetFont("bfMunro12"), "command", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("trigger_info1", new WidgetTextBox(new Rectangle(8, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "info1", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("trigger_info2", new WidgetTextBox(new Rectangle(8, 72, 56, 24), Main.assets.GetFont("bfMunro12"), "info2", 32, TextAlignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("trigger_command", new WidgetTextBox(new Rectangle(8, 8, 56, 24), Main.assets.GetFont("bfMunro12"), "command", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray)
+                .SetHasTextPrediction(Trigger.GetCommandNames());
+            AddWidget("trigger_info1", new WidgetTextBox(new Rectangle(8, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "info1", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("trigger_info2", new WidgetTextBox(new Rectangle(8, 72, 56, 24), Main.assets.GetFont("bfMunro12"), "info2", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
         }
 
         public override void Update()
@@ -103,7 +104,7 @@ namespace HelloGame.Guis.Widgets
         {
             if (mode == 0)
             {   //brush mode
-                return new string[] { "brush_type", "brush_drawahead" };
+                return new string[] { "brush_type", "brush_depth" };
             }
             if (mode == 2)
             {   //entity mode

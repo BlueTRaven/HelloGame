@@ -26,7 +26,7 @@ namespace HelloGame.Guis.Widgets
 
         int currentIndex;
 
-        public WidgetDropdown(Rectangle bounds, SpriteFont font, string baseText, Color textColor, TextAlignment alignment, 
+        public WidgetDropdown(Rectangle bounds, SpriteFont font, string baseText, Color textColor, Enums.Alignment alignment, 
             int numOptions, params string[] names) : base(bounds)
         {
             initialOption = baseText;
@@ -146,7 +146,7 @@ namespace HelloGame.Guis.Widgets
         public void SetIndex(int index)
         {
             currentIndex = index;
-            currentOption = names[index];
+            if (names.Length < index) currentOption = names[index];
             text = currentOption;
         }
     }

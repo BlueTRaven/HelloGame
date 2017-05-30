@@ -14,6 +14,7 @@ namespace HelloGame.GhostWeapons
         public Hit hit { get; private set; }
         public int resetTime { get; private set; }
         public int runTime { get; private set; }
+        public readonly int runTimeMax;
         public bool hasHit;
 
         public Action<Vector2> animation;
@@ -23,6 +24,7 @@ namespace HelloGame.GhostWeapons
             this.hit = hit;
             this.resetTime = resetTime;
             this.runTime = runTime;
+            this.runTimeMax = runTime;
             this.animation = animation;
         }
 

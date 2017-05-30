@@ -107,7 +107,7 @@ namespace HelloGame
             batch = new SpriteBatch(GraphicsDevice);
 
             assets.Load(GraphicsDevice, Content);
-
+            Trigger.GetCommands();
             grayscale = Content.Load<Effect>("Shaders/test");
         }
 
@@ -217,6 +217,7 @@ namespace HelloGame
             batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, null, null, null);
 
             activeGui.Draw(batch);
+            camera.Draw(batch);
 
             batch.End();
 

@@ -46,7 +46,7 @@ message SerBrush {
 
 	SerTexInfo textureInfo = 3;
 
-	bool drawAhead = 4;
+	int32 drawDepth = 4;
 }
 
 message SerWall {

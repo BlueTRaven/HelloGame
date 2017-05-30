@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using HelloGame.Utility;
 
 namespace HelloGame.Guis.Widgets
 {
@@ -36,6 +37,47 @@ namespace HelloGame.Guis.Widgets
             hasKeybind = true;
             this.keybind = keybind;
             return this;
+        }
+
+        public Widget SetAnchored(Gui gui, Enums.Alignment alignment)
+        {
+            bounds = new Rectangle(GetAlignmentPosition(new Rectangle(0, 0, Main.WIDTH, Main.HEIGHT), bounds, alignment).ToPoint(), bounds.Size);
+            return this;
+        }
+
+        public Widget SetAnchored(Widget widget, Enums.Alignment alignment)
+        {
+            bounds = new Rectangle(GetAlignmentPosition(widget.bounds, bounds, alignment).ToPoint(), bounds.Size);
+            return this;
+        }
+
+        public Widget SetAnchored(WidgetWindow window, Enums.Alignment alignment)
+        {
+            bounds = new Rectangle(GetAlignmentPosition(window.bounds, bounds, alignment).ToPoint(), bounds.Size);
+            return this;
+        }
+
+        private Vector2 GetAlignmentPosition(Rectangle boundsA, Rectangle boundsB, Enums.Alignment alignment)
+        {
+            if (alignment == Enums.Alignment.TopLeft)
+                return boundsA.Location.ToVector2();
+            else if (alignment == Enums.Alignment.Top)
+                return new Vector2(boundsA.X + ((boundsA.Width / 2) - (boundsB.Width / 2)), boundsA.Y);
+            else if (alignment == Enums.Alignment.TopRight)
+                return new Vector2(boundsA.X + boundsA.Width - boundsB.Width, boundsA.Y);
+            else if (alignment == Enums.Alignment.Right)
+                return new Vector2(boundsA.Right - boundsB.Width, boundsA.Y + ((boundsA.Height / 2) - (boundsB.Height / 2)));
+            else if (alignment == Enums.Alignment.BottomRight)
+                return new Vector2(boundsA.Right - boundsB.Width, boundsA.Bottom - boundsB.Height);
+            else if (alignment == Enums.Alignment.Bottom)
+                return new Vector2(boundsA.X + ((boundsA.Width / 2) - (boundsB.Width / 2)), boundsA.Bottom - boundsB.Height);
+            else if (alignment == Enums.Alignment.BottomLeft)
+                return new Vector2(boundsA.Right, boundsA.Bottom - boundsB.Height);
+            else if (alignment == Enums.Alignment.Left)
+                return new Vector2(boundsA.Left, boundsA.Y + ((boundsA.Height / 2) - (boundsB.Height / 2)));
+            else if (alignment == Enums.Alignment.Center)
+                return new Vector2(boundsA.X + ((boundsA.Width / 2) - (boundsB.Width / 2)), boundsA.Y + ((boundsA.Height / 2) - (boundsB.Height / 2)));
+            return boundsA.Location.ToVector2();
         }
 
         public virtual void PreUpdate()

@@ -32,7 +32,7 @@ namespace HelloGame.Entities
         private int inputTimer;
 
         private bool willRoll;
-
+        private bool rollQueued;
         private bool rolling;
 
         public int stamina, staminaMax, staminaRegainDelay;
@@ -49,6 +49,31 @@ namespace HelloGame.Entities
 
         public List<Item> items;
 
+        public bool idle;
+
+        public List<Openable> openables;
+
+        public struct Openable
+        {
+            public string mapname;
+            public int index;
+
+            public Openable(string mapname, int index)
+            {
+                this.mapname = mapname;
+                this.index = index;
+            }
+
+            public SerOpenable Save()
+            {
+                return new SerOpenable()
+                {
+                    Mapname = mapname,
+                    Index = index
+                };
+            }
+        }
+
         public Player() : base(new Vector2(32))
         {
             texInfos[0] = GetPlayerCharacterTexInfo("charBase", new Vector2(5));
@@ -56,16 +81,18 @@ namespace HelloGame.Entities
             health = 25;
             maxHealth = 25;
 
-            stamina = 100;
-            staminaMax = 100;
+            stamina = 200;
+            staminaMax = 200;
 
-            ((GuiHud)Main.guis["hud"]).SetHealth(health, maxHealth, maxHealth * 2, health);
-            ((GuiHud)Main.guis["hud"]).SetStamina(stamina, staminaMax, staminaMax * 2, stamina);
+            SetHealth(health);
+            //((GuiHud)Main.guis["hud"]).SetHealth(health, maxHealth, maxHealth * 4, health);
+            ((GuiHud)Main.guis["hud"]).SetStamina(stamina, staminaMax, staminaMax, stamina);
 
             weapon = new GhostWeaponIronSword();
 
             kills = new List<int>();
             items = new List<Item>();
+            openables = new List<Openable>();
         }
 
         protected void ResetStats()
@@ -113,7 +140,8 @@ namespace HelloGame.Entities
                     healing = 0;
                 }
 
-                ((GuiHud)Main.guis["hud"]).SetHealth(health, maxHealth, maxHealth * 2, health);
+                SetHealth(health);
+                //((GuiHud)Main.guis["hud"]).SetHealth(health, maxHealth, maxHealth * 4, health);
             }
 
             ResetStats();
@@ -127,7 +155,7 @@ namespace HelloGame.Entities
                     staminaRegainDelay--;
                 else
                 {
-                    ((GuiHud)Main.guis["hud"]).SetStamina(stamina + 1, staminaMax, staminaMax * 2, stamina + 1, 0);
+                    ((GuiHud)Main.guis["hud"]).SetStamina(stamina + 1, staminaMax, staminaMax, stamina + 1, 0);
                     stamina++;
                 }
             }
@@ -145,6 +173,9 @@ namespace HelloGame.Entities
                 }
             }
 
+            if (staggerTime <= 15 && Main.keyboard.KeyPressed(Keys.Space)) 
+                willRoll = true;
+
             if (canInput)
             {
                 bool moved = false;
@@ -152,7 +183,9 @@ namespace HelloGame.Entities
                 if (!staminaLossPunish)
                 {
                     if (Main.keyboard.KeyHeld(Keys.Space))
+                    {
                         willRoll = true;
+                    }
                     if (Main.keyboard.KeyHeldAfterTime(Keys.Space, 30))
                     {
                         willRoll = false;
@@ -161,7 +194,7 @@ namespace HelloGame.Entities
 
                         ConsumeStanima(1);
                     }
-                    if (!Main.keyboard.KeyHeld(Keys.Space) && willRoll)
+                    if (!Main.keyboard.KeyHeld(Keys.Space) && willRoll && !staggered && !rolling)
                     {
                         willRoll = false;
                         inputTimer = 8;
@@ -176,66 +209,103 @@ namespace HelloGame.Entities
                     }
                 }
 
+                idle = false;
                 int pressed = 0;
                 if (Main.keyboard.KeyHeld(Main.options.leftKeybind))
                 {
                     pressed++;
                     moved = true;
                     velocity.X -= movespeed;
-                    texInfos[0].AddAnimationToQueue(2, true);
+                    facingDirection = Enums.DirectionCardinalG.Left;
                 }
                 if (Main.keyboard.KeyHeld(Main.options.upKeybind))
                 {
                     pressed++;
                     moved = true;
                     velocity.Y -= movespeed;
-                    texInfos[0].AddAnimationToQueue(4, true);
+                    facingDirection = Enums.DirectionCardinalG.Up;
                 }
                 if (Main.keyboard.KeyHeld(Main.options.rightKeybind))
                 {
                     pressed++;
                     moved = true;
                     velocity.X += movespeed;
-                    texInfos[0].AddAnimationToQueue(1, true);
+                    facingDirection = Enums.DirectionCardinalG.Right;
                 }
                 if (Main.keyboard.KeyHeld(Main.options.downKeybind))
                 {
                     pressed++;
                     moved = true;
                     velocity.Y += movespeed;
-                    texInfos[0].AddAnimationToQueue(3, true);
+                    facingDirection = Enums.DirectionCardinalG.Down;
                 }
 
                 if (pressed > 1)
                     velocity *= .95f;
-
                 if (!moved || velocity.Length() < .5f)
                 {
-                    texInfos[0].AddAnimationToQueue(0, true);
-
+                    idle = true;
                     rolling = false;
                     inputTimer = 0;
                 }
 
-                if (Main.keyboard.KeyHeld(Keys.R))
+                if (Main.keyboard.KeyPressed(Keys.R))
                 {
-                    health++;
-                    ((GuiHud)Main.guis["hud"]).SetHealth(health, maxHealth, maxHealth * 2, health);
+                    world.cutscene = new Cutscenes.CutsceneGenericCameraPan(true, this, 120, position + new Vector2(128, 0), position + new Vector2(128, 128), position + new Vector2(-128, -128));
+                    //health++;
+                    //((GuiHud)Main.guis["hud"]).SetHealth(health, maxHealth, maxHealth * 4, health);
                 }
 
+                bool attacked = false;
                 if (Main.mouse.LeftButtonPressed())
                 {
                     float ang = VectorHelper.GetAngleBetweenPoints(position, Main.mouse.GetWorldPosition());
-                    /*int[] a = HitArc.GetMinMax(ang, 90);
-                    world.AddHitbox(new HitArc(position, 128, a[0], a[1], 10, 50, 30, StaggerType.Short, this).SetAnimated(15, false));*/
                     weapon.Attack(this);
+                    ConsumeStanima(50);
                     world.AddHitbox(weapon.ModifyHitForEntity(ang));
 
                     staggerTime = weapon.attack.resetTime;
+
+                    facingDirection = GetDirectionFacingAttacking(ang);
+                    attacked = true;
                 }
+
+                texInfos[0].AddAnimationToQueue(GetAnimationIndex(facingDirection, attacked), true, idle);
             }
 
             Main.camera.target = position;
+        }
+
+        private int GetAnimationIndex(Enums.DirectionCardinalG direction, bool attacking = false)
+        {
+            int ret = 0;
+
+            if (direction == Enums.DirectionCardinalG.Left)
+                ret = 2;
+            else if (direction == Enums.DirectionCardinalG.Up)
+                ret = 4;
+            else if (direction == Enums.DirectionCardinalG.Right)
+                ret = 1;
+            else if (direction == Enums.DirectionCardinalG.Down)
+                ret = 3;
+
+            if (attacking)
+                ret += 8;
+
+            return ret;
+        }
+
+        private Enums.DirectionCardinalG GetDirectionFacingAttacking(float ang)
+        {
+            if (ang > 0 && ang <= 45 || ang <= 360 && ang > 315)
+                return Enums.DirectionCardinalG.Left;   //left
+            else if (ang >= 45 && ang < 135)
+                return Enums.DirectionCardinalG.Up;     //up
+            else if (ang >= 135 && ang < 225)
+                return Enums.DirectionCardinalG.Right;  //right
+            else if (ang >= 225 && ang < 315)
+                return Enums.DirectionCardinalG.Down;   //down
+            return Enums.DirectionCardinalG.Down;
         }
 
         public override void Update(World world)
@@ -264,7 +334,8 @@ namespace HelloGame.Entities
                 velocity = direction;
                 velocityDecaysTimer = (int)Math.Abs(direction.Length());    //this is a dumb idea tbh
                 this.staggerTime = GetStaggerTime(type);
-                ((GuiHud)Main.guis["hud"]).SetHealth(health - amt, maxHealth, maxHealth * 2, health);
+                SetHealth(health, health - amt);
+                //((GuiHud)Main.guis["hud"]).SetHealth(health - amt, maxHealth, maxHealth * 4, health);
                 health -= amt;
                 if (health <= 0)
                 {
@@ -277,7 +348,7 @@ namespace HelloGame.Entities
 
         public void ConsumeStanima(int amt)
         {
-            ((GuiHud)Main.guis["hud"]).SetStamina(stamina - amt, staminaMax, staminaMax * 2, stamina);
+            ((GuiHud)Main.guis["hud"]).SetStamina(stamina - amt, staminaMax, staminaMax, stamina);
 
             stamina -= amt;
 
@@ -288,6 +359,11 @@ namespace HelloGame.Entities
                 staminaRegainDelay = 90;
                 staminaLossPunish = true;
             }
+        }
+
+        private void SetHealth(float prehit, float current = -1)
+        {
+            ((GuiHud)Main.guis["hud"]).SetHealth(current == -1 ? health : current, maxHealth, maxHealth * 8, prehit);
         }
 
         public override void Die(World world, bool force = false, bool dropItems = true)
@@ -319,6 +395,8 @@ namespace HelloGame.Entities
             };
 
             p.Kills.AddRange(kills);
+            items.ForEach(x => p.Items.Add(x.Save()));
+            openables.ForEach(x => p.Openables.Add(x.Save()));
 
             if (saveName.EndsWith(".hgsf"))
                 fSavename = saveName.Split('.')[0];
@@ -355,12 +433,25 @@ namespace HelloGame.Entities
             }
 
             player.entrancePoint = p.EntrancePoint;
+
             player.health = overrideHp == -1 ? p.Health : overrideHp;
-            ((GuiHud)Main.guis["hud"]).SetHealth(player.health, player.maxHealth, player.maxHealth * 2, player.health);
+            player.SetHealth(player.health);
+            //((GuiHud)Main.guis["hud"]).SetHealth(player.health, player.maxHealth, player.maxHealth * 4, player.health);
+
+            player.kills.Clear();
             player.kills = p.Kills.ToList();
+
+            player.items.Clear();
+            p.Items.ToList().ForEach(x => player.items.Add(x.Load()));
+
+            player.openables.Clear();
+            p.Openables.ToList().ForEach(x => player.openables.Add(x.Load()));
+
             player.velocity = Vector2.Zero;
+
             player.dead = false;
             world.Load(p.MapName);
+
             player.collideBox = world.collisionWorld.Create(0, 0, 32, 32); //we have to recreate the IBox because I'm dumb apparently
 
             for (int i = 0; i < world.spawners.Length; i++)
@@ -397,7 +488,15 @@ namespace HelloGame.Entities
             var temp = world.player.saveName;
             world.Load(forceLoadMapName == "-1" ? player.MapName : forceLoadMapName);
             world.player.collideBox = world.collisionWorld.Create(0, 0, 32, 32);    //we have to recreate the IBox because I'm dumb apparently
+
+            world.player.kills.Clear();
             world.player.kills = player.Kills.ToList();
+
+            world.player.items.Clear();
+            player.Items.ToList().ForEach(x => world.player.items.Add(x.Load()));
+
+            world.player.openables.Clear();
+            player.Openables.ToList().ForEach(x => world.player.openables.Add(x.Load()));
 
             for (int i = 0; i < world.spawners.Length; i++)
             {

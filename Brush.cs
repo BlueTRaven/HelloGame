@@ -13,12 +13,17 @@ using HelloGame.Guis.Widgets;
 
 namespace HelloGame
 {
+    public enum BrushDepth
+    {
+        DrawDiffered,
+        DrawWorldDepth,
+        DrawTop
+    }
+
     public enum BrushDrawType
     {
         Tile,
-        Stretch,
-        WallTile,
-        WallStretch
+        Stretch
     }
 
     public class Brush : ISelectable
@@ -28,43 +33,61 @@ namespace HelloGame
         public TextureInfo texInfo;
 
         public BrushDrawType drawType;
+        public BrushDepth depth;
 
-        public bool drawAhead;
-
-        public Brush (Rectangle bounds, TextureInfo info, BrushDrawType drawType = BrushDrawType.Tile, bool drawAhead = false)
+        public Brush (Rectangle bounds, TextureInfo info, BrushDrawType drawType = BrushDrawType.Tile, BrushDepth depth = BrushDepth.DrawDiffered)
         {
             this.bounds = bounds;
             this.originBounds = bounds;
             this.texInfo = info;
 
             this.drawType = drawType;
-            this.drawAhead = drawAhead;
+            this.depth = depth;
         }
 
         public void Draw(SpriteBatch batch)
         {
             if (drawType == BrushDrawType.Tile)
             {
-                batch.Draw(texInfo.texture.texture, bounds.Location.ToVector2(), new Rectangle(Point.Zero, (bounds.Size.ToVector2() / texInfo.scale).ToPoint()), texInfo.tint, 0, Vector2.Zero, texInfo.scale, SpriteEffects.None, drawAhead ? 1 : 0.01f);
+                batch.Draw(texInfo.texture.texture, bounds.Location.ToVector2(), new Rectangle(Point.Zero, (bounds.Size.ToVector2() / texInfo.scale).ToPoint()), texInfo.tint, 0, Vector2.Zero, texInfo.scale, SpriteEffects.None, GetDrawDepth(depth));
             }
             else if (drawType == BrushDrawType.Stretch)
             {   //scale is pointless on stretch mode.
-                batch.Draw(texInfo.texture.texture, bounds, null, texInfo.tint, 0, Vector2.Zero, SpriteEffects.None, drawAhead ? 1 : 0);
+                batch.Draw(texInfo.texture.texture, bounds, null, texInfo.tint, 0, Vector2.Zero, SpriteEffects.None, GetDrawDepth(depth));
             }
-            else if (drawType == BrushDrawType.WallTile)
+            /*else if (drawType == BrushDrawType.WallTile)
             {
                 batch.Draw(texInfo.texture.texture, bounds.Location.ToVector2(), new Rectangle(Point.Zero, (bounds.Size.ToVector2() / texInfo.scale).ToPoint()), texInfo.tint, 0, Vector2.Zero, texInfo.scale, SpriteEffects.None, Main.GetDepth(new Vector2(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height)));
             }
             else if (drawType == BrushDrawType.WallStretch)
             {
                 batch.Draw(texInfo.texture.texture, bounds, null, texInfo.tint, 0, Vector2.Zero, SpriteEffects.None, Main.GetDepth(new Vector2(bounds.Width / 2, bounds.Height)));
+            }*/
+        }
+
+        public float GetDrawDepth(BrushDepth depth)
+        {
+            if (texInfo.texture.name == "shadowPixel" && depth != BrushDepth.DrawTop)
+                Console.WriteLine("[Warning] Brush with shadowPixel not set to brush depth DrawTop. This may cause draw order issues.");
+
+            if (depth == BrushDepth.DrawDiffered)
+                return 0;
+            else if (depth == BrushDepth.DrawWorldDepth)
+                return Main.GetDepth(new Vector2(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height));
+            else if (depth == BrushDepth.DrawTop)
+            {
+                if (texInfo.texture.name != "shadowPixel")
+                    return 1;
+                else return .2f;
             }
+            return 0;
         }
 
         public void Draw_DEBUG(SpriteBatch batch)
         {
             batch.DrawHollowRectangle(bounds, 2, Color.Red);
             batch.DrawString(Main.assets.GetFont("bfMunro12"), "BRUSH", bounds.Location.ToVector2() - new Vector2(0, 16), Color.White);
+            batch.DrawString(Main.assets.GetFont("bfMunro12"), "Depth: " + GetDrawDepth(depth), bounds.Location.ToVector2(), Color.White);
         }
 
         public void DrawSelect_DEBUG(SpriteBatch batch)
@@ -79,7 +102,7 @@ namespace HelloGame
             return new SerBrush()
             {
                 Bounds = bounds.Save(),
-                DrawAhead = drawAhead,
+                DrawDepth = (int)depth,
                 DrawType = (int)drawType,
                 TextureInfo = texInfo.Save(),
             };
@@ -106,10 +129,7 @@ namespace HelloGame
             tex.Set(texInfo);
 
             window.GetWidget<WidgetDropdown>("brush_type").SetIndex((int)drawType);
-            //WidgetTextBox text = window.GetWidget<WidgetTextBox>("brush_type");
-            //text.SetString(((int)drawType).ToString());
-            WidgetCheckbox ahead = window.GetWidget<WidgetCheckbox>("brush_drawahead");
-            ahead.isChecked = drawAhead;
+            window.GetWidget<WidgetDropdown>("brush_depth").SetIndex((int)drawType);
         }
 
         public void UpdateSelectableProperties(WidgetWindowEditProperties window)
@@ -119,7 +139,8 @@ namespace HelloGame
             //string text = window.GetWidget<WidgetTextBox>("brush_type").GetStringSafely();
             //drawType = (BrushDrawType)int.Parse(text);
             drawType = (BrushDrawType)window.GetWidget<WidgetDropdown>("brush_type").GetIndex();
-            drawAhead = window.GetWidget<WidgetCheckbox>("brush_drawahead").isChecked;
+            depth = (BrushDepth)window.GetWidget<WidgetDropdown>("brush_depth").GetIndex();
+            //drawAhead = window.GetWidget<WidgetCheckbox>("brush_drawahead").isChecked;
         }
 
         public void Move(Vector2 amt)

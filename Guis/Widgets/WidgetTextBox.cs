@@ -39,7 +39,7 @@ namespace HelloGame.Guis.Widgets
 
         private WidgetTextBox tabProgressTo;
 
-        public TextAlignment alignment;
+        public Enums.Alignment alignment;
 
         public TextBoxFilter filter;
 
@@ -47,7 +47,12 @@ namespace HelloGame.Guis.Widgets
 
         public bool canTabProgressThisTick;
 
-        public WidgetTextBox(Rectangle bounds, SpriteFont font, string startText, int max, TextAlignment alignment = TextAlignment.TopLeft, TextBoxFilter filter = TextBoxFilter.AlphaNumeric) : base(bounds)
+        private bool hasTextPrediction;
+        private List<string> textPredictionText;
+        private string currentPredictedWordAdd, currentPredictedWordFull;
+        private List<string> predictedWords;
+
+        public WidgetTextBox(Rectangle bounds, SpriteFont font, string startText, int max, Enums.Alignment alignment = Enums.Alignment.TopLeft, TextBoxFilter filter = TextBoxFilter.AlphaNumeric) : base(bounds)
         {
             this.font = font;
             this.startText = startText;
@@ -80,6 +85,15 @@ namespace HelloGame.Guis.Widgets
             hasBackgroundColor = true;
             this.colorUnhover = colorUnhover;
             this.colorActive = colorActive;
+            return this;
+        }
+
+        public WidgetTextBox SetHasTextPrediction(List<string> texts)
+        {
+            predictedWords = new List<string>();
+
+            hasTextPrediction = true;
+            textPredictionText = texts;
             return this;
         }
 
@@ -143,6 +157,13 @@ namespace HelloGame.Guis.Widgets
                 tabProgressTo.canTabProgressThisTick = false;
                 return;
             }
+
+            if (Main.keyboard.KeyPressed(Keys.Right, true))
+            {
+                text.Append(currentPredictedWordAdd);
+                currentPredictedWordAdd = "";
+            }
+
             char[] chars = Main.keyboard.GetKeyboardInput();
 
             if (chars != null)
@@ -173,8 +194,23 @@ namespace HelloGame.Guis.Widgets
                                 text.Clear();
                             }
 
-                            if (font.Characters.Contains(chars[i]))
+                             if (font.Characters.Contains(chars[i]))
+                            {
                                 text.Append(chars[i]);
+
+                                if (hasTextPrediction)
+                                {
+                                    foreach (string s in textPredictionText)
+                                    {
+                                        if (s.StartsWith(text.ToString()))
+                                        {
+                                            currentPredictedWordFull = s;
+                                            currentPredictedWordAdd = currentPredictedWordFull.Remove(0, text.Length);
+                                        }
+
+                                    }
+                                }
+                            }
                             else text.Append("{?}");
                         }
                         else break;
@@ -256,7 +292,10 @@ namespace HelloGame.Guis.Widgets
                     batch.DrawRectangle(bounds, currentBackgroundColor);
                 }
 
-                batch.DrawString(font, text.ToString(), bounds.Location.ToVector2() + TextHelper.GetAlignmentOffset(font, text.ToString(), bounds, alignment), Color.White);
+                Vector2 pos = bounds.Location.ToVector2() + TextHelper.GetAlignmentOffset(font, text.ToString(), bounds, alignment);
+                batch.DrawString(font, text.ToString(), pos, Color.White);
+
+                Vector2 size = font.MeasureString(text.ToString());
 
                 if (hold)
                 {
@@ -264,8 +303,17 @@ namespace HelloGame.Guis.Widgets
                     {
                         if (text.Length > 0 && text.Length < max)
                         {
-                            Vector2 size = font.MeasureString(text.ToString());
                             batch.DrawRectangle(new Rectangle((bounds.Location.ToVector2() + TextHelper.GetAlignmentOffset(font, text.ToString(), bounds, alignment) + new Vector2(size.X, 0)).ToPoint(), new Point(4, (int)size.Y)), Color.Black);
+                        }
+                    }
+
+                    if (hasTextPrediction)
+                    {
+                        if (currentPredictedWordAdd != null && currentPredictedWordAdd != "")
+                        {
+                            Vector2 pos2 = pos + new Vector2(size.X, 0);
+                            batch.DrawRectangle(new Rectangle((int)pos2.X, (int)pos2.Y, (int)font.MeasureString(currentPredictedWordAdd).X, (int)size.Y), Color.Black);
+                            batch.DrawString(font, currentPredictedWordAdd, pos2, Color.White);
                         }
                     }
                 }

@@ -16,6 +16,7 @@ using HelloGame.Guis;
 using HelloGame.Guis.Widgets;
 using HelloGame.Utility;
 using HelloGame.Hits;
+using HelloGame.Cutscenes;
 
 using Humper;
 using HelloGame.Entities.Particles;
@@ -51,8 +52,8 @@ namespace HelloGame
         public ISelectable trueSelected;
         public int trueSelectedIndex;
 
-        public Dictionary<int, Type> entityTypes;
-
+        public Cutscene cutscene;
+        
         public World(string playerSaveName)
         {
             backgroundColor = Color.Black;
@@ -86,14 +87,12 @@ namespace HelloGame
             editorPoints = new List<Vector2>(2);
 
             selected = new List<ISelectable>();
-
-            entityTypes = new Dictionary<int, Type>();
         }
 
         #region update
         public void PreUpdate()
         {
-            if (!Main.activeGui.stopsWorldUpdate)
+            if (!Main.activeGui.stopsWorldUpdate && !CutsceneStopsUpdate())
             {
                 foreach (EntitySpawner spawner in spawners)
                 {
@@ -115,7 +114,7 @@ namespace HelloGame
 
         public void Update()
         {
-            if (!Main.activeGui.stopsWorldUpdate)
+            if (!Main.activeGui.stopsWorldUpdate && !CutsceneStopsUpdate())
             {
                 for (int i = hitboxes.Length - 1; i >= 0; i--)
                 {
@@ -163,6 +162,8 @@ namespace HelloGame
                     }
                 }
             }
+
+            cutscene?.Update(this);
 
             Update_DEBUG();
         }
@@ -235,7 +236,7 @@ namespace HelloGame
                                 {   //brush mode
                                     WidgetWindowTextureSelector wwts = wweo.GetWindow<WidgetWindowTextureSelector>("brush_textureselector");
                                     Rectangle rect = new Rectangle(editorPoints[0].ToPoint(), (editorPoints[1] - editorPoints[0]).ToPoint());
-                                    AddBrush(rect, new TextureInfo(new TextureContainer(wwts.GetTexture()), wwts.GetScale(), wwts.GetColor()), wweo.GetBrushDrawType(), wweo.GetWidget<WidgetCheckbox>("brush_drawahead").isChecked);
+                                    AddBrush(rect, new TextureInfo(new TextureContainer(wwts.GetTexture()), wwts.GetScale(), wwts.GetColor()), wweo.GetBrushDrawType(), (BrushDepth)wweo.GetWidget<WidgetDropdown>("brush_depth").GetIndex());
                                 }
                                 else if (mode == mode_walls)
                                 {   //wall mode
@@ -251,7 +252,7 @@ namespace HelloGame
                                     Rectangle rect = new Rectangle(editorPoints[0].ToPoint(), (editorPoints[1] - editorPoints[0]).ToPoint());
                                     AddSpawner(new EntitySpawner(rect, type, rotation, randompos, state,
                                         wweo.GetWidget<WidgetTextBox>("entity_info1").GetStringSafely(""), 
-                                        wweo.GetWidget<WidgetTextBox>("entity_info2").GetStringSafely("")));
+                                        wweo.GetWidget<WidgetTextBox>("entity_info2").GetStringSafely(""))).OnCreated(this);
                                 }
                                 else if (mode == mode_trigger)
                                 {
@@ -547,7 +548,7 @@ namespace HelloGame
 
         public void PostUpdate()
         {
-            if (!Main.activeGui.stopsWorldUpdate)
+            if (!Main.activeGui.stopsWorldUpdate && !CutsceneStopsUpdate())
             {
                 foreach (Entity entity in entities)
                 {
@@ -621,6 +622,11 @@ namespace HelloGame
             return false;
         }
 
+        private bool CutsceneStopsUpdate()
+        {   //returns true only if the cutscene is not null, stops the world update, and is NOT done.
+            return cutscene != null && cutscene.stopsWorldUpdate && !cutscene.done;
+        }
+
         #region draw
         public void Draw(SpriteBatch batch)
         {
@@ -629,14 +635,20 @@ namespace HelloGame
                 batch.DrawRectangle(new Rectangle(0, 0, 8192, 8192), backgroundColor);
 
                 foreach (Brush brush in brushes)
-                {
+                {   //draw brushes in differed mode
                     if (brush != null)
-                        if (!brush.drawAhead && brush.drawType != BrushDrawType.WallStretch && brush.drawType != BrushDrawType.WallTile)
+                        if (brush.depth == BrushDepth.DrawDiffered)
                             brush.Draw(batch);
                 }
 
+                /*foreach (Wall wall in walls)
+                {
+                    if (wall != null)
+                        wall.Draw(batch);
+                }*/
+
                 batch.End();
-                batch.Begin(Main.DEBUG ? SpriteSortMode.Deferred : SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointWrap, null, null, null, Main.camera.GetViewMatrix());
+                batch.Begin(Main.DEBUG ? SpriteSortMode.Deferred : SpriteSortMode.FrontToBack, BlendState.NonPremultiplied, SamplerState.PointWrap, null, null, null, Main.camera.GetViewMatrix());
 
                 foreach (Entity entity in entities)
                 {
@@ -653,7 +665,7 @@ namespace HelloGame
                 foreach (Brush brush in brushes)
                 {
                     if (brush != null)
-                        if (brush.drawAhead || brush.drawType == BrushDrawType.WallStretch || brush.drawType == BrushDrawType.WallTile)
+                        if (brush.depth != BrushDepth.DrawDiffered)
                             brush.Draw(batch);
                 }
 
@@ -798,19 +810,19 @@ namespace HelloGame
 
             for (int i = 0; i < spawners.Length; i++)
             {
-                if (spawners[i] != null)
+                if (spawners[i] != null && !spawners[i].noSave)
                     world.EntitySpawners.Add(spawners[i].Save());
             }
 
             for (int i = 0; i < props.Length; i++)
             {
-                if (props[i] != null)
+                if (props[i] != null && !props[i].noSave)
                     world.Props.Add(props[i].Save());
             }
 
             for (int i = 0; i < triggers.Length; i++)
             {
-                if (triggers[i] != null)
+                if (triggers[i] != null && !triggers[i].noSave)
                     world.Triggers.Add(triggers[i].Save());
             }
 
@@ -828,6 +840,8 @@ namespace HelloGame
 
         public void Load(string name)
         {
+            Main.camera.SetFade(Color.Black, true, 60);
+
             if (name.EndsWith(".hgmf"))
                 this.name = name.Split('.')[0];
             else
@@ -887,22 +901,26 @@ namespace HelloGame
             {
                 AddTrigger(world.Triggers[i].Load());
             }
-
+            
             displayName = world.DisplayName;
+
             if (world.BackgroundColor != null)
                 backgroundColor = world.BackgroundColor.Load();
+
+            ((GuiEditor)Main.guis["editor"]).SetWorldOptions(this.name, displayName, backgroundColor);
+
         }
         #endregion
 
         #region add
-        public Brush AddBrush(Rectangle bounds, TextureInfo info, BrushDrawType drawType = BrushDrawType.Tile, bool drawAhead = false)
+        public Brush AddBrush(Rectangle bounds, TextureInfo info, BrushDrawType drawType = BrushDrawType.Tile, BrushDepth depth = BrushDepth.DrawDiffered)
         {
             Brush brush = null;
             for (int i = 0; i < brushes.Length; i++)
             {
                 if (brushes[i] == null)
                 {
-                    brush = new Brush(bounds, info, drawType, drawAhead);
+                    brush = new Brush(bounds, info, drawType, depth);
                     brush.index = i;
                     brushes[i] = brush;
                     return brush;

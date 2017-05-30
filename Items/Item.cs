@@ -23,12 +23,24 @@ namespace HelloGame.Items
         public string name;
         public string[] description;
 
+        protected int itemType;
+
         public int type { get; private set; }
 
-        public Item(int type)
+        public Item(int itemType, int type)
         {
+            this.itemType = itemType;
             this.type = type;
             description = new string[8] { "", "", "", "", "", "", "", "" };
+        }
+
+        public SerItem Save()
+        {
+            return new SerItem()
+            {
+                ItemType = itemType,
+                Type = type
+            };
         }
     }
 }
