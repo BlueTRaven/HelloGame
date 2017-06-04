@@ -23,8 +23,8 @@ namespace HelloGame.Entities
         public EnemyDragon1(World world, EnemyNoticeState state, float facingRotation) : base(new Vector2(48, 48), 64, facingRotation, state, 128, 1024, 0)
         {
             texInfos[0] = new TextureInfo(new TextureContainer("dragon1"), new Vector2(4), Color.LightGreen);
-            texInfos[1] = new TextureInfo(new TextureContainer("dragon1_white"), new Vector2(4), Color.White);
-            texInfos[2] = new TextureInfo(new TextureContainer("dragon1_eyes"), new Vector2(4), Color.Purple);
+            texInfos[1] = new TextureInfo(new TextureContainer("dragon1_White"), new Vector2(4), Color.White);
+            texInfos[2] = new TextureInfo(new TextureContainer("dragon1_Eyes"), new Vector2(4), Color.Purple);
 
             chaseRadius = 128;
             chaseSpeed = .75f;

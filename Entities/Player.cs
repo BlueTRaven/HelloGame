@@ -74,6 +74,8 @@ namespace HelloGame.Entities
             }
         }
 
+        public int experience;
+
         public Player() : base(new Vector2(32))
         {
             texInfos[0] = GetPlayerCharacterTexInfo("charBase", new Vector2(5));
@@ -88,7 +90,7 @@ namespace HelloGame.Entities
             //((GuiHud)Main.guis["hud"]).SetHealth(health, maxHealth, maxHealth * 4, health);
             ((GuiHud)Main.guis["hud"]).SetStamina(stamina, staminaMax, staminaMax, stamina);
 
-            weapon = new GhostWeaponIronSword();
+            weapon = new GhostWeaponAxe();
 
             kills = new List<int>();
             items = new List<Item>();
@@ -124,6 +126,7 @@ namespace HelloGame.Entities
 
         public override void PreUpdate(World world)
         {
+            ((GuiHud)Main.guis["hud"]).GetWidget<WidgetButton>("experiencecount").text = experience.ToString();
             if (world.collisionWorld != null && collideBox == null)
             {
                 collideBox = world.collisionWorld.Create(0, 0, 32, 32);
@@ -249,9 +252,13 @@ namespace HelloGame.Entities
                     inputTimer = 0;
                 }
 
-                if (Main.keyboard.KeyPressed(Keys.R))
+                if (Main.keyboard.KeyHeld(Keys.R))
                 {
-                    world.cutscene = new Cutscenes.CutsceneGenericCameraPan(true, this, 120, position + new Vector2(128, 0), position + new Vector2(128, 128), position + new Vector2(-128, -128));
+                    if (experience > 0 && health + healing < maxHealth)
+                    {
+                        experience--;
+                        healing++;
+                    }
                     //health++;
                     //((GuiHud)Main.guis["hud"]).SetHealth(health, maxHealth, maxHealth * 4, health);
                 }
@@ -316,8 +323,31 @@ namespace HelloGame.Entities
         }
 
         public void AddItem(Item item)
-        {   //Adder for later
-            items.Add(item);
+        {
+            ((GuiHud)Main.guis["hud"]).showItems.Add(item);
+
+            List<Item> duplicates = items.FindAll(x => { return x.itemType == item.itemType && x.type == item.type; });
+
+            if (duplicates.Count > 1)
+            {   //if there are more than one duplicates, we'll have to merge them into one.
+                Item original = duplicates[0];
+
+                for (int i = 1; i < duplicates.Count; i++)
+                {
+                    original.count += duplicates[i].count;
+                    items.Remove(duplicates[i]);
+                }
+
+                original.count += item.count;
+            }
+            else if (duplicates.Count == 1)
+            {   //if there is one duplicate, simply add the count of one item to another.
+                duplicates[0].count += item.count;
+            }
+            else if (duplicates.Count == 0)
+            {   //if there are no duplicates, just add the item.
+                items.Add(item);
+            }
         }
 
         public override void Draw(SpriteBatch batch)
@@ -392,6 +422,7 @@ namespace HelloGame.Entities
                 EntrancePoint = entranceIndex,
                 Health = health,
                 MapName = mapname,
+                Experience = experience
             };
 
             p.Kills.AddRange(kills);
@@ -437,6 +468,7 @@ namespace HelloGame.Entities
             player.health = overrideHp == -1 ? p.Health : overrideHp;
             player.SetHealth(player.health);
             //((GuiHud)Main.guis["hud"]).SetHealth(player.health, player.maxHealth, player.maxHealth * 4, player.health);
+            player.experience = p.Experience;
 
             player.kills.Clear();
             player.kills = p.Kills.ToList();
@@ -488,6 +520,7 @@ namespace HelloGame.Entities
             var temp = world.player.saveName;
             world.Load(forceLoadMapName == "-1" ? player.MapName : forceLoadMapName);
             world.player.collideBox = world.collisionWorld.Create(0, 0, 32, 32);    //we have to recreate the IBox because I'm dumb apparently
+            world.player.experience = player.Experience;
 
             world.player.kills.Clear();
             world.player.kills = player.Kills.ToList();

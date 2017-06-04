@@ -26,35 +26,36 @@ namespace HelloGame {
             "eBgBIAEoAhIJCgF5GAIgASgCIkMKDFNlclJlY3RhbmdsZRIJCgF4GAEgASgF",
             "EgkKAXkYAiABKAUSDQoFd2lkdGgYAyABKAUSDgoGaGVpZ2h0GAQgASgFIjYK",
             "CFNlckNvbG9yEgkKAVIYASABKA0SCQoBRxgCIAEoDRIJCgFCGAMgASgNEgkK",
-            "AUEYBCABKA0iYwoKU2VyVGV4SW5mbxIMCgRuYW1lGAEgASgJEiQKBXNjYWxl",
-            "GAIgASgLMhUuSGVsbG9HYW1lLlNlclZlY3RvcjISIQoEdGludBgDIAEoCzIT",
-            "LkhlbGxvR2FtZS5TZXJDb2xvciK3AQoQU2VyRW50aXR5U3Bhd25lchIpCghw",
-            "b3NpdGlvbhgBIAEoCzIXLkhlbGxvR2FtZS5TZXJSZWN0YW5nbGUSDAoEdHlw",
-            "ZRgCIAEoBRIbChNzcGF3blJhbmRvbVBvc2l0aW9uGAMgASgIEg0KBWluZm8x",
-            "GAQgASgJEg0KBWluZm8yGAUgASgJEhUKDXN0YXJ0Um90YXRpb24YBiABKAIS",
-            "GAoQc3RhcnROb3RpY2VTdGF0ZRgHIAEoBSKEAQoIU2VyQnJ1c2gSEAoIZHJh",
-            "d1R5cGUYASABKAUSJwoGYm91bmRzGAIgASgLMhcuSGVsbG9HYW1lLlNlclJl",
-            "Y3RhbmdsZRIqCgt0ZXh0dXJlSW5mbxgDIAEoCzIVLkhlbGxvR2FtZS5TZXJU",
-            "ZXhJbmZvEhEKCWRyYXdEZXB0aBgEIAEoBSIyCgdTZXJXYWxsEicKBmJvdW5k",
-            "cxgBIAEoCzIXLkhlbGxvR2FtZS5TZXJSZWN0YW5nbGUibwoHU2VyUHJvcBIn",
-            "Cghwb3NpdGlvbhgBIAEoCzIVLkhlbGxvR2FtZS5TZXJWZWN0b3IyEiYKB3Rl",
-            "eEluZm8YAiABKAsyFS5IZWxsb0dhbWUuU2VyVGV4SW5mbxITCgtzaGFkb3dT",
-            "Y2FsZRgDIAEoAiJkCgpTZXJUcmlnZ2VyEicKBmJvdW5kcxgBIAEoCzIXLkhl",
-            "bGxvR2FtZS5TZXJSZWN0YW5nbGUSDwoHY29tbWFuZBgCIAEoCRINCgVpbmZv",
-            "MRgDIAEoCRINCgVpbmZvMhgEIAEoCSKXAgoIU2VyV29ybGQSJAoHYnJ1c2hl",
-            "cxgBIAMoCzITLkhlbGxvR2FtZS5TZXJCcnVzaBIhCgV3YWxscxgCIAMoCzIS",
-            "LkhlbGxvR2FtZS5TZXJXYWxsEiEKBXByb3BzGAMgAygLMhIuSGVsbG9HYW1l",
-            "LlNlclByb3ASMwoOZW50aXR5U3Bhd25lcnMYBCADKAsyGy5IZWxsb0dhbWUu",
-            "U2VyRW50aXR5U3Bhd25lchInCgh0cmlnZ2VycxgFIAMoCzIVLkhlbGxvR2Ft",
-            "ZS5TZXJUcmlnZ2VyEhMKC2Rpc3BsYXlOYW1lGAYgASgJEiwKD2JhY2tncm91",
-            "bmRDb2xvchgHIAEoCzITLkhlbGxvR2FtZS5TZXJDb2xvcmIGcHJvdG8z"));
+            "AUEYBCABKA0ihQEKClNlclRleEluZm8SDAoEbmFtZRgBIAEoCRIkCgVzY2Fs",
+            "ZRgCIAEoCzIVLkhlbGxvR2FtZS5TZXJWZWN0b3IyEiEKBHRpbnQYAyABKAsy",
+            "Ey5IZWxsb0dhbWUuU2VyQ29sb3ISDgoGbWlycm9yGAQgASgFEhAKCHJvdGF0",
+            "aW9uGAUgASgFIrcBChBTZXJFbnRpdHlTcGF3bmVyEikKCHBvc2l0aW9uGAEg",
+            "ASgLMhcuSGVsbG9HYW1lLlNlclJlY3RhbmdsZRIMCgR0eXBlGAIgASgFEhsK",
+            "E3NwYXduUmFuZG9tUG9zaXRpb24YAyABKAgSDQoFaW5mbzEYBCABKAkSDQoF",
+            "aW5mbzIYBSABKAkSFQoNc3RhcnRSb3RhdGlvbhgGIAEoAhIYChBzdGFydE5v",
+            "dGljZVN0YXRlGAcgASgFIoQBCghTZXJCcnVzaBIQCghkcmF3VHlwZRgBIAEo",
+            "BRInCgZib3VuZHMYAiABKAsyFy5IZWxsb0dhbWUuU2VyUmVjdGFuZ2xlEioK",
+            "C3RleHR1cmVJbmZvGAMgASgLMhUuSGVsbG9HYW1lLlNlclRleEluZm8SEQoJ",
+            "ZHJhd0RlcHRoGAQgASgFIjIKB1NlcldhbGwSJwoGYm91bmRzGAEgASgLMhcu",
+            "SGVsbG9HYW1lLlNlclJlY3RhbmdsZSJvCgdTZXJQcm9wEicKCHBvc2l0aW9u",
+            "GAEgASgLMhUuSGVsbG9HYW1lLlNlclZlY3RvcjISJgoHdGV4SW5mbxgCIAEo",
+            "CzIVLkhlbGxvR2FtZS5TZXJUZXhJbmZvEhMKC3NoYWRvd1NjYWxlGAMgASgC",
+            "ImQKClNlclRyaWdnZXISJwoGYm91bmRzGAEgASgLMhcuSGVsbG9HYW1lLlNl",
+            "clJlY3RhbmdsZRIPCgdjb21tYW5kGAIgASgJEg0KBWluZm8xGAMgASgJEg0K",
+            "BWluZm8yGAQgASgJIpcCCghTZXJXb3JsZBIkCgdicnVzaGVzGAEgAygLMhMu",
+            "SGVsbG9HYW1lLlNlckJydXNoEiEKBXdhbGxzGAIgAygLMhIuSGVsbG9HYW1l",
+            "LlNlcldhbGwSIQoFcHJvcHMYAyADKAsyEi5IZWxsb0dhbWUuU2VyUHJvcBIz",
+            "Cg5lbnRpdHlTcGF3bmVycxgEIAMoCzIbLkhlbGxvR2FtZS5TZXJFbnRpdHlT",
+            "cGF3bmVyEicKCHRyaWdnZXJzGAUgAygLMhUuSGVsbG9HYW1lLlNlclRyaWdn",
+            "ZXISEwoLZGlzcGxheU5hbWUYBiABKAkSLAoPYmFja2dyb3VuZENvbG9yGAcg",
+            "ASgLMhMuSGVsbG9HYW1lLlNlckNvbG9yYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerVector2), global::HelloGame.SerVector2.Parser, new[]{ "X", "Y" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerRectangle), global::HelloGame.SerRectangle.Parser, new[]{ "X", "Y", "Width", "Height" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerColor), global::HelloGame.SerColor.Parser, new[]{ "R", "G", "B", "A" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerTexInfo), global::HelloGame.SerTexInfo.Parser, new[]{ "Name", "Scale", "Tint" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerTexInfo), global::HelloGame.SerTexInfo.Parser, new[]{ "Name", "Scale", "Tint", "Mirror", "Rotation" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerEntitySpawner), global::HelloGame.SerEntitySpawner.Parser, new[]{ "Position", "Type", "SpawnRandomPosition", "Info1", "Info2", "StartRotation", "StartNoticeState" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerBrush), global::HelloGame.SerBrush.Parser, new[]{ "DrawType", "Bounds", "TextureInfo", "DrawDepth" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerWall), global::HelloGame.SerWall.Parser, new[]{ "Bounds" }, null, null, null),
@@ -641,6 +642,8 @@ namespace HelloGame {
       name_ = other.name_;
       Scale = other.scale_ != null ? other.Scale.Clone() : null;
       Tint = other.tint_ != null ? other.Tint.Clone() : null;
+      mirror_ = other.mirror_;
+      rotation_ = other.rotation_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -681,6 +684,28 @@ namespace HelloGame {
       }
     }
 
+    /// <summary>Field number for the "mirror" field.</summary>
+    public const int MirrorFieldNumber = 4;
+    private int mirror_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Mirror {
+      get { return mirror_; }
+      set {
+        mirror_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "rotation" field.</summary>
+    public const int RotationFieldNumber = 5;
+    private int rotation_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Rotation {
+      get { return rotation_; }
+      set {
+        rotation_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as SerTexInfo);
@@ -697,6 +722,8 @@ namespace HelloGame {
       if (Name != other.Name) return false;
       if (!object.Equals(Scale, other.Scale)) return false;
       if (!object.Equals(Tint, other.Tint)) return false;
+      if (Mirror != other.Mirror) return false;
+      if (Rotation != other.Rotation) return false;
       return true;
     }
 
@@ -706,6 +733,8 @@ namespace HelloGame {
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (scale_ != null) hash ^= Scale.GetHashCode();
       if (tint_ != null) hash ^= Tint.GetHashCode();
+      if (Mirror != 0) hash ^= Mirror.GetHashCode();
+      if (Rotation != 0) hash ^= Rotation.GetHashCode();
       return hash;
     }
 
@@ -728,6 +757,14 @@ namespace HelloGame {
         output.WriteRawTag(26);
         output.WriteMessage(Tint);
       }
+      if (Mirror != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(Mirror);
+      }
+      if (Rotation != 0) {
+        output.WriteRawTag(40);
+        output.WriteInt32(Rotation);
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -741,6 +778,12 @@ namespace HelloGame {
       }
       if (tint_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Tint);
+      }
+      if (Mirror != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Mirror);
+      }
+      if (Rotation != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Rotation);
       }
       return size;
     }
@@ -764,6 +807,12 @@ namespace HelloGame {
           tint_ = new global::HelloGame.SerColor();
         }
         Tint.MergeFrom(other.Tint);
+      }
+      if (other.Mirror != 0) {
+        Mirror = other.Mirror;
+      }
+      if (other.Rotation != 0) {
+        Rotation = other.Rotation;
       }
     }
 
@@ -791,6 +840,14 @@ namespace HelloGame {
               tint_ = new global::HelloGame.SerColor();
             }
             input.ReadMessage(tint_);
+            break;
+          }
+          case 32: {
+            Mirror = input.ReadInt32();
+            break;
+          }
+          case 40: {
+            Rotation = input.ReadInt32();
             break;
           }
         }

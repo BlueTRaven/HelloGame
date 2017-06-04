@@ -314,7 +314,7 @@ namespace HelloGame
                 {
                     if (trigger.PlayerEntered(world))
                     {
-                        GuiHud.SetBigText(world.displayName, null, Main.assets.GetFont("bfMunro72"), null, Color.White);
+                        GuiHud.SetBigText(world.displayName, null, Main.assets.GetFont("bitfontMunro72"), null, Color.White);
                         return true;
                     }
                     return false;
@@ -519,12 +519,12 @@ namespace HelloGame
         {
             batch.DrawHollowRectangle(bounds, 2, Color.IndianRed);
 
-            batch.DrawString(Main.assets.GetFont("bfMunro12"), "TRIGGER", bounds.Location.ToVector2() - new Vector2(0, 16), Color.White);
+            batch.DrawString(Main.assets.GetFont("bitfontMunro12"), "TRIGGER", bounds.Location.ToVector2() - new Vector2(0, 16), Color.White);
 
-            batch.DrawString(Main.assets.GetFont("bfMunro12"), commandName, bounds.Location.ToVector2(), Color.White);
-            batch.DrawString(Main.assets.GetFont("bfMunro12"), info1, bounds.Location.ToVector2() + new Vector2(0, 16), Color.White);
-            batch.DrawString(Main.assets.GetFont("bfMunro12"), info2, bounds.Location.ToVector2() + new Vector2(0, 32), Color.White);
-            batch.DrawString(Main.assets.GetFont("bfMunro12"), triggered ? "triggered" : "", bounds.Location.ToVector2() + new Vector2(0, 48), Color.White);
+            batch.DrawString(Main.assets.GetFont("bitfontMunro12"), commandName, bounds.Location.ToVector2(), Color.White);
+            batch.DrawString(Main.assets.GetFont("bitfontMunro12"), info1, bounds.Location.ToVector2() + new Vector2(0, 16), Color.White);
+            batch.DrawString(Main.assets.GetFont("bitfontMunro12"), info2, bounds.Location.ToVector2() + new Vector2(0, 32), Color.White);
+            batch.DrawString(Main.assets.GetFont("bitfontMunro12"), triggered ? "triggered" : "", bounds.Location.ToVector2() + new Vector2(0, 48), Color.White);
         }
 
         #region Selectable

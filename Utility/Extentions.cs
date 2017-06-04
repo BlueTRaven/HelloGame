@@ -28,7 +28,7 @@ namespace HelloGame.Utility
         {
             if (item.ItemType == 0)
             {
-                return new ItemKey(item.Type);
+                return new ItemKey(item.Type, item.Count);
             }
             return null;
         }
@@ -60,7 +60,7 @@ namespace HelloGame.Utility
 
         public static TextureInfo Load(this SerTexInfo texInfo)
         {
-            return new TextureInfo(new TextureContainer(texInfo.Name), texInfo.Scale.Load(), texInfo.Tint.Load());
+            return new TextureInfo(new TextureContainer(texInfo.Name), texInfo.Scale.Load(), texInfo.Tint.Load(), texInfo.Rotation, (SpriteEffects)texInfo.Mirror);
         }
 
         public static SerRectangle Save(this Rectangle rectangle)

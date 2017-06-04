@@ -18,7 +18,7 @@ namespace HelloGame.Hits
 
         public bool done;
         public int duration;
-        protected readonly int durationMax;
+        public readonly int durationMax;
 
         public int damage;
         public float knockback;
@@ -51,6 +51,11 @@ namespace HelloGame.Hits
             return this;
         }
 
+        public virtual void PreUpdate()
+        {
+
+        }
+
         public virtual void Update()
         {
             if (delay > 0)
@@ -62,6 +67,11 @@ namespace HelloGame.Hits
                 if (duration <= 0)
                     done = true;
             }
+        }
+
+        public virtual void PostUpdate()
+        {
+
         }
 
         public virtual bool Collided(IDamageTaker check)

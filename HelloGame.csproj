@@ -54,6 +54,8 @@
     <Compile Include="Entities\EntityLiving.cs" />
     <Compile Include="Entities\EntitySpawner.cs" />
     <Compile Include="Entities\Move.cs" />
+    <Compile Include="Entities\NPCs\NPC.cs" />
+    <Compile Include="Entities\NPCs\NPCTest.cs" />
     <Compile Include="Entities\Particles\Particle.cs" />
     <Compile Include="Entities\Particles\ParticleDust.cs" />
     <Compile Include="Entities\Player.cs" />
@@ -71,13 +73,16 @@
     <Compile Include="Guis\Gui.cs" />
     <Compile Include="Guis\GuiEditor.cs" />
     <Compile Include="Guis\GuiHud.cs" />
+    <Compile Include="Guis\GuiInventory.cs" />
     <Compile Include="Guis\GuiMainMenu.cs" />
     <Compile Include="Guis\IWidgetHolder.cs" />
     <Compile Include="Guis\GuiSaveSelect.cs" />
     <Compile Include="Guis\Widgets\Widget.cs" />
     <Compile Include="Guis\Widgets\WidgetButton.cs" />
     <Compile Include="Guis\Widgets\WidgetCheckbox.cs" />
+    <Compile Include="Guis\Widgets\WidgetDialogueBox.cs" />
     <Compile Include="Guis\Widgets\WidgetDropdown.cs" />
+    <Compile Include="Guis\Widgets\WidgetItemslot.cs" />
     <Compile Include="Guis\Widgets\WidgetTextBox.cs" />
     <Compile Include="Guis\Widgets\WidgetWindow.cs" />
     <Compile Include="Guis\Widgets\WidgetWindowEditorOptions.cs" />

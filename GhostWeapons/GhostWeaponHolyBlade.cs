@@ -18,17 +18,26 @@ namespace HelloGame.GhostWeapons
 {
     public class GhostWeaponHolyBlade : GhostWeapon
     {
+        public Color color;
+        public bool phased;
+
         public GhostWeaponHolyBlade() : base(new TextureInfo(new TextureContainer("ghostHolyBlade"), Vector2.Zero, Color.White))
         {
             comboMax = 3;
             height = 16;
             restingHeight = 16;
+
+            color = Color.Gold;
         }
 
         protected override Particle SpawnAnimationParticles(Vector2 parentCenter)
         {
-            return new ParticleDust(Main.rand.Next(5, 20), currentPosition + new Vector2(Main.rand.NextFloat(-8, 8), Main.rand.NextFloat(-8, 8)), Main.rand.Next(1, 5), Main.rand.NextFloat(height - 1, height + 1), Main.rand.NextFloat(0, 360), Color.Gold)
-                .SetRotates(-1, -1, Main.rand.Next(-1, 1))
+            int rand = Main.rand.Next(5, 20);
+            return new ParticleDust(rand, currentPosition +
+                new Vector2(Main.rand.NextFloat(-origin.X, origin.X), Main.rand.NextFloat(-origin.Y, origin.Y)).RotateBy(currentRotation),
+                Main.rand.Next(2, 8), Main.rand.NextFloat(height - 1, height + 1), Main.rand.NextFloat(0, 360), color)
+                .SetFades(color, Color.Gold, (int)(rand * .4f), 0, true)
+                .SetRotates(-1, -1, Main.rand.Next(-20, 20))
                 .SetWanders(-1, -1, .5f, 10);
         }
 

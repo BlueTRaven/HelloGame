@@ -20,41 +20,41 @@ namespace HelloGame.Guis.Widgets
         public ISelectable selected;
         public WidgetWindowEditProperties(Rectangle bounds) : base(bounds, false, null)
         {
-            AddWidget("type", new WidgetButton(new Rectangle(224 - 64, 240, 32, 8)).SetHasText(Main.assets.GetFont("bfMunro12"), "type", Color.White, Enums.Alignment.Right));
-            AddWidget("selectable_index", new WidgetButton(new Rectangle(224, 240, 32, 8)).SetHasText(Main.assets.GetFont("bfMunro12"), "index", Color.White, Enums.Alignment.Left));
+            AddWidget("type", new WidgetButton(new Rectangle(224 - 64, 240, 32, 8)).SetHasText(Main.assets.GetFont("bitfontMunro12"), "type", Color.White, Enums.Alignment.Right));
+            AddWidget("selectable_index", new WidgetButton(new Rectangle(224, 240, 32, 8)).SetHasText(Main.assets.GetFont("bitfontMunro12"), "index", Color.White, Enums.Alignment.Left));
 
             //brush
             AddWindow("brush_bounds", new WidgetWindowRectangle(Vector2.Zero));
             AddWindow("brush_texture", new WidgetWindowTextureSelector(new Vector2(0, 128)));
-            //AddWidget("brush_type", new WidgetTextBox(new Rectangle(128, 34, 56, 24), Main.assets.GetFont("bfMunro12"), "type", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("brush_type", new WidgetDropdown(new Rectangle(128, 72, 56, 24), Main.assets.GetFont("bfMunro12"), "type", Color.White, Enums.Alignment.Left, 2, Enum.GetNames(typeof(BrushDrawType))));
+            //AddWidget("brush_type", new WidgetTextBox(new Rectangle(128, 34, 56, 24), Main.assets.GetFont("bitfontMunro12"), "type", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("brush_type", new WidgetDropdown(new Rectangle(128, 72, 56, 24), Main.assets.GetFont("bitfontMunro12"), "type", Color.White, Enums.Alignment.Left, 2, Enum.GetNames(typeof(BrushDrawType))));
             //AddWidget("brush_drawahead", new WidgetCheckbox(new Rectangle(128, 40, 24, 24), Color.White));
-            AddWidget("brush_depth", new WidgetDropdown(new Rectangle(128, 40, 56, 24), Main.assets.GetFont("bfMunro12"), "depth", Color.White, Enums.Alignment.Left, 3, Enum.GetNames(typeof(BrushDepth))));
+            AddWidget("brush_depth", new WidgetDropdown(new Rectangle(128, 40, 56, 24), Main.assets.GetFont("bitfontMunro12"), "depth", Color.White, Enums.Alignment.Left, 3, Enum.GetNames(typeof(BrushDepth))));
 
             //wall
             AddWindow("wall_bounds", new WidgetWindowRectangle(Vector2.Zero));
             //entity
             AddWindow("entity_bounds", new WidgetWindowRectangle(Vector2.Zero));
-            AddWidget("entity_type", new WidgetTextBox(new Rectangle(8, 32, 56, 24), Main.assets.GetFont("bfMunro12"), "type", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("entity_info1", new WidgetTextBox(new Rectangle(8, 64, 56, 24), Main.assets.GetFont("bfMunro12"), "info 1", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("entity_info2", new WidgetTextBox(new Rectangle(72, 64, 56, 24), Main.assets.GetFont("bfMunro12"), "info 2", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("entity_type", new WidgetTextBox(new Rectangle(8, 32, 56, 24), Main.assets.GetFont("bitfontMunro12"), "type", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("entity_info1", new WidgetTextBox(new Rectangle(8, 64, 56, 24), Main.assets.GetFont("bitfontMunro12"), "info 1", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("entity_info2", new WidgetTextBox(new Rectangle(72, 64, 56, 24), Main.assets.GetFont("bitfontMunro12"), "info 2", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
             AddWidget("entity_spawnrandom", new WidgetCheckbox(new Rectangle(104, 32, 24, 24), Color.White));
-            AddWidget("entity_spawnrotation", new WidgetTextBox(new Rectangle(138, 64, 56, 24), Main.assets.GetFont("bfMunro12"), "rotation", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("entity_spawnstate", new WidgetDropdown(new Rectangle(8, 120, 56, 24), Main.assets.GetFont("bfMunro12"), "mode", Color.White, Enums.Alignment.Left, 5, Enum.GetNames(typeof(EnemyNoticeState))));
+            AddWidget("entity_spawnrotation", new WidgetTextBox(new Rectangle(138, 64, 56, 24), Main.assets.GetFont("bitfontMunro12"), "rotation", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("entity_spawnstate", new WidgetDropdown(new Rectangle(8, 120, 56, 24), Main.assets.GetFont("bitfontMunro12"), "mode", Color.White, Enums.Alignment.Left, 5, Enum.GetNames(typeof(EnemyNoticeState))));
 
             //prop
             AddWindow("prop_position", new WidgetWindowVector2(Vector2.Zero));
             AddWindow("prop_texture", new WidgetWindowTextureSelector(new Vector2(0, 26)));
-            AddWidget("prop_shadowscale", new WidgetTextBox(new Rectangle(80, 34, 40, 18), Main.assets.GetFont("bfMunro12"), "scale", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("prop_shadowscale", new WidgetTextBox(new Rectangle(80, 34, 40, 18), Main.assets.GetFont("bitfontMunro12"), "scale", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
             //trigger
             AddWindow("trigger_bounds", new WidgetWindowRectangle(Vector2.Zero));
-            AddWidget("trigger_command", new WidgetTextBox(new Rectangle(8, 32, 56, 24), Main.assets.GetFont("bfMunro12"), "command", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray)
+            AddWidget("trigger_command", new WidgetTextBox(new Rectangle(8, 32, 56, 24), Main.assets.GetFont("bitfontMunro12"), "command", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray)
                 .SetHasTextPrediction(Trigger.GetCommandNames());
-            AddWidget("trigger_info1", new WidgetTextBox(new Rectangle(8, 64, 56, 24), Main.assets.GetFont("bfMunro12"), "info1", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("trigger_info2", new WidgetTextBox(new Rectangle(8, 96, 56, 24), Main.assets.GetFont("bfMunro12"), "info2", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("trigger_info1", new WidgetTextBox(new Rectangle(8, 64, 56, 24), Main.assets.GetFont("bitfontMunro12"), "info1", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("trigger_info2", new WidgetTextBox(new Rectangle(8, 96, 56, 24), Main.assets.GetFont("bitfontMunro12"), "info2", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
             AddWidget("trigger_perm", new WidgetCheckbox(new Rectangle(104, 32, 24, 24), Color.White));
-            AddWidget("trigger_info1_label", new WidgetButton(new Rectangle(64, 64, 56, 24)).SetHasText(Main.assets.GetFont("bfMunro12"), "info1", Color.White, Enums.Alignment.Left));
-            AddWidget("trigger_info2_label", new WidgetButton(new Rectangle(64, 96, 56, 24)).SetHasText(Main.assets.GetFont("bfMunro12"), "info1", Color.White, Enums.Alignment.Left));
+            AddWidget("trigger_info1_label", new WidgetButton(new Rectangle(64, 64, 56, 24)).SetHasText(Main.assets.GetFont("bitfontMunro12"), "info1", Color.White, Enums.Alignment.Left));
+            AddWidget("trigger_info2_label", new WidgetButton(new Rectangle(64, 96, 56, 24)).SetHasText(Main.assets.GetFont("bitfontMunro12"), "info1", Color.White, Enums.Alignment.Left));
         }
 
         public override void Update()

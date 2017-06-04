@@ -23,7 +23,7 @@ namespace HelloGame.Guis.Widgets
         {
             this.backgroundColor = backgroundColor;
 
-            checkTexture = Main.assets.GetTexture("checkbox");
+            checkTexture = Main.assets.GetTexture("checkBox");
         }
 
         public override void OnClick()

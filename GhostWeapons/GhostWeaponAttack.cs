@@ -17,9 +17,9 @@ namespace HelloGame.GhostWeapons
         public readonly int runTimeMax;
         public bool hasHit;
 
-        public Action<Vector2> animation;
+        public Action<World, Vector2> animation;
 
-        public GhostWeaponAttack(Hit hit, int runTime, int resetTime, Action<Vector2> animation)
+        public GhostWeaponAttack(Hit hit, int runTime, int resetTime, Action<World, Vector2> animation)
         {
             this.hit = hit;
             this.resetTime = resetTime;

@@ -61,7 +61,7 @@ namespace HelloGame
 
         public static bool stopKeyboardInput;
 
-        private World world;
+        public World world;
 
         public static List<TextureInfo> animatedTextures = new List<TextureInfo>();
 
@@ -124,6 +124,7 @@ namespace HelloGame
 
                 if (alive == 1)
                 {
+                    activeGui = new GuiInventory(this);
                     activeGui = new GuiSaveSelect();
                     activeGui = new GuiHud();
                     activeGui = new GuiEditor();
@@ -198,14 +199,14 @@ namespace HelloGame
 
             if (!activeGui.stopsWorldDraw)
             {
-                batch.Begin(DEBUG ? SpriteSortMode.Deferred : SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointWrap, null, null, null, camera.GetViewMatrix());
+                batch.Begin(DEBUG ? SpriteSortMode.Deferred : SpriteSortMode.FrontToBack, BlendState.NonPremultiplied, SamplerState.PointWrap, null, null, null, camera.GetViewMatrix());
                 world.Draw(batch);
                 batch.End();
             }
 
             GraphicsDevice.SetRenderTarget(null);
 
-            batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null);
+            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointWrap, DepthStencilState.Default, RasterizerState.CullNone, null);
             batch.Draw(render, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), null, Color.White, 0, Vector2.Zero, 0, 0);
             batch.End();/**/
 
@@ -214,7 +215,7 @@ namespace HelloGame
             batch.End();/**/
 
 
-            batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, null, null, null);
+            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointWrap, null, null, null);
 
             activeGui.Draw(batch);
             camera.Draw(batch);

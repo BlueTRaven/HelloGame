@@ -38,6 +38,8 @@ namespace HelloGame.Entities
                 AddGhostWeapon(new GhostWeaponIronSword());
             else if (type == 2)
                 AddGhostWeapon(new GhostWeaponHalberd());
+
+            experienceDrop = 15;
         }
 
         public override void Update(World world)

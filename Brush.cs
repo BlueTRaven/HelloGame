@@ -35,6 +35,8 @@ namespace HelloGame
         public BrushDrawType drawType;
         public BrushDepth depth;
 
+        public bool noSave;
+
         public Brush (Rectangle bounds, TextureInfo info, BrushDrawType drawType = BrushDrawType.Tile, BrushDepth depth = BrushDepth.DrawDiffered)
         {
             this.bounds = bounds;
@@ -49,20 +51,13 @@ namespace HelloGame
         {
             if (drawType == BrushDrawType.Tile)
             {
-                batch.Draw(texInfo.texture.texture, bounds.Location.ToVector2(), new Rectangle(Point.Zero, (bounds.Size.ToVector2() / texInfo.scale).ToPoint()), texInfo.tint, 0, Vector2.Zero, texInfo.scale, SpriteEffects.None, GetDrawDepth(depth));
+                batch.Draw(texInfo.texture.texture, bounds.Location.ToVector2(), new Rectangle(Point.Zero, (bounds.Size.ToVector2() / texInfo.scale).ToPoint()), texInfo.tint, 0, 
+                    Vector2.Zero, texInfo.scale, texInfo.mirror, GetDrawDepth(depth));
             }
             else if (drawType == BrushDrawType.Stretch)
             {   //scale is pointless on stretch mode.
                 batch.Draw(texInfo.texture.texture, bounds, null, texInfo.tint, 0, Vector2.Zero, SpriteEffects.None, GetDrawDepth(depth));
             }
-            /*else if (drawType == BrushDrawType.WallTile)
-            {
-                batch.Draw(texInfo.texture.texture, bounds.Location.ToVector2(), new Rectangle(Point.Zero, (bounds.Size.ToVector2() / texInfo.scale).ToPoint()), texInfo.tint, 0, Vector2.Zero, texInfo.scale, SpriteEffects.None, Main.GetDepth(new Vector2(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height)));
-            }
-            else if (drawType == BrushDrawType.WallStretch)
-            {
-                batch.Draw(texInfo.texture.texture, bounds, null, texInfo.tint, 0, Vector2.Zero, SpriteEffects.None, Main.GetDepth(new Vector2(bounds.Width / 2, bounds.Height)));
-            }*/
         }
 
         public float GetDrawDepth(BrushDepth depth)
@@ -86,8 +81,8 @@ namespace HelloGame
         public void Draw_DEBUG(SpriteBatch batch)
         {
             batch.DrawHollowRectangle(bounds, 2, Color.Red);
-            batch.DrawString(Main.assets.GetFont("bfMunro12"), "BRUSH", bounds.Location.ToVector2() - new Vector2(0, 16), Color.White);
-            batch.DrawString(Main.assets.GetFont("bfMunro12"), "Depth: " + GetDrawDepth(depth), bounds.Location.ToVector2(), Color.White);
+            batch.DrawString(Main.assets.GetFont("bitfontMunro12"), "BRUSH", bounds.Location.ToVector2() - new Vector2(0, 16), Color.White);
+            batch.DrawString(Main.assets.GetFont("bitfontMunro12"), "Depth: " + GetDrawDepth(depth), bounds.Location.ToVector2(), Color.White);
         }
 
         public void DrawSelect_DEBUG(SpriteBatch batch)
@@ -129,7 +124,7 @@ namespace HelloGame
             tex.Set(texInfo);
 
             window.GetWidget<WidgetDropdown>("brush_type").SetIndex((int)drawType);
-            window.GetWidget<WidgetDropdown>("brush_depth").SetIndex((int)drawType);
+            window.GetWidget<WidgetDropdown>("brush_depth").SetIndex((int)depth);
         }
 
         public void UpdateSelectableProperties(WidgetWindowEditProperties window)

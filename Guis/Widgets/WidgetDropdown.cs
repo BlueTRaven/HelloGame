@@ -146,7 +146,10 @@ namespace HelloGame.Guis.Widgets
         public void SetIndex(int index)
         {
             currentIndex = index;
-            if (names.Length < index) currentOption = names[index];
+
+            if (names.Length >= index)
+                currentOption = names[index];
+
             text = currentOption;
         }
     }

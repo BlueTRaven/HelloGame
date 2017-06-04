@@ -22,7 +22,7 @@ namespace HelloGame.Items
     {
         public string useText;
 
-        public ItemKey(int type) : base(0, type)
+        public ItemKey(int type, int count) : base(0, type, count)
         {
             if (type == 0)
             {

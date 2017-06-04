@@ -51,7 +51,9 @@ namespace HelloGame.GhostWeapons
 
         protected override Particle SpawnAnimationParticles(Vector2 parentCenter)
         {
-            return new ParticleDust(Main.rand.Next(5, 20), currentPosition + new Vector2(Main.rand.NextFloat(-8, 8), Main.rand.NextFloat(-8, 8)), Main.rand.Next(1, 5), Main.rand.NextFloat(height - 1, height + 1), Main.rand.NextFloat(0, 360), Color.Silver)
+            return new ParticleDust(Main.rand.Next(5, 20), currentPosition +
+                new Vector2(Main.rand.NextFloat(-origin.X, origin.X), Main.rand.NextFloat(-origin.Y, origin.Y)).RotateBy(currentRotation),
+                Main.rand.Next(1, 5), Main.rand.NextFloat(height - 1, height + 1), Main.rand.NextFloat(0, 360), Color.Silver)
                 .SetRotates(-1, -1, Main.rand.Next(-20, 20))
                 .SetWanders(-1, -1, .5f, 10);
         }

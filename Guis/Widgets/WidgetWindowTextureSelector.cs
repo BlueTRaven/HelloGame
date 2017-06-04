@@ -15,18 +15,27 @@ namespace HelloGame.Guis.Widgets
     public class WidgetWindowTextureSelector : WidgetWindow
     {
         bool animated;
-        public WidgetWindowTextureSelector(Vector2 topleft) : base(new Rectangle(topleft.ToPoint(), new Point(104,128)), false, null)
+        public WidgetWindowTextureSelector(Vector2 topleft) : base(new Rectangle(topleft.ToPoint(), new Point(128, 256)), false, null)
         {
             backgroundColor = Color.Black;
-            WidgetTextBox name = AddWidget("name", new WidgetTextBox(new Rectangle(8, 8, 56, 24), Main.assets.GetFont("bfMunro12"), "name", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox R = AddWidget("R", new WidgetTextBox(new Rectangle(8, 40, 24, 16), Main.assets.GetFont("bfMunro8"), "R", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox G = AddWidget("G", new WidgetTextBox(new Rectangle(8, 62, 24, 16), Main.assets.GetFont("bfMunro8"), "G", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox B = AddWidget("B", new WidgetTextBox(new Rectangle(8, 84, 24, 16), Main.assets.GetFont("bfMunro8"), "B", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox A = AddWidget("A", new WidgetTextBox(new Rectangle(8, 104, 24, 16), Main.assets.GetFont("bfMunro8"), "A", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("textureshow_nomodify", new WidgetButton(new Rectangle(40, 40, 32, 32))).SetHasTexture(Main.assets.GetTexture("whitePixel")).SetBackgroundColor(Color.White, Color.White, Color.White, Color.White, Color.White);
+            WidgetTextBox name = AddWidget("name", new WidgetTextBox(new Rectangle(8, 8, 56, 24), Main.assets.GetFont("bitfontMunro8"), "name", 32, Enums.Alignment.Left, TextBoxFilter.AlphaNumeric)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox R = AddWidget("R", new WidgetTextBox(new Rectangle(8, 40, 56, 24), Main.assets.GetFont("bitfontMunro12"), "R", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox G = AddWidget("G", new WidgetTextBox(new Rectangle(8, 72, 56, 24), Main.assets.GetFont("bitfontMunro12"), "G", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox B = AddWidget("B", new WidgetTextBox(new Rectangle(8, 104, 56, 24), Main.assets.GetFont("bitfontMunro12"), "B", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox A = AddWidget("A", new WidgetTextBox(new Rectangle(8, 136, 56, 24), Main.assets.GetFont("bitfontMunro12"), "A", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("textureshow_nomodify", new WidgetButton(new Rectangle(72, 8, 48, 48))).SetHasTexture(Main.assets.GetTexture("whitePixel")).SetBackgroundColor(Color.White, Color.White, Color.White, Color.White, Color.White);
 
-            WidgetTextBox scaleX = AddWidget("scale_x", new WidgetTextBox(new Rectangle(40, 84, 24, 16), Main.assets.GetFont("bfMunro8"), "X", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox scaleY = AddWidget("scale_y", new WidgetTextBox(new Rectangle(40, 104, 24, 16), Main.assets.GetFont("bfMunro8"), "Y", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox scaleX = AddWidget("scale_x", new WidgetTextBox(new Rectangle(72, 72, 48, 24), Main.assets.GetFont("bitfontMunro12"), "X", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox scaleY = AddWidget("scale_y", new WidgetTextBox(new Rectangle(72, 104, 48, 24), Main.assets.GetFont("bitfontMunro12"), "Y", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+
+            WidgetCheckbox mirrorH = AddWidget("mirror_h", new WidgetCheckbox(new Rectangle(72, 136, 24, 24), Color.White));
+            WidgetCheckbox mirrorV = AddWidget("mirror_v", new WidgetCheckbox(new Rectangle(96, 136, 24, 24), Color.White));
+
+            //WidgetDropdown mirror = AddWidget("mirror", new WidgetDropdown(new Rectangle(72, 136, 48, 24), Main.assets.GetFont("bitfontMunro12"), 
+            //"mirror", Color.White, Enums.Alignment.Left, 3, "None", "Horizontally", "Vertically"));
+
+            WidgetDropdown rotate = AddWidget("rotate", new WidgetDropdown(new Rectangle(72, 168, 48, 16), Main.assets.GetFont("bitfontMunro8"),
+                "rotate", Color.White, Enums.Alignment.Left, 4, "0", "90", "180", "270"));
 
             name.SetTabProgressesTo(R); //wew
             R.SetTabProgressesTo(G);
@@ -35,13 +44,6 @@ namespace HelloGame.Guis.Widgets
             A.SetTabProgressesTo(scaleX);
             scaleX.SetTabProgressesTo(scaleY);
             scaleY.SetTabProgressesTo(name);
-
-            AddWidget("isanimated", new WidgetCheckbox(new Rectangle(80, 84 - 24, 16, 16), Color.White));
-            WidgetTextBox frames = AddWidget("frames", new WidgetTextBox(new Rectangle(72, 84, 24, 16), Main.assets.GetFont("bfMunro8"), "frames", 2, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox frameTime = AddWidget("frametime", new WidgetTextBox(new Rectangle(72, 104, 24, 16), Main.assets.GetFont("bfMunro8"), "time", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-
-            frames.SetTabProgressesTo(frameTime);
-            frameTime.SetTabProgressesTo(frames);
         }
 
         public override void Update()
@@ -111,18 +113,23 @@ namespace HelloGame.Guis.Widgets
 
         public TextureInfo GetTextureInfo()
         {
-            if (GetIsAnimated())
-            {
-                int[] frames = new int[int.Parse(GetWidget<WidgetTextBox>("frames").GetStringSafely())];
-                for (int i = 0; i < frames.Length; i++)
-                    frames[i] = int.Parse(GetWidget<WidgetTextBox>("frametime").GetStringSafely());
-                return new TextureInfo(new TextureContainer(GetTexture()), GetScale(), GetColor())
-                      .SetAnimated(Main.assets.GetTexture(GetTexture()).Width, GetAnimatedFrameHeight(),
-                      new Animation(0, Main.assets.GetTexture(GetTexture()).Width, GetAnimatedFrameHeight(),
-                      int.Parse(GetWidget<WidgetTextBox>("frames").GetStringSafely()), false,
-                      false, frames));
-            }
-            return new TextureInfo(new TextureContainer(GetTexture()), GetScale(), GetColor());
+            return new TextureInfo(new TextureContainer(GetTexture()), GetScale(), GetColor(), GetRotation(), GetSpriteEffects());
+        }
+
+        public SpriteEffects GetSpriteEffects()
+        {
+            SpriteEffects done = SpriteEffects.None;
+            if (GetWidget<WidgetCheckbox>("mirror_h").isChecked)
+                done |= SpriteEffects.FlipHorizontally;
+            if (GetWidget<WidgetCheckbox>("mirror_v").isChecked)
+                done |= SpriteEffects.FlipVertically;
+            return done;
+            //return (SpriteEffects)GetWidget<WidgetDropdown>("mirror").GetIndex();
+        }
+
+        public float GetRotation()
+        {
+            return GetWidget<WidgetDropdown>("rotate").GetIndex() * 90;
         }
 
         public void Set(TextureInfo texInfo)
@@ -138,8 +145,18 @@ namespace HelloGame.Guis.Widgets
 
             GetWidget<WidgetButton>("textureshow_nomodify").SetHasTexture(texInfo.texture.texture).SetTextureColors(texInfo.tint, texInfo.tint, texInfo.tint, texInfo.tint, texInfo.tint);
 
-            GetWidget<WidgetTextBox>("frames").SetString(texInfo.GetFirstAnimationFrames().ToString());
-            GetWidget<WidgetTextBox>("frametime").SetString(texInfo.GetFirstAnimationFrameDurations().ToString());
+            GetWidget<WidgetCheckbox>("mirror_h").isChecked = (texInfo.mirror & SpriteEffects.FlipHorizontally) == SpriteEffects.FlipHorizontally;  //I really don't know if this will work
+            GetWidget<WidgetCheckbox>("mirror_v").isChecked = (texInfo.mirror & SpriteEffects.FlipVertically) == SpriteEffects.FlipVertically;
+            //GetWidget<WidgetDropdown>("mirror").SetIndex((int)texInfo.mirror);
+
+            GetWidget<WidgetDropdown>("rotate").SetIndex((int)(texInfo.rotation / 90)); //this may not work, but since this should always be a multiple of 90, it should
+        }
+
+        public override void Draw(SpriteBatch batch)
+        {
+            base.Draw(batch);
+
+            batch.DrawHollowRectangle(bounds, 2, Color.Red);
         }
     }
 }

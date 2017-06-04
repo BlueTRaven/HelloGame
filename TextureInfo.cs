@@ -17,6 +17,9 @@ namespace HelloGame
         public Vector2 scale;
         public Color tint;
 
+        public float rotation;
+        public SpriteEffects mirror;
+
         public bool isAnimated;
         public Rectangle? sourceRect;
         public Vector2 offset;
@@ -26,11 +29,14 @@ namespace HelloGame
         private Animation[] animations;
         private Animation currentAnimation;
 
-        public TextureInfo(TextureContainer container, Vector2 scale, Color tint)
+        public TextureInfo(TextureContainer container, Vector2 scale, Color tint, float rotation = 0, SpriteEffects mirror = SpriteEffects.None)
         {
             this.texture = container;
             this.scale = scale;
             this.tint = tint;
+
+            this.rotation = rotation;
+            this.mirror = mirror;
 
             playIndexQueue = new FixedSizedQueue<int>(8);
         }
@@ -123,7 +129,9 @@ namespace HelloGame
             {
                 Name = texture.name,
                 Scale = scale.Save(),
-                Tint = tint.Save()
+                Tint = tint.Save(),
+                Mirror = (int)mirror,
+                Rotation = (int)rotation
             };
         }
     }

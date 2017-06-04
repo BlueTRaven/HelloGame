@@ -14,7 +14,7 @@ namespace HelloGame.Guis.Widgets
 {
     public class WidgetWindowScrollable : WidgetWindow
     {
-        private float height;
+        public float height;
 
         private Vector2 clickDistance;
 
@@ -58,21 +58,23 @@ namespace HelloGame.Guis.Widgets
                 holding = true;
             }
 
+            scrollbar.createdPosition.Y -= Main.mouse.deltaScrollWheelValue;
+
             if (Main.mouse.LeftButtonHeld() && holding)
             {
                 scrollbar.createdPosition.Y = (Main.mouse.currentPosition + clickDistance).Y;
-                scrollbar.createdPosition.Y = MathHelper.Clamp(scrollbar.createdPosition.Y, 0, bounds.Height - scrollbar.bounds.Height);
-                scrollbar.OnHeld();
-
-                float p = (float)scrollbar.createdPosition.Y / (float)(bounds.Height - scrollbar.bounds.Height);//a better idea seems to be to move everything
-                float y = MathHelper.Lerp(0, height - scrollSourceRect.Height, p);                              //else instead of just the sourcerect, as that is 
-                //scrollSourceRect.Y = (int)y;                                                                  //limited by rendertarget size (max is 4096x4096)
-                foreach (Widget w in widgets.Values)
-                {   //I'm a genius
-                    w.anchor.Y = -y;
-                }
             }
             else holding = false;
+
+            scrollbar.createdPosition.Y = MathHelper.Clamp(scrollbar.createdPosition.Y, 0, bounds.Height - scrollbar.bounds.Height);
+            scrollbar.OnHeld();
+
+            float p = (float)scrollbar.createdPosition.Y / (float)(bounds.Height - scrollbar.bounds.Height);
+            float y = MathHelper.Lerp(0, height - scrollSourceRect.Height, p);
+            foreach (Widget w in widgets.Values)
+            {   //I'm a genius
+                w.anchor.Y = -y;
+            }
         }
         public override void PostUpdate()
         {
@@ -88,9 +90,9 @@ namespace HelloGame.Guis.Widgets
             batch.End();
 
             batch.GraphicsDevice.SetRenderTarget(scrollRenderTarget);
-            batch.GraphicsDevice.Clear(Color.Black);
+            batch.GraphicsDevice.Clear(Color.DarkGray);
 
-            batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, null, null, null);
+            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointWrap, null, null, null);
 
             base.Draw(batch);   //draw normal widgets
 
@@ -98,9 +100,10 @@ namespace HelloGame.Guis.Widgets
 
             batch.GraphicsDevice.SetRenderTarget(null);
 
-            batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, null, null, null);
+            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.LinearWrap, null, null, null);
 
             batch.Draw(scrollRenderTarget, bounds, scrollSourceRect, Color.White);
+            batch.DrawLine(new Vector2(bounds.X + bounds.Width, bounds.Y), new Vector2(bounds.X + bounds.Width, bounds.Y + bounds.Height), Color.Black);
             batch.DrawRectangle(new Rectangle(bounds.X + bounds.Width, bounds.Y, 16, bounds.Height), Color.DarkGray);
             scrollbar.Draw(batch);  //draw the scrollbar on default rendertarget
         }

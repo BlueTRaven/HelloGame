@@ -22,6 +22,8 @@ namespace HelloGame
 
         public Rectangle bounds;
 
+        public bool noSave;
+
         public Wall(World world, Rectangle bounds)
         {
             box = world.collisionWorld.Create(bounds.X, bounds.Y, bounds.Width, bounds.Height);
@@ -41,7 +43,7 @@ namespace HelloGame
         public void Draw_DEBUG(SpriteBatch batch)
         {
             batch.DrawHollowRectangle(bounds, 2, Color.Red);
-            batch.DrawString(Main.assets.GetFont("bfMunro12"), "WALL", bounds.Location.ToVector2() - new Vector2(0, 16), Color.White);
+            batch.DrawString(Main.assets.GetFont("bitfontMunro12"), "WALL", bounds.Location.ToVector2() - new Vector2(0, 16), Color.White);
         }
 
         public SerWall Save()

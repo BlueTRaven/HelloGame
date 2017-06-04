@@ -24,6 +24,8 @@ message SerTexInfo {
 	string name = 1;
 	SerVector2 scale = 2;
 	SerColor tint = 3;
+	int32 mirror = 4;
+	int32 rotation = 5;
 }
 
 message SerEntitySpawner {

@@ -10,6 +10,8 @@ message SerPlayer {
 	repeated int32 kills = 4;
 	repeated SerItem items = 5;
 	repeated SerOpenable openables = 6;
+
+	int32 experience = 7;
 }
 
 message SerOpenable {
@@ -20,4 +22,5 @@ message SerOpenable {
 message SerItem {
 	int32 itemType = 1;
 	int32 type = 2;
+	int32 count = 3;
 }

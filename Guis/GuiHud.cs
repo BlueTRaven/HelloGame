@@ -37,11 +37,30 @@ namespace HelloGame.Guis
         private SpriteFont font, smallFont;
         private string text, littletext;
 
+        public List<Items.Item> showItems;
+
+        public WidgetDialogueBox dialogue;
+
         public GuiHud() : base("hud")
         {
+            showItems = new List<Items.Item>();
+
             AddWidget("openeditor_dummy", new WidgetButton(new Rectangle(0, 0, 0, 0)))
                 .SetOpensGui("editor")
                 .SetKeybind(Keys.O);
+
+            AddWidget("openinventory_dummy", new WidgetButton(new Rectangle(0, 0, 0, 0)))
+                .SetOpensGui("inventory")
+                .SetKeybind(Keys.I);
+
+            AddWidget("experiencecount", new WidgetButton(new Rectangle(0, 0, 128, 24))
+                .SetHasText(Main.assets.GetFont("bitfontMunro12"), "0", Color.White, Enums.Alignment.Left)
+                .SetBackgroundColor(new Color(Color.Black, 63), new Color(Color.Black, 63), new Color(Color.Black, 63), new Color(Color.Black, 63), new Color(Color.Black, 63))
+                .SetAnchored(this, Enums.Alignment.BottomRight, new Vector2(-8, -8)));
+
+            dialogue = AddWidget("dialogue", new WidgetDialogueBox(Main.assets.GetFont("bitfontMunro12")));
+
+            Main.stopKeyboardInput = false;
         }
 
         public override void Update()
@@ -84,6 +103,11 @@ namespace HelloGame.Guis
                     }
                 }
                 else bigTextFadeDelay--;
+            }
+
+            if (Main.keyboard.KeyPressed(Main.options.interactKeybind))
+            {
+                showItems.Clear();
             }
         }
 
@@ -141,7 +165,7 @@ namespace HelloGame.Guis
             if (showPrompt)
             {
                 batch.DrawRectangle(new Rectangle(Main.WIDTH / 2 - 128, Main.HEIGHT - 128, 256, 16), Color.Black);
-                batch.DrawString(Main.assets.GetFont("bfMunro12"), string.Format(promptText, Main.options.interactKeybind), new Vector2(Main.WIDTH / 2 - 128, Main.HEIGHT - 128) + TextHelper.GetAlignmentOffset(Main.assets.GetFont("bfMunro12"), string.Format(promptText, Main.options.interactKeybind), new Rectangle(Main.WIDTH / 2 - 128, Main.HEIGHT - 128, 256, 16), Enums.Alignment.Center), Color.White);
+                batch.DrawString(Main.assets.GetFont("bitfontMunro12"), string.Format(promptText, Main.options.interactKeybind), new Vector2(Main.WIDTH / 2 - 128, Main.HEIGHT - 128) + TextHelper.GetAlignmentOffset(Main.assets.GetFont("bitfontMunro12"), string.Format(promptText, Main.options.interactKeybind), new Rectangle(Main.WIDTH / 2 - 128, Main.HEIGHT - 128, 256, 16), Enums.Alignment.Center), Color.White);
             }
 
             if (bigtextTime > 0 && (bigTextFadeInTime != bigtextTimeMax / 2))
@@ -171,6 +195,14 @@ namespace HelloGame.Guis
                     batch.DrawString(font, text, rect.Location.ToVector2(), currentColor);
                 }
             }
+
+            for (int i = 0; i < showItems.Count; i++)
+            {
+                Rectangle rect = new Rectangle(Main.WIDTH / 2 - 128, (Main.HEIGHT - 64) - 64 * i, 256, 64);
+
+                batch.DrawRectangle(rect, new Color(Color.Black, 63));
+                batch.DrawString(Main.assets.GetFont("bitfontMunro12"), showItems[i].name + " x" + showItems[i].count, rect.Location.ToVector2(), Color.White);
+            }
         }
 
         public void SetHealth(float current, float max, float maxWidth, float preHit)
@@ -192,6 +224,21 @@ namespace HelloGame.Guis
                 preHitStamina = preval;
 
             staminaDelay = delay;
+        }
+
+        public static bool ItemDisplayActive()
+        {
+            return ((GuiHud)Main.guis["hud"]).showItems.Count > 0;
+        }
+
+        public static WidgetDialogueBox GetDialogueBox()
+        {
+            return ((GuiHud)Main.guis["hud"]).dialogue;    
+        }
+
+        public static void SetDialogueText(SpriteFont font, params string[] texts)
+        {
+            ((GuiHud)Main.guis["hud"]).dialogue.Replace(font, texts);
         }
 
         public static void SetPromptText(int time, string actionName = "Press {0} to <Action>", bool force = false)

@@ -42,11 +42,21 @@ namespace HelloGame.Hits
             {
                 if (animated)
                 {
-                    if (clockwise ? max - min > distanceFollow : min - max > distanceFollow)
-                        min += increasePerFrame;
+                    //if (clockwise ? max - min > distanceFollow : min - max > distanceFollow)
+                        //min += increasePerFrame;
                     max += increasePerFrame;
                 }
             }
+        }
+
+        public override void PostUpdate()
+        {
+            base.PostUpdate();
+
+            if (delay <= 0)
+                if (animated)
+                    if (clockwise ? max - min > distanceFollow : min - max > distanceFollow)
+                        min += increasePerFrame;
         }
 
         protected override bool Collision(IDamageTaker check)

@@ -37,13 +37,15 @@ namespace HelloGame.Entities
             maxSpeed = 8;
             
             AddGhostWeapon(new GhostWeaponHolyBlade());
-            drops.Enqueue(new ItemKey(0));
+            drops.Enqueue(new ItemKey(0, 1));
+
+            experienceDrop = 300;
         }
 
         public override void OnSpawn(EntitySpawner spawner, World world, Vector2 position)
         {
             base.OnSpawn(spawner, world, position);
-            SetBoss(0, position);
+            SetBoss(0, position, new Rectangle((int)position.X - 64, (int)position.Y + 512, 128, 64));
         }
 
         public override void Update(World world)
@@ -201,11 +203,14 @@ namespace HelloGame.Entities
                         AttackWithWeapon(world, 0, 5, 0);
                     }
                     else if (move.counter1 == 1)
-                    {   //attack and more delay
+                    {
                         move.counter1 = 2;
                         move.counter2 = 0;
 
                         bossPhase = 1;
+
+                        ((GhostWeaponHolyBlade)weapons[0]).phased = true;
+                        ((GhostWeaponHolyBlade)weapons[0]).color = Color.Black;
                     }
                     else if (move.counter1 == 2)
                     {

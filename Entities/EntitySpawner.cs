@@ -173,6 +173,10 @@ namespace HelloGame.Entities
                 {
                     attachedEntities.Add(new EnemyDragon1(world, startNoticeState, startRotation));
                 }
+                else if (type == 5)
+                {
+                    attachedEntities.Add(new NPCs.NPCTest());
+                }
 
                 //attachedEntities = entities;
 
@@ -186,9 +190,9 @@ namespace HelloGame.Entities
             batch.DrawHollowCircle(bounds.Center.ToVector2(), 8, spawned ? Color.Orange : Color.Red, 2, 32);
             Vector2 rotVec = VectorHelper.GetAngleNormVector(startRotation);
             batch.DrawLine(bounds.Center.ToVector2() + rotVec * 8, bounds.Center.ToVector2() + rotVec * 16, Color.Red, 2);
-            batch.DrawString(Main.assets.GetFont("bfMunro12"), type.ToString(), bounds.Location.ToVector2(), Color.White);
-            batch.DrawString(Main.assets.GetFont("bfMunro12"), info1, bounds.Location.ToVector2() + new Vector2(0, 16), Color.White);
-            batch.DrawString(Main.assets.GetFont("bfMunro12"), info2, bounds.Location.ToVector2() + new Vector2(0, 32), Color.White);
+            batch.DrawString(Main.assets.GetFont("bitfontMunro12"), type.ToString(), bounds.Location.ToVector2(), Color.White);
+            batch.DrawString(Main.assets.GetFont("bitfontMunro12"), info1, bounds.Location.ToVector2() + new Vector2(0, 16), Color.White);
+            batch.DrawString(Main.assets.GetFont("bitfontMunro12"), info2, bounds.Location.ToVector2() + new Vector2(0, 32), Color.White);
         }
 
         public void DrawSelect_DEBUG(SpriteBatch batch)

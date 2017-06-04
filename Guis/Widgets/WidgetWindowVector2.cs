@@ -16,8 +16,8 @@ namespace HelloGame.Guis.Widgets
     {
         public WidgetWindowVector2(Vector2 position) : base(new Rectangle(position.ToPoint(), new Point(192, 26)), false, null)
         {
-            WidgetTextBox x = AddWidget("x", new WidgetTextBox(new Rectangle(8, 8, 40, 18), Main.assets.GetFont("bfMunro12"), "X", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox y = AddWidget("y", new WidgetTextBox(new Rectangle(56, 8, 40, 18), Main.assets.GetFont("bfMunro12"), "Y", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox x = AddWidget("x", new WidgetTextBox(new Rectangle(8, 8, 40, 18), Main.assets.GetFont("bitfontMunro12"), "X", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox y = AddWidget("y", new WidgetTextBox(new Rectangle(56, 8, 40, 18), Main.assets.GetFont("bitfontMunro12"), "Y", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
             x.SetTabProgressesTo(y);
             y.SetTabProgressesTo(x);
         }

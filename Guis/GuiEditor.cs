@@ -32,11 +32,11 @@ namespace HelloGame.Guis
                 .SetOpensGui("hud") //dummy widget to return to hud
                 .SetKeybind(Keys.O);
 
-            AddWidget("savename", new WidgetTextBox(new Rectangle(8, 8, 128, 16), Main.assets.GetFont("bfMunro12"), "save name", 60, Enums.Alignment.Left)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("displayname", new WidgetTextBox(new Rectangle(8, 32, 128, 16), Main.assets.GetFont("bfMunro12"), "display name", 60, Enums.Alignment.Left)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("bg_r", new WidgetTextBox(new Rectangle(8, 54, 128, 16), Main.assets.GetFont("bfMunro12"), "bgr", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("bg_g", new WidgetTextBox(new Rectangle(8, 78, 128, 16), Main.assets.GetFont("bfMunro12"), "bgg", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            AddWidget("bg_b", new WidgetTextBox(new Rectangle(8, 102, 128, 16), Main.assets.GetFont("bfMunro12"), "bgb", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("savename", new WidgetTextBox(new Rectangle(8, 8, 128, 16), Main.assets.GetFont("bitfontMunro12"), "save name", 60, Enums.Alignment.Left)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("displayname", new WidgetTextBox(new Rectangle(8, 32, 128, 16), Main.assets.GetFont("bitfontMunro12"), "display name", 60, Enums.Alignment.Left)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("bg_r", new WidgetTextBox(new Rectangle(8, 54, 128, 16), Main.assets.GetFont("bitfontMunro12"), "bgr", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("bg_g", new WidgetTextBox(new Rectangle(8, 78, 128, 16), Main.assets.GetFont("bitfontMunro12"), "bgg", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            AddWidget("bg_b", new WidgetTextBox(new Rectangle(8, 102, 128, 16), Main.assets.GetFont("bitfontMunro12"), "bgb", 3, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
 
             Dictionary<string, Widget> windowWidgets = new Dictionary<string, Widget>();
             windowWidgets.Add("brush", new WidgetButton(new Rectangle(8, 8, 32, 32))
@@ -64,12 +64,12 @@ namespace HelloGame.Guis
 
             windowWidgets.Add("up", new WidgetButton(new Rectangle(80, 2, 16, 6)).SetBackgroundColor(Color.White, Color.LightGray, Color.LightGray, Color.Gray, Color.DarkGray).SetHasTexture(Main.assets.GetTexture("arrowUp")).SetKeybind(Keys.OemOpenBrackets));
             windowWidgets.Add("down", new WidgetButton(new Rectangle(80, 8, 16, 6)).SetBackgroundColor(Color.White, Color.LightGray, Color.LightGray, Color.Gray, Color.DarkGray).SetHasTexture(Main.assets.GetTexture("arrowDown")).SetKeybind(Keys.OemCloseBrackets));
-            windowWidgets.Add("gridsize", new WidgetTextBox(new Rectangle(8, 2, 72, 12), Main.assets.GetFont("bfMunro12"), "16", 4, Enums.Alignment.Center, TextBoxFilter.Numerical).SetBackgroundColor(Color.White, Color.Gray));
+            windowWidgets.Add("gridsize", new WidgetTextBox(new Rectangle(8, 2, 72, 12), Main.assets.GetFont("bitfontMunro12"), "16", 4, Enums.Alignment.Center, TextBoxFilter.Numerical).SetBackgroundColor(Color.White, Color.Gray));
             windowWidgets.Add("showgrid", new WidgetCheckbox(new Rectangle(102, 2, 12, 12), Color.White).SetKeybind(Keys.F));
             window = AddWindow("grid", new WidgetWindowHolder(new Rectangle(0, Main.HEIGHT - 16, 128, 16), false, windowWidgets));
             window.backgroundColor = Color.Black;
 
-            AddWindow("modeoptions", new WidgetWindowEditorOptions(new Rectangle(208, Main.HEIGHT - 192, 256, 192), false, GetWidgetWindow<WidgetWindowModeSelector>("modeselector")));
+            AddWindow("modeoptions", new WidgetWindowEditorOptions(new Rectangle(208, Main.HEIGHT - 256, 256, 256), false, GetWidgetWindow<WidgetWindowModeSelector>("modeselector")));
 
             window = AddWindow("modifyproperties", new WidgetWindowEditProperties(new Rectangle(Main.WIDTH - 256, 0, 256, 256)));
             window.backgroundColor = Color.Black;

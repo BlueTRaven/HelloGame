@@ -16,10 +16,10 @@ namespace HelloGame.Guis.Widgets
     {
         public WidgetWindowRectangle(Vector2 position) : base(new Rectangle(position.ToPoint(), new Point(192, 26)), false, null)
         {
-            WidgetTextBox x = AddWidget("bounds_x", new WidgetTextBox(new Rectangle(8, 8, 40, 18), Main.assets.GetFont("bfMunro12"), "X", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox y = AddWidget("bounds_y", new WidgetTextBox(new Rectangle(56, 8, 40, 18), Main.assets.GetFont("bfMunro12"), "Y", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox width = AddWidget("bounds_width", new WidgetTextBox(new Rectangle(104, 8, 40, 18), Main.assets.GetFont("bfMunro12"), "Width", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
-            WidgetTextBox height = AddWidget("bounds_height", new WidgetTextBox(new Rectangle(152, 8, 40, 18), Main.assets.GetFont("bfMunro12"), "Height", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox x = AddWidget("bounds_x", new WidgetTextBox(new Rectangle(8, 8, 40, 18), Main.assets.GetFont("bitfontMunro12"), "X", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox y = AddWidget("bounds_y", new WidgetTextBox(new Rectangle(56, 8, 40, 18), Main.assets.GetFont("bitfontMunro12"), "Y", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox width = AddWidget("bounds_width", new WidgetTextBox(new Rectangle(104, 8, 40, 18), Main.assets.GetFont("bitfontMunro12"), "Width", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
+            WidgetTextBox height = AddWidget("bounds_height", new WidgetTextBox(new Rectangle(152, 8, 40, 18), Main.assets.GetFont("bitfontMunro12"), "Height", 4, Enums.Alignment.Left, TextBoxFilter.Numerical)).SetBackgroundColor(Color.White, Color.Gray);
             x.SetTabProgressesTo(y);
             y.SetTabProgressesTo(width);
             width.SetTabProgressesTo(height);

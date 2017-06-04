@@ -21,6 +21,12 @@ namespace HelloGame.Utility
             Center
         }
 
+        public enum DirectionMirror
+        {
+            Horizontal,
+            Vertical
+        }
+
         public enum DirectionBinary
         {
             Left,

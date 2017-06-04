@@ -109,6 +109,14 @@ namespace HelloGame
                         entity.PreUpdate(this);
                     }
                 }
+
+                foreach (Hits.Hit hit in hitboxes)
+                {
+                    if (hit != null)
+                    {
+                        hit.PreUpdate();
+                    }
+                }
             }
         }
 
@@ -236,7 +244,7 @@ namespace HelloGame
                                 {   //brush mode
                                     WidgetWindowTextureSelector wwts = wweo.GetWindow<WidgetWindowTextureSelector>("brush_textureselector");
                                     Rectangle rect = new Rectangle(editorPoints[0].ToPoint(), (editorPoints[1] - editorPoints[0]).ToPoint());
-                                    AddBrush(rect, new TextureInfo(new TextureContainer(wwts.GetTexture()), wwts.GetScale(), wwts.GetColor()), wweo.GetBrushDrawType(), (BrushDepth)wweo.GetWidget<WidgetDropdown>("brush_depth").GetIndex());
+                                    AddBrush(rect, new TextureInfo(new TextureContainer(wwts.GetTexture()), wwts.GetScale(), wwts.GetColor(), wwts.GetRotation(), wwts.GetSpriteEffects()), wweo.GetBrushDrawType(), (BrushDepth)wweo.GetWidget<WidgetDropdown>("brush_depth").GetIndex());
                                 }
                                 else if (mode == mode_walls)
                                 {   //wall mode
@@ -557,6 +565,14 @@ namespace HelloGame
                         entity.PostUpdate(this);
                     }
                 }
+
+                foreach (Hits.Hit hit in hitboxes)
+                {
+                    if (hit != null)
+                    {
+                        hit.PostUpdate();
+                    }
+                }
             }
         }
         #endregion
@@ -706,7 +722,7 @@ namespace HelloGame
                         mouseWorldPos.X = mouseWorldPos.X.RoundDown(gridsize);
                         mouseWorldPos.Y = mouseWorldPos.Y.RoundDown(gridsize);
                         batch.DrawRectangle(new Rectangle(mouseWorldPos.ToPoint(), new Point(gridsize)), Color.Red);
-                        batch.DrawString(Main.assets.GetFont("bfMunro12"), mouseWorldPos.ToString(), mouseWorldPos, Color.White);
+                        batch.DrawString(Main.assets.GetFont("bitfontMunro12"), mouseWorldPos.ToString(), mouseWorldPos, Color.White);
                     }
                 }
 
@@ -757,7 +773,7 @@ namespace HelloGame
                 {
                     Rectangle rect = new Rectangle(editorPoints[0].ToPoint(), (editorPoints[1] - editorPoints[0]).ToPoint());
                     batch.DrawHollowRectangle(rect, 2, Color.Orange);
-                    batch.DrawString(Main.assets.GetFont("bfMunro12"), "X: " + editorPoints[0].X + " Y: " + editorPoints[0].Y + " W: " + (editorPoints[1].X - editorPoints[0].X) + " H: " + (editorPoints[1].Y - editorPoints[0].Y), editorPoints[0] - new Vector2(0, 16), Color.White);
+                    batch.DrawString(Main.assets.GetFont("bitfontMunro12"), "X: " + editorPoints[0].X + " Y: " + editorPoints[0].Y + " W: " + (editorPoints[1].X - editorPoints[0].X) + " H: " + (editorPoints[1].Y - editorPoints[0].Y), editorPoints[0] - new Vector2(0, 16), Color.White);
                 }
             }
         }
@@ -798,13 +814,13 @@ namespace HelloGame
 
             for (int i = 0; i < brushes.Length; i++)
             {
-                if (brushes[i] != null)
+                if (brushes[i] != null && !brushes[i].noSave)
                     world.Brushes.Add(brushes[i].Save());
             }
 
             for (int i = 0; i < walls.Length; i++)
             {
-                if (walls[i] != null)
+                if (walls[i] != null && !walls[i].noSave)
                     world.Walls.Add(walls[i].Save());
             }
 

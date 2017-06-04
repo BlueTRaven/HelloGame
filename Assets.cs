@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
+using System.IO;
+using System.Globalization;
+using HelloGame.Utility;
 
 namespace HelloGame
 {
@@ -52,11 +55,42 @@ namespace HelloGame
 
         public void Load(GraphicsDevice device, ContentManager content)
         {
-            //textures
             whitePixel = new Texture2D(device, 1, 1);
             whitePixel.SetData(new Color[] { Color.White });
             textures.Add("whitePixel", whitePixel);
-            textures.Add("shadowPixel", content.Load<Texture2D>("Textures/ShadowPixel"));
+
+            DirectoryInfo d = new DirectoryInfo("Content");
+            List<FileInfo> files = d.GetFiles("*", SearchOption.AllDirectories).ToList();
+
+            foreach (FileInfo file in files)
+            {
+                string name = file.Name.Split('.')[0];
+
+                string keyname = TextHelper.FirstCharacterToLower(name);
+
+                string[] split = file.DirectoryName.Split('\\');
+                int index = split.ToList().IndexOf("Content");
+                string dirName = split[index + 1];
+
+                string directory = "";
+                for (int i = index + 1; i < split.Length; i++)
+                {   //super efficency
+                    directory += split[i] + '/';
+                }
+
+                if (dirName == "Fonts")
+                {
+                    if (!fonts.ContainsKey(keyname))
+                        fonts.Add(keyname, content.Load<SpriteFont>(directory + name));
+                }
+                else if (dirName == "Textures")
+                {
+                    if (!textures.ContainsKey(keyname)) 
+                        textures.Add(keyname, content.Load<Texture2D>(directory + name));
+                }
+            }
+            
+            /*textures.Add("shadowPixel", content.Load<Texture2D>("Textures/ShadowPixel"));
             textures.Add("shadow", content.Load<Texture2D>("Textures/Shadow"));
             textures.Add("displace", content.Load<Texture2D>("Textures/displace"));
 
@@ -81,10 +115,17 @@ namespace HelloGame
             textures.Add("brickFloor", content.Load<Texture2D>("Textures/Brush/BrickFloor"));
             textures.Add("chip_overlay1", content.Load<Texture2D>("Textures/Brush/Chip_overlay1"));
             textures.Add("vine_overlay1", content.Load<Texture2D>("Textures/Brush/Vine_overlay1"));
+            textures.Add("tileFloor1", content.Load<Texture2D>("Textures/Brush/TileFloor1"));
+            textures.Add("tileFloor2", content.Load<Texture2D>("Textures/Brush/TileFloor2"));
+            textures.Add("tileFloor3", content.Load<Texture2D>("Textures/Brush/TileFloor3"));
 
             //prop
             textures.Add("tree1", content.Load<Texture2D>("Textures/Prop/Tree1"));
             textures.Add("torch_animated", content.Load<Texture2D>("Textures/Prop/torch_animated"));
+
+            //item
+            textures.Add("keyItem", content.Load<Texture2D>("Textures/Item/KeyItem"));
+            textures.Add("potionItem", content.Load<Texture2D>("Textures/Item/PotionItem"));
 
             //gui
             textures.Add("brush", content.Load<Texture2D>("Textures/Gui/Brush"));
@@ -103,7 +144,7 @@ namespace HelloGame
             this.fonts.Add("bfMunro12", content.Load<SpriteFont>("Fonts/bitfontMunro12"));
             this.fonts.Add("bfMunro8", content.Load<SpriteFont>("Fonts/bitfontMunro8"));
             this.fonts.Add("bfMunro23_bold", content.Load<SpriteFont>("Fonts/bitfontMunro23BOLD"));
-            this.fonts.Add("bfMunro72", content.Load<SpriteFont>("Fonts/bitfontMunro72"));
+            this.fonts.Add("bfMunro72", content.Load<SpriteFont>("Fonts/bitfontMunro72"));*/
         }
     }
 }

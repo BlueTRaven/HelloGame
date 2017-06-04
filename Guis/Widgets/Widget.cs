@@ -39,21 +39,21 @@ namespace HelloGame.Guis.Widgets
             return this;
         }
 
-        public Widget SetAnchored(Gui gui, Enums.Alignment alignment)
+        public Widget SetAnchored(Gui gui, Enums.Alignment alignment, Vector2 offset = new Vector2() { X = 0, Y = 0 })
         {
-            bounds = new Rectangle(GetAlignmentPosition(new Rectangle(0, 0, Main.WIDTH, Main.HEIGHT), bounds, alignment).ToPoint(), bounds.Size);
+            bounds = new Rectangle(GetAlignmentPosition(new Rectangle(0, 0, Main.WIDTH, Main.HEIGHT), bounds, alignment).ToPoint() + offset.ToPoint(), bounds.Size);
             return this;
         }
 
-        public Widget SetAnchored(Widget widget, Enums.Alignment alignment)
+        public Widget SetAnchored(Widget widget, Enums.Alignment alignment, Vector2 offset = new Vector2() { X = 0, Y = 0 })
         {
-            bounds = new Rectangle(GetAlignmentPosition(widget.bounds, bounds, alignment).ToPoint(), bounds.Size);
+            bounds = new Rectangle(GetAlignmentPosition(widget.bounds, bounds, alignment).ToPoint() + offset.ToPoint(), bounds.Size);
             return this;
         }
 
-        public Widget SetAnchored(WidgetWindow window, Enums.Alignment alignment)
+        public Widget SetAnchored(WidgetWindow window, Enums.Alignment alignment, Vector2 offset = new Vector2() { X = 0, Y = 0 })
         {
-            bounds = new Rectangle(GetAlignmentPosition(window.bounds, bounds, alignment).ToPoint(), bounds.Size);
+            bounds = new Rectangle(GetAlignmentPosition(window.bounds, bounds, alignment).ToPoint() + offset.ToPoint(), bounds.Size);
             return this;
         }
 

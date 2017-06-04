@@ -14,6 +14,8 @@ namespace HelloGame
     {
         private MouseState currentState, lastState;
         public Vector2 currentPosition, lastPosition;
+        private float currentScrollWheelValue;
+        public float deltaScrollWheelValue;
 
         public GameMouse()
         {
@@ -24,6 +26,9 @@ namespace HelloGame
         {
             currentState = Mouse.GetState();
             currentPosition = currentState.Position.ToVector2();
+
+            deltaScrollWheelValue = currentState.ScrollWheelValue - currentScrollWheelValue;
+            currentScrollWheelValue += deltaScrollWheelValue;
         }
 
         public void Update()
@@ -40,6 +45,11 @@ namespace HelloGame
         public Vector2 GetWorldPosition()
         {
             return Camera.ToWorldCoords(currentPosition);
+        }
+
+        public float ScrollWheelDirection()
+        {
+            return deltaScrollWheelValue;
         }
 
         public bool LeftButtonPressed()

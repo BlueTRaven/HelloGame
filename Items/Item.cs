@@ -23,14 +23,17 @@ namespace HelloGame.Items
         public string name;
         public string[] description;
 
-        protected int itemType;
+        public int itemType { get; private set; }
 
         public int type { get; private set; }
 
-        public Item(int itemType, int type)
+        public int count;
+        public Item(int itemType, int type, int count)
         {
             this.itemType = itemType;
             this.type = type;
+            this.count = count;
+
             description = new string[8] { "", "", "", "", "", "", "", "" };
         }
 
@@ -39,8 +42,22 @@ namespace HelloGame.Items
             return new SerItem()
             {
                 ItemType = itemType,
-                Type = type
+                Type = type,
+                Count = count
             };
+        }
+
+        public static string GetTextureName(Item item)
+        {
+            switch (item.itemType)
+            {
+                case 0:     //key
+                    return "keyItem";
+                case 1:
+                    return "potionItem";
+                default:
+                    return "unknownItem";
+            }
         }
     }
 }

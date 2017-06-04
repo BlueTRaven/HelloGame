@@ -29,18 +29,20 @@ namespace HelloGame.Guis.Widgets
 
         public WidgetWindow(Rectangle bounds, bool draggable, Dictionary<string, Widget> widgets)
         {
-            this.widgets = new Dictionary<string, Widget>();
-            foreach (Widget widget in this.widgets.Values)
-                widget.anchor = bounds.Location.ToVector2();
+            this.widgets = widgets;
+            if (widgets != null)
+            {
+                foreach (Widget widget in this.widgets.Values)
+                    widget.anchor = bounds.Location.ToVector2();
+            }
+            else this.widgets = new Dictionary<string, Widget>();
+
             this.windows = new Dictionary<string, WidgetWindow>();
             foreach (WidgetWindow window in this.windows.Values)
                 window.anchor = bounds.Location.ToVector2();
 
             this.bounds = bounds;
             this.draggable = draggable;
-
-            if (widgets != null)
-                this.widgets = widgets;
 
             createdPosition = bounds.Location.ToVector2();
         }
@@ -124,6 +126,7 @@ namespace HelloGame.Guis.Widgets
 
         public T AddWidget<T>(string key, T widget) where T : Widget
         {
+            widget.anchor = bounds.Location.ToVector2();
             widgets.Add(key, widget);
 
             return widget;

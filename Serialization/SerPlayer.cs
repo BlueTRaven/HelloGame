@@ -22,19 +22,20 @@ namespace HelloGame {
     static SerPlayerReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg9TZXJQbGF5ZXIucHJvdG8SCUhlbGxvR2FtZSKgAQoJU2VyUGxheWVyEg4K",
+            "Cg9TZXJQbGF5ZXIucHJvdG8SCUhlbGxvR2FtZSK0AQoJU2VyUGxheWVyEg4K",
             "BmhlYWx0aBgBIAEoBRIVCg1lbnRyYW5jZVBvaW50GAIgASgFEg8KB21hcE5h",
             "bWUYAyABKAkSDQoFa2lsbHMYBCADKAUSIQoFaXRlbXMYBSADKAsyEi5IZWxs",
             "b0dhbWUuU2VySXRlbRIpCglvcGVuYWJsZXMYBiADKAsyFi5IZWxsb0dhbWUu",
-            "U2VyT3BlbmFibGUiLQoLU2VyT3BlbmFibGUSDwoHbWFwbmFtZRgBIAEoCRIN",
-            "CgVpbmRleBgCIAEoBSIpCgdTZXJJdGVtEhAKCGl0ZW1UeXBlGAEgASgFEgwK",
-            "BHR5cGUYAiABKAViBnByb3RvMw=="));
+            "U2VyT3BlbmFibGUSEgoKZXhwZXJpZW5jZRgHIAEoBSItCgtTZXJPcGVuYWJs",
+            "ZRIPCgdtYXBuYW1lGAEgASgJEg0KBWluZGV4GAIgASgFIjgKB1Nlckl0ZW0S",
+            "EAoIaXRlbVR5cGUYASABKAUSDAoEdHlwZRgCIAEoBRINCgVjb3VudBgDIAEo",
+            "BWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerPlayer), global::HelloGame.SerPlayer.Parser, new[]{ "Health", "EntrancePoint", "MapName", "Kills", "Items", "Openables" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerPlayer), global::HelloGame.SerPlayer.Parser, new[]{ "Health", "EntrancePoint", "MapName", "Kills", "Items", "Openables", "Experience" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerOpenable), global::HelloGame.SerOpenable.Parser, new[]{ "Mapname", "Index" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerItem), global::HelloGame.SerItem.Parser, new[]{ "ItemType", "Type" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::HelloGame.SerItem), global::HelloGame.SerItem.Parser, new[]{ "ItemType", "Type", "Count" }, null, null, null)
           }));
     }
     #endregion
@@ -71,6 +72,7 @@ namespace HelloGame {
       kills_ = other.kills_.Clone();
       items_ = other.items_.Clone();
       openables_ = other.openables_.Clone();
+      experience_ = other.experience_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -141,6 +143,17 @@ namespace HelloGame {
       get { return openables_; }
     }
 
+    /// <summary>Field number for the "experience" field.</summary>
+    public const int ExperienceFieldNumber = 7;
+    private int experience_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Experience {
+      get { return experience_; }
+      set {
+        experience_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as SerPlayer);
@@ -160,6 +173,7 @@ namespace HelloGame {
       if(!kills_.Equals(other.kills_)) return false;
       if(!items_.Equals(other.items_)) return false;
       if(!openables_.Equals(other.openables_)) return false;
+      if (Experience != other.Experience) return false;
       return true;
     }
 
@@ -172,6 +186,7 @@ namespace HelloGame {
       hash ^= kills_.GetHashCode();
       hash ^= items_.GetHashCode();
       hash ^= openables_.GetHashCode();
+      if (Experience != 0) hash ^= Experience.GetHashCode();
       return hash;
     }
 
@@ -197,6 +212,10 @@ namespace HelloGame {
       kills_.WriteTo(output, _repeated_kills_codec);
       items_.WriteTo(output, _repeated_items_codec);
       openables_.WriteTo(output, _repeated_openables_codec);
+      if (Experience != 0) {
+        output.WriteRawTag(56);
+        output.WriteInt32(Experience);
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -214,6 +233,9 @@ namespace HelloGame {
       size += kills_.CalculateSize(_repeated_kills_codec);
       size += items_.CalculateSize(_repeated_items_codec);
       size += openables_.CalculateSize(_repeated_openables_codec);
+      if (Experience != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Experience);
+      }
       return size;
     }
 
@@ -234,6 +256,9 @@ namespace HelloGame {
       kills_.Add(other.kills_);
       items_.Add(other.items_);
       openables_.Add(other.openables_);
+      if (other.Experience != 0) {
+        Experience = other.Experience;
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -267,6 +292,10 @@ namespace HelloGame {
           }
           case 50: {
             openables_.AddEntriesFrom(input, _repeated_openables_codec);
+            break;
+          }
+          case 56: {
+            Experience = input.ReadInt32();
             break;
           }
         }
@@ -446,6 +475,7 @@ namespace HelloGame {
     public SerItem(SerItem other) : this() {
       itemType_ = other.itemType_;
       type_ = other.type_;
+      count_ = other.count_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -475,6 +505,17 @@ namespace HelloGame {
       }
     }
 
+    /// <summary>Field number for the "count" field.</summary>
+    public const int CountFieldNumber = 3;
+    private int count_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Count {
+      get { return count_; }
+      set {
+        count_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as SerItem);
@@ -490,6 +531,7 @@ namespace HelloGame {
       }
       if (ItemType != other.ItemType) return false;
       if (Type != other.Type) return false;
+      if (Count != other.Count) return false;
       return true;
     }
 
@@ -498,6 +540,7 @@ namespace HelloGame {
       int hash = 1;
       if (ItemType != 0) hash ^= ItemType.GetHashCode();
       if (Type != 0) hash ^= Type.GetHashCode();
+      if (Count != 0) hash ^= Count.GetHashCode();
       return hash;
     }
 
@@ -516,6 +559,10 @@ namespace HelloGame {
         output.WriteRawTag(16);
         output.WriteInt32(Type);
       }
+      if (Count != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Count);
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -526,6 +573,9 @@ namespace HelloGame {
       }
       if (Type != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Type);
+      }
+      if (Count != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Count);
       }
       return size;
     }
@@ -540,6 +590,9 @@ namespace HelloGame {
       }
       if (other.Type != 0) {
         Type = other.Type;
+      }
+      if (other.Count != 0) {
+        Count = other.Count;
       }
     }
 
@@ -557,6 +610,10 @@ namespace HelloGame {
           }
           case 16: {
             Type = input.ReadInt32();
+            break;
+          }
+          case 24: {
+            Count = input.ReadInt32();
             break;
           }
         }

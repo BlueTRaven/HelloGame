@@ -57,6 +57,11 @@ namespace HelloGame.Entities
         private bool boss;
         private int bossIndex;
         private Vector2 bossAnchor;
+
+        private Rectangle bossDoorBounds;
+        private Brush bossDoorDoor, bossDoorShadow;
+        private Wall bossDoorWall;
+
         protected int bossPhase;
         protected string bossDescription;
 
@@ -79,6 +84,7 @@ namespace HelloGame.Entities
 
         protected Queue<Item> drops;
 
+        public int experienceDrop { get; protected set; }
         /// <summary>
         /// Creates A new Enemy.
         /// </summary>
@@ -114,29 +120,9 @@ namespace HelloGame.Entities
             maxZVel = 4;
         }
 
-        protected void SetMaxHealth(int health)
+        public override void OnSpawn(EntitySpawner spawner, World world, Vector2 position)
         {
-            this.health = health;
-            this.maxHealth = health;
-            preHitHealth = health;
-        }
-
-        protected void SetChase(Enums.DirectionClock chaseDirection, float chaseRadius, float chaseSpeed, float chaseMaxSpeed, float circleSpeed, float circleMaxSpeed)
-        {
-            this.chaseDirection = chaseDirection;
-            this.chaseRadius = chaseRadius;
-            this.chaseSpeed = chaseSpeed;
-            this.chaseMaxSpeed = chaseMaxSpeed;
-            this.circleSpeed = circleSpeed;
-            this.circleMaxSpeed = circleMaxSpeed;
-        }
-
-        protected void AddGhostWeapon(GhostWeapon weapon)
-        {
-            weapons.Add(weapon);
-
-            Array.Resize(ref gwRestPos, weapons.Count);
-            Array.Resize(ref gwRestRot, weapons.Count);
+            base.OnSpawn(spawner, world, position);
         }
 
         public override void PreUpdate(World world)
@@ -236,7 +222,18 @@ namespace HelloGame.Entities
         {
             if (boss)
             {
-                GuiHud.SetBigText(name, bossDescription, Main.assets.GetFont("bfMunro72"), Main.assets.GetFont("bfMunro23_bold"), Color.White);
+                GuiHud.SetBigText(name, bossDescription, Main.assets.GetFont("bitfontMunro72"), Main.assets.GetFont("bitfontMunro23BOLD"), Color.White);
+
+                bossDoorWall = world.AddWall(bossDoorBounds);
+                bossDoorWall.noSave = true;
+
+                bossDoorDoor = world.AddBrush(new Brush(new Rectangle(bossDoorBounds.X, bossDoorBounds.Y - 128, bossDoorBounds.Width, 192),
+                    new TextureInfo(new TextureContainer("whitePixel"), Vector2.One, Color.Gray), BrushDrawType.Tile, BrushDepth.DrawWorldDepth));
+                bossDoorDoor.noSave = true;
+
+                bossDoorShadow = world.AddBrush(new Brush(new Rectangle(bossDoorBounds.X, bossDoorBounds.Y + 64, bossDoorBounds.Width, 64),
+                    new TextureInfo(new TextureContainer("shadowPixel"), Vector2.One, Color.White), BrushDrawType.Tile, BrushDepth.DrawTop));
+                bossDoorShadow.noSave = true;
             }
         }
 
@@ -284,6 +281,14 @@ namespace HelloGame.Entities
             }
         }
 
+        protected void AddGhostWeapon(GhostWeapon weapon)
+        {
+            weapons.Add(weapon);
+
+            Array.Resize(ref gwRestPos, weapons.Count);
+            Array.Resize(ref gwRestRot, weapons.Count);
+        }
+
         public override void Die(World world, bool force = false, bool dropItems = true)
         {
             base.Die(world, force, dropItems);
@@ -291,6 +296,10 @@ namespace HelloGame.Entities
             if (boss && !world.player.kills.Contains(bossIndex))
             {
                 world.player.kills.Add(bossIndex);
+
+                bossDoorWall?.Delete(world);
+                bossDoorShadow?.Delete_DEBUG(world);
+                bossDoorDoor?.Delete_DEBUG(world);
             }
             if (boss)
             {   //NOTE: don't add spawner. spawner should already be created, but inaccessable.
@@ -304,7 +313,7 @@ namespace HelloGame.Entities
                 if (!force)
                 {   //we use this so we don't spawn the particles every time the player loads from the boss's save point.
                     Main.camera.SetFade(new Color(255, 255, 255, 127), true, 45);
-                    GuiHud.SetBigText("Victory Achieved", null, Main.assets.GetFont("bfMunro72"), null, Color.White);
+                    GuiHud.SetBigText("Victory Achieved", null, Main.assets.GetFont("bitfontMunro72"), null, Color.White);
                     for (int i = 0; i < 128; i++)
                     {   //kill all other particles
                         if (world.entities[i] is Particle)
@@ -327,7 +336,9 @@ namespace HelloGame.Entities
             if (dropItems)
             {
                 while (drops.Count > 0)
-                    world.player.items.Add(drops.Dequeue());
+                    world.player.AddItem(drops.Dequeue());
+
+                world.player.experience += experienceDrop;
             }
         }
 
@@ -371,7 +382,7 @@ namespace HelloGame.Entities
 
                         Vector2 pos = Camera.ToWorldCoords(new Vector2(48, Main.HEIGHT - 64));
 
-                        batch.DrawString(Main.assets.GetFont("bfMunro12"), name, pos - new Vector2(0, 16), Color.White);
+                        batch.DrawString(Main.assets.GetFont("bitfontMunro12"), name, pos - new Vector2(0, 16), Color.White);
                         batch.DrawRectangle(new Rectangle((int)pos.X, (int)pos.Y, (int)width, 16), Color.Gray);
                         batch.DrawRectangle(new Rectangle((int)pos.X, (int)pos.Y, (int)(percentpre * width), 16), Color.Orange);
                         batch.DrawRectangle(new Rectangle((int)pos.X, (int)pos.Y, (int)(percent * width), 16), Color.Red);
@@ -473,16 +484,34 @@ namespace HelloGame.Entities
             moveQueue.Enqueue(move);
         }
 
+        protected void SetMaxHealth(int health)
+        {
+            this.health = health;
+            this.maxHealth = health;
+            preHitHealth = health;
+        }
+
+        protected void SetChase(Enums.DirectionClock chaseDirection, float chaseRadius, float chaseSpeed, float chaseMaxSpeed, float circleSpeed, float circleMaxSpeed)
+        {
+            this.chaseDirection = chaseDirection;
+            this.chaseRadius = chaseRadius;
+            this.chaseSpeed = chaseSpeed;
+            this.chaseMaxSpeed = chaseMaxSpeed;
+            this.circleSpeed = circleSpeed;
+            this.circleMaxSpeed = circleMaxSpeed;
+        }
+
         /// <summary>
         /// Sets the current enemy to be a boss.
         /// </summary>
         /// <param name="bossIndex">The "boss index" used by the player to save what bosses they've killed.</param>
         /// <param name="bossAnchor">The place where the save location will appear. NOT relative to the enemy's position.</param>
-        protected void SetBoss(int bossIndex, Vector2 bossAnchor)
+        protected void SetBoss(int bossIndex, Vector2 bossAnchor, Rectangle bossDoorBounds)
         {
             this.boss = true;
             this.bossIndex = bossIndex;
             this.bossAnchor = bossAnchor;
+            this.bossDoorBounds = bossDoorBounds;
         }
 
         #region move presets

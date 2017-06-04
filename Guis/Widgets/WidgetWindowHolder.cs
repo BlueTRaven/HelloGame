@@ -17,5 +17,10 @@ namespace HelloGame.Guis.Widgets
         public WidgetWindowHolder(Rectangle bounds, bool draggable, Dictionary<string, Widget> widgets) : base(bounds, draggable, widgets)
         {
         }
+
+        public override void PreUpdate()
+        {
+            base.PreUpdate();
+        }
     }
 }
